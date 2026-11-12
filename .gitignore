@@ -43,3 +43,5 @@ next-env.d.ts
 # Build va lint loglari
 build-log.txt
 lint-log.txt
+
+server-log.txt
