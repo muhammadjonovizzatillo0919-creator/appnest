@@ -1,4 +1,6 @@
 import { randomBytes, scryptSync, timingSafeEqual, createHmac } from "node:crypto";
+import { promises as fs, readFileSync } from "node:fs";
+import path from "node:path";
 
 /**
  * Autentifikatsiya yordamchilari.
@@ -13,22 +15,80 @@ const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 kun
 
 export const SESSION_COOKIE = "appnest_session";
 
-/** Sessiya imzolash kaliti. Production'da muhit o'zgaruvchisidan olinadi. */
-function getSecret(): string {
-  const secret = process.env.AUTH_SECRET;
-  if (secret && secret.length >= 16) return secret;
+const SECRET_FILE = path.join(process.cwd(), ".data", "secret");
 
-  if (process.env.NODE_ENV === "production") {
-    // Production'da kalit bo'lmasa — tasodifiy kalit (sessiyalar restartda o'ladi)
-    console.warn(
-      "[auth] AUTH_SECRET belgilanmagan — sessiyalar serverga qayta ishga tushganda bekor bo'ladi."
-    );
-    return randomBytes(32).toString("hex");
+/**
+ * Sessiya kaliti.
+ *
+ * 1) `AUTH_SECRET` muhit o'zgaruvchisi (production uchun shuni belgilang)
+ * 2) Aks holda — `.data/secret` faylida barqaror saqlanadigan tasodifiy kalit.
+ *
+ * ⚠️ Muhim: har so'rovda yangi kalit yaratilsa, sessiyalar hech qachon
+ * tasdiqlanmaydi — shuning uchun kalit barqaror saqlanadi.
+ */
+let cachedSecret: string | null = null;
+
+async function resolveSecret(): Promise<string> {
+  if (cachedSecret) return cachedSecret;
+
+  const fromEnv = process.env.AUTH_SECRET;
+  if (fromEnv && fromEnv.length >= 16) {
+    cachedSecret = fromEnv;
+    return cachedSecret;
   }
 
-  // Development uchun barqaror kalit
-  return "appnest-development-secret-do-not-use-in-production";
+  try {
+    const existing = (await fs.readFile(SECRET_FILE, "utf8")).trim();
+    if (existing.length >= 32) {
+      cachedSecret = existing;
+      return cachedSecret;
+    }
+  } catch {
+    // fayl yo'q — yaratamiz
+  }
+
+  const generated = randomBytes(32).toString("hex");
+  try {
+    await fs.mkdir(path.dirname(SECRET_FILE), { recursive: true });
+    await fs.writeFile(SECRET_FILE, generated, "utf8");
+  } catch {
+    // yozib bo'lmasa ham sessiya ishlaydi (faqat restartda o'ladi)
+  }
+
+  cachedSecret = generated;
+  return cachedSecret;
 }
+
+/** Sinxron variant (proxy va route handler'lar uchun) */
+function getSecret(): string {
+  if (cachedSecret) return cachedSecret;
+
+  const fromEnv = process.env.AUTH_SECRET;
+  if (fromEnv && fromEnv.length >= 16) {
+    cachedSecret = fromEnv;
+    return cachedSecret;
+  }
+
+  try {
+    const existing = readFileSync(SECRET_FILE, "utf8").trim();
+    if (existing.length >= 32) {
+      cachedSecret = existing;
+      return cachedSecret;
+    }
+  } catch {
+    /* ignore */
+  }
+
+  cachedSecret = randomBytes(32).toString("hex");
+  console.warn(
+    "[auth] AUTH_SECRET belgilanmagan — vaqtinchalik kalit ishlatilmoqda. " +
+      "Production uchun .env ga AUTH_SECRET qo'ying."
+  );
+  return cachedSecret;
+}
+
+/** Promise bilan kalitni olish (server route'lar uchun) */
+export const ensureSecret = resolveSecret;
 
 /** Parolni hash qiladi: `salt:hash` formatida */
 export function hashPassword(password: string): string {
@@ -53,13 +113,14 @@ export function verifyPassword(password: string, stored: string): boolean {
 }
 
 /** Sessiya tokenini yaratadi: `base64(payload).signature` */
-export function createSessionToken(userId: string): string {
+export async function createSessionToken(userId: string): Promise<string> {
+  const secret = await resolveSecret();
   const payload = JSON.stringify({
     uid: userId,
     exp: Date.now() + SESSION_TTL_SECONDS * 1000,
   });
   const encoded = Buffer.from(payload).toString("base64url");
-  const signature = createHmac("sha256", getSecret())
+  const signature = createHmac("sha256", secret)
     .update(encoded)
     .digest("base64url");
 
@@ -93,10 +154,32 @@ export function verifySessionToken(token: string | undefined): string | null {
   }
 }
 
-export const sessionCookieOptions = {
-  httpOnly: true,
-  sameSite: "lax" as const,
-  secure: process.env.NODE_ENV === "production",
-  path: "/",
-  maxAge: SESSION_TTL_SECONDS,
-};
+/**
+ * Cookie sozlamalari.
+ *
+ * `secure` faqat HTTPS so'rovlar uchun — lokal development'da
+ * `http://localhost` orqali ishlatilishi kerak.
+ */
+export function getSessionCookieOptions(isSecure: boolean) {
+  return {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: isSecure,
+    path: "/",
+    maxAge: SESSION_TTL_SECONDS,
+  };
+}
+
+/** So'rov HTTPS orqali kelayotganini aniqlaydi */
+export function isSecureRequest(req: Request): boolean {
+  const forwarded = req.headers.get("x-forwarded-proto");
+  if (forwarded) return forwarded === "https";
+
+  const host = req.headers.get("host") ?? "";
+  const isLocal =
+    host.startsWith("localhost") ||
+    host.startsWith("127.0.0.1") ||
+    host.startsWith("[::1]");
+
+  return !isLocal && process.env.NODE_ENV === "production";
+}

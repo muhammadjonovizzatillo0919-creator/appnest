@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { SESSION_COOKIE, sessionCookieOptions } from "@/lib/auth";
+import { SESSION_COOKIE, getSessionCookieOptions } from "@/lib/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -10,7 +10,10 @@ export const dynamic = "force-dynamic";
  */
 export async function POST() {
   const cookieStore = await cookies();
-  cookieStore.set(SESSION_COOKIE, "", { ...sessionCookieOptions, maxAge: 0 });
+  cookieStore.set(SESSION_COOKIE, "", {
+    ...getSessionCookieOptions(false),
+    maxAge: 0,
+  });
 
   return NextResponse.json({ ok: true });
 }

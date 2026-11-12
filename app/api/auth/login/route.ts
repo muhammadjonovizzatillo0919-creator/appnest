@@ -3,7 +3,8 @@ import { userStore } from "@/lib/user-store";
 import {
   SESSION_COOKIE,
   createSessionToken,
-  sessionCookieOptions,
+  getSessionCookieOptions,
+  isSecureRequest,
   verifyPassword,
 } from "@/lib/auth";
 
@@ -40,11 +41,15 @@ export async function POST(req: Request) {
     );
   }
 
-  const token = createSessionToken(user.id);
+  const token = await createSessionToken(user.id);
   const response = NextResponse.json({
     user: { id: user.id, name: user.name, email: user.email },
   });
 
-  response.cookies.set(SESSION_COOKIE, token, sessionCookieOptions);
+  response.cookies.set(
+    SESSION_COOKIE,
+    token,
+    getSessionCookieOptions(isSecureRequest(req))
+  );
   return response;
 }

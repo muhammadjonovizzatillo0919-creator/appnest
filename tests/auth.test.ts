@@ -30,13 +30,13 @@ describe("parol hashing", () => {
 });
 
 describe("sessiya tokeni", () => {
-  it("yaratadi va tekshiradi", () => {
-    const token = createSessionToken("user-123");
+  it("yaratadi va tekshiradi", async () => {
+    const token = await createSessionToken("user-123");
     expect(verifySessionToken(token)).toBe("user-123");
   });
 
-  it("soxtalashgan token rad etiladi", () => {
-    const token = createSessionToken("user-123");
+  it("soxtalashgan token rad etiladi", async () => {
+    const token = await createSessionToken("user-123");
     const [payload, signature] = token.split(".");
     const forged = `${payload}.${signature!.slice(0, -2)}xx`;
 
@@ -49,8 +49,8 @@ describe("sessiya tokeni", () => {
     expect(verifySessionToken("not-a-token")).toBeNull();
   });
 
-  it("muddati o'tgan token rad etiladi", () => {
-    const token = createSessionToken("user-123");
+  it("muddati o'tgan token rad etiladi", async () => {
+    const token = await createSessionToken("user-123");
     // Token ichidagi payload'ni o'zgartirib muddatni o'tkazib yuboramiz
     const [encoded, signature] = token.split(".");
     const payload = JSON.parse(Buffer.from(encoded!, "base64url").toString()) as {
