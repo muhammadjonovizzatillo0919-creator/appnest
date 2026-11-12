@@ -1,43 +1,120 @@
 @import "tailwindcss";
 
+/*
+  AppNest — asosiy uslub fayli
+  Tungi rejim <html class="dark"> orqali boshqariladi (localStorage + tizim afzalligi).
+*/
+
+/* Tailwind v4: klassga asoslangan dark variant */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --surface: #ffffff;
+  --surface-muted: #f1f5f9;
+  --border: #e2e8f0;
+  --brand: #0057ff;
+  --brand-accent: #00d287;
+}
+
+.dark {
+  --background: #0b1120;
+  --foreground: #e2e8f0;
+  --surface: #111827;
+  --surface-muted: #1e293b;
+  --border: #1f2a3c;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
+  --color-brand: var(--brand);
+  --color-brand-accent: var(--brand-accent);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-/* Tungi rejim klassi */
-.dark-mode {
-  background-color: #111827; /* To'q fon */
-  color: #f9fafb;           /* Oq matn */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Karta va boshqa elementlar uchun dark mode ranglari */
-.dark-mode .bg-white {
-  background-color: #1f2937 !important;
-  color: white;
-  border-color: #374151;
+/*
+  Animatsiyalar.
+  (tailwindcss-animate paketi o'rniga — qo'shimcha bog'liqliksiz, ichki)
+*/
+@keyframes appnest-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.dark-mode .text-gray-700, 
-.dark-mode .text-gray-600 {
-  color: #d1d5db !important;
+@keyframes appnest-zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes appnest-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: appnest-fade-in 0.25s ease-out both;
+}
+
+.animate-zoom-in {
+  animation: appnest-zoom-in 0.18s ease-out both;
+}
+
+.animate-overlay-in {
+  animation: appnest-overlay-in 0.2s ease-out both;
+}
+
+/* Klaviatura bilan navigatsiya uchun ko'rinadigan fokus halqasi */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Skrollbar (dark rejim uchun) */
+.dark ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: var(--surface-muted);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 8px;
 }

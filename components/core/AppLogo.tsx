@@ -1,14 +1,28 @@
 // components/core/AppLogo.tsx
-export const AppLogo = ({ className = "" }: { className?: string }) => {
+interface AppLogoProps {
+  className?: string;
+  /** Logo matnini ko'rsatish */
+  showText?: boolean;
+  /** Matn rangi — odatda `text-current` bilan merosxo'rlik oladi */
+  textClassName?: string;
+}
+
+export const AppLogo = ({
+  className = "",
+  showText = true,
+  textClassName = "text-current",
+}: AppLogoProps) => {
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      {/* Logotipning blokli shakli (CSS orqali chizilgan) */}
-      <div className="relative w-8 h-8">
-        <div className="absolute top-0 left-2 w-4 h-4 bg-blue-500 rounded-sm"></div>
-        <div className="absolute top-3 left-0 w-4 h-4 bg-cyan-400 rounded-sm"></div>
-        <div className="absolute top-3 left-4 w-4 h-4 bg-blue-700 rounded-sm"></div>
-      </div>
-      <span className="text-xl font-bold tracking-tight text-white">AppNest</span>
+      {/* Logotipning blokli shakli (CSS orqali chizilgan — fayl kerak emas) */}
+      <span className="relative block h-8 w-8 shrink-0" aria-hidden="true">
+        <span className="absolute left-2 top-0 h-4 w-4 rounded-sm bg-[#0057FF]" />
+        <span className="absolute left-0 top-3 h-4 w-4 rounded-sm bg-[#00D287]" />
+        <span className="absolute left-4 top-3 h-4 w-4 rounded-sm bg-blue-800" />
+      </span>
+      {showText && (
+        <span className={`text-xl font-bold tracking-tight ${textClassName}`}>AppNest</span>
+      )}
     </div>
   );
 };

@@ -1,18 +1,29 @@
 // components/core/Loading.tsx
-import React from 'react';
+import React from "react";
 
-export const Loading = () => {
+interface LoadingProps {
+  /** Yuklanish matni */
+  label?: string;
+  /** Kichik o'lcham (inline holatlar uchun) */
+  size?: "sm" | "md" | "lg";
+}
+
+const SIZES = {
+  sm: "h-4 w-4 border-2",
+  md: "h-8 w-8 border-2",
+  lg: "h-12 w-12 border-4",
+};
+
+export const Loading = ({ label = "Ma'lumotlar yuklanmoqda...", size = "md" }: LoadingProps) => {
   return (
-    <div className="flex justify-center items-center py-10 w-full h-full">
-      <div className="flex flex-col items-center">
-        {/* Aylanuvchi spinner */}
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600"></div>
-        
-        {/* Yuklanmoqda yozuvi */}
-        <span className="mt-4 text-gray-500 font-medium animate-pulse">
-          Ma'lumotlar yuklanmoqda...
-        </span>
-      </div>
+    <div className="flex w-full flex-col items-center justify-center gap-4 py-10">
+      <div
+        aria-hidden="true"
+        className={`animate-spin rounded-full border-t-transparent border-[#0057FF] ${SIZES[size]}`}
+      />
+      <span className="animate-pulse text-sm font-medium text-slate-500 dark:text-slate-400">
+        {label}
+      </span>
     </div>
   );
 };
