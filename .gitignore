@@ -45,3 +45,9 @@ build-log.txt
 lint-log.txt
 
 server-log.txt
+
+# lokal ma'lumotlar (foydalanuvchilar, override'lar)
+.data/
+# test loglari
+test-log.txt
+install-log.txt

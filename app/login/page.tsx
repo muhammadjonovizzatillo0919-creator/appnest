@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Alert, AppLogo, Button, Card, Input } from "@/components/core";
 
 export default function LoginPage() {
@@ -11,35 +11,38 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setError(null);
 
-    if (!email.trim() || !password.trim()) {
+    if (!email.trim() || !password) {
       setError("Email va parolni kiriting");
       return;
     }
 
     setLoading(true);
-    const saved = sessionStorage.getItem("appnest_user");
-
-    if (!saved) {
-      setLoading(false);
-      setError("Foydalanuvchi topilmadi. Avval ro'yxatdan o'ting");
-      return;
-    }
 
     try {
-      const user = JSON.parse(saved) as { email: string; password: string };
-      if (user.email === email && user.password === password) {
-        sessionStorage.setItem("appnest_session", "active");
-        router.push("/");
-      } else {
-        setError("Email yoki parol noto'g'ri");
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error ?? "Kirishda xatolik yuz berdi");
+        setLoading(false);
+        return;
       }
+
+      const next = searchParams.get("next");
+      router.push(next && next.startsWith("/") ? next : "/dashboard");
+      router.refresh();
     } catch {
-      setError("Ma'lumotni o'qib bo'lmadi. Qayta ro'yxatdan o'ting");
-    } finally {
+      setError("Serverga ulanib bo'lmadi. Qayta urinib ko'ring.");
       setLoading(false);
     }
   };
@@ -75,7 +78,7 @@ export default function LoginPage() {
             placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+            onKeyDown={(e) => e.key === "Enter" && void handleLogin()}
           />
           <Button onClick={handleLogin} loading={loading} fullWidth>
             Kirish

@@ -13,22 +13,43 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     setError(null);
-
-    if (!name.trim()) return setError("Ismni kiriting");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Email manzili noto'g'ri");
-    if (password.length < 6) return setError("Parol kamida 6 ta belgidan iborat bo'lishi kerak");
-
     setLoading(true);
-    // DIQQAT: bu demo ilova — parol ochiq saqlanadi.
-    // Ishlab chiqarishda autentifikatsiya server tomonda (hash + sessiya) bo'lishi kerak.
-    sessionStorage.setItem(
-      "appnest_user",
-      JSON.stringify({ name, email, password })
-    );
-    setLoading(false);
-    router.push("/login");
+
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error ?? "Ro'yxatdan o'tishda xatolik yuz berdi");
+        setLoading(false);
+        return;
+      }
+
+      // Ro'yxatdan o'tgach — avtomatik kirish
+      const loginRes = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!loginRes.ok) {
+        router.push("/login");
+        return;
+      }
+
+      router.push("/dashboard");
+      router.refresh();
+    } catch {
+      setError("Serverga ulanib bo'lmadi. Qayta urinib ko'ring.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -68,7 +89,7 @@ export default function RegisterPage() {
             placeholder="Kamida 6 ta belgi"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            hint="Demo rejim — parol faqat brauzeringizda saqlanadi"
+            hint="Parol serverda scrypt hash bilan saqlanadi"
           />
           <Button onClick={handleRegister} loading={loading} fullWidth>
             Ro&apos;yxatdan o&apos;tish

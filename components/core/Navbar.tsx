@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "./ThemeToggle";
 import { Dropdown } from "./Dropdown";
+import { useUser } from "@/context/UserContext";
 
 interface NavbarProps {
   title: string;
@@ -12,11 +13,15 @@ interface NavbarProps {
 
 export const Navbar = ({ title, onMenuClick }: NavbarProps) => {
   const router = useRouter();
+  const { user, logout } = useUser();
 
-  const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
+  const handleLogout = async () => {
+    await logout();
     router.push("/login");
+    router.refresh();
   };
+
+  const initial = (user?.name ?? "A").trim().charAt(0).toUpperCase();
 
   return (
     <nav className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:px-6">
@@ -44,9 +49,9 @@ export const Navbar = ({ title, onMenuClick }: NavbarProps) => {
           label={
             <span className="flex items-center gap-2">
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0057FF] text-xs font-bold text-white">
-                A
+                {initial}
               </span>
-              <span className="hidden sm:inline">Admin</span>
+              <span className="hidden sm:inline">{user?.name ?? "Admin"}</span>
             </span>
           }
           items={[

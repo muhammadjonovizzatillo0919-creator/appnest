@@ -1,29 +1,71 @@
-'use client';
-import { createContext, useState, useContext } from 'react';
+"use client";
 
-// 1. Context uchun interfeys (TypeScript uchun muhim)
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
+
+/**
+ * Foydalanuvchi konteksti.
+ *
+ * Manba: `/api/auth/session` — sessiya cookie'si asosida.
+ * (Avvalgi versiya localStorage'ga to'g'ridan-to'g'ri yozardi — bu xavfsiz emas edi.)
+ */
+
+export interface SessionUser {
+  id: string;
+  name: string;
+  email: string;
+}
+
 interface UserContextType {
-  user: { name: string; email: string };
-  setUser: (user: { name: string; email: string }) => void;
+  user: SessionUser | null;
+  loading: boolean;
+  setUser: (user: SessionUser) => void;
+  logout: () => Promise<void>;
   totalClients: number;
   setTotalClients: (count: number) => void;
 }
 
-// 2. Context ni yaratamiz (undefined bilan boshlaymiz)
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState({ name: "Admin User", email: "admin@appnest.uz" });
+  const [user, setUser] = useState<SessionUser | null>(null);
+  const [loading, setLoading] = useState(true);
   const [totalClients, setTotalClients] = useState(0);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/auth/session")
+      .then((r) => r.json())
+      .then((data) => {
+        if (!cancelled) setUser(data.user ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setUser(null);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const logout = useCallback(async () => {
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+    setUser(null);
+  }, []);
+
   return (
-    <UserContext.Provider value={{ user, setUser, totalClients, setTotalClients }}>
+    <UserContext.Provider
+      value={{ user, loading, setUser, logout, totalClients, setTotalClients }}
+    >
       {children}
     </UserContext.Provider>
   );
 };
 
-// 3. Custom hook (xatolarni oldini olish uchun)
+/** Custom hook — xatolarni oldini olish uchun */
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
