@@ -11,6 +11,8 @@ foydalanishga tayyor.
 [![Tailwind](https://img.shields.io/badge/Tailwind-4-38bdf8)](https://tailwindcss.com)
 [![License](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
 
+**Live:** [appnest-mir07.vercel.app](https://appnest-mir07.vercel.app) · **Repo:** [github.com/muhammadjonovizzatillo0919-creator/appnest](https://github.com/muhammadjonovizzatillo0919-creator/appnest)
+
 ---
 
 ## Tez ishga tushirish
@@ -178,6 +180,19 @@ appnest/
 4. **Deploy** — har bir `git push` avtomatik yangi versiya deploy qiladi.
 
 Hozircha muhit o'zgaruvchilari (env vars) talab qilinmaydi.
+
+> ⚠️ **Deployment Protection.** Loyiha hozirda Vercel Authentication bilan himoyalangan — tashqi
+> tomondan kirganda "Login - Vercel" sahifasi chiqadi. Saytni ommaga ochish uchun:
+> **Vercel Dashboard → appnest → Settings → Deployment Protection → "Disabled"** (yoki
+> "Password Protection" qo'yib, parol bilan kirish).
+>
+> Sozlangandan keyin `appnest-mir07.vercel.app` to'g'ridan-to'g'ri ochiladi.
+
+### Mahalliy xotira cheklovi
+
+`next.config.ts` da `experimental.cpus: 1` va `memoryBasedWorkersCount: true` belgilangan —
+kompyuterda RAM kam bo'lganda build worker'lar crash bo'lmasligi uchun.
+Vercel'da bu cheklov avtomatik o'chadi (`process.env.VERCEL` tekshiruvi).
 
 ---
 
