@@ -159,12 +159,67 @@ Natija: **mumkin joylar yashil**, **mumkin bo'lmagan joylar qizil** — foydalan
 | Bosqich | Nima | Holat |
 |---|---|---|
 | **P0** | UI kit + auth + DB + CRUD + CI | ✅ bajarilgan |
-| **P1** | **Ma'lumot modeli**: `projects`, `generation_attempts`, `role`, `plan` + 1+1 entitlements | ⬜ |
-| **P2** | AI generatsiya servisi (Gemini → app spec JSON) | ⬜ |
+| **P1** | **Ma'lumot modeli**: `projects`, `generation_attempts`, `role`, `plan` + 1+1 entitlements | ✅ bajarilgan |
+| **P2** | AI generatsiya servisi (Gemini → app spec JSON) | ✅ bajarilgan |
 | **P3** | Web vizual quruvchi (drag & drop, blok palitrasi, property panel) | ⬜ |
 | **P4** | Mobil Smart Grid + qoidalar (yashil/qizil) | ⬜ |
-| **P5** | Freemium: aktivatsiya, PRO chegara, Stripe | ⬜ |
-| **P6** | Super admin dashboard (statistika, tarix, urinishlar) | ⬜ |
+| **P5** | Freemium: aktivatsiya, PRO chegara, Stripe | 🟡 qoida ishlaydi, to'lov yo'q |
+| **P6** | Super admin dashboard (statistika, tarix, urinishlar) | 🟡 API tayyor, UI kerak |
+
+---
+
+## 9.1. P1 va P2 — nima qurildi
+
+### P1 — 1+1 qoidasi (server tomonda)
+
+| Fayl | Vazifasi |
+|---|---|
+| `lib/entitlements.ts` | `canCreateProject` · `canActivateProject` · `canGenerate` · `describeEntitlements` |
+| `lib/project-store.ts` | Loyihalar CRUD + `generation_attempts` jurnal + admin statistikasi |
+| `lib/session.ts` | Joriy foydalanuvchi + 401/403/400 yordamchilari |
+| `app/api/projects/route.ts` | GET (ro'yxat + tarif) · POST (1+1 gate bilan) |
+| `app/api/projects/[id]/route.ts` | GET · PATCH · DELETE |
+| `app/api/admin/stats/route.ts` | Super admin statistikasi (faqat superadmin) |
+
+**Tekshirilgan:** FREE → 1 loyiha ✅ · 2-loyiha **403** ✅ · faollashtirish **403** ✅ ·
+PRO → cheksiz ✅ · faollashtirish ✅ · admin statistikasi ✅
+
+### P2 — AI generatsiya
+
+| Fayl | Vazifasi |
+|---|---|
+| `lib/ai-generator.ts` | Kategoriya shablonlari (4 ta) + `buildTemplateSpec` + `validateAppSpec` |
+| `lib/gemini.ts` | Gemini klienti, model routing (flash/pro), kontekst cache |
+| `lib/ai-service.ts` | System prompt + JSON sxema + Gemini chaqiruvi + fallback |
+| `app/api/projects/[id]/generate/route.ts` | Generatsiya + urish jurnali + 1+1 gate |
+
+**Muhim:** Gemini kaliti yo'q bo'lsa yoki AI xato bersa — tizim **shablon bilan ishlaydi**
+(foydalanuvchi hech narsaga olmaydi). Kalit olgach avtomatik AI ga o'tadi.
+
+**Kategoriyalar va shablonlari:**
+
+| Kategoriya | Sahifalar | Modellar |
+|---|---|---|
+| Restoran | 4 (Bosh, Menyu, Buyurtma, Biz haqimizda) | Dish, Order |
+| Do'kon | 4 (Bosh, Katalog, Mahsulot, Savat) | Product, CartItem |
+| Maktab | 4 (Bosh, Dars jadvali, O'quvchilar, E'lonlar) | Student, Lesson |
+| Universitet | 4 (Bosh, Fakultetlar, Jadval, Kirish) | Faculty, Teacher |
+| Boshqa | 3 (Bosh, Asosiy, Bog'lanish) | Item |
+
+**Chiqish JSON formati** (vizual quruvchiga tayyor):
+
+```json
+{
+  "title": "...", "category": "...", "platform": "web", "summary": "...",
+  "pages": [{ "id": "p1", "name": "...", "route": "/", "purpose": "...",
+              "rows": [{ "id": "r1", "type": "window",
+                          "blocks": [{ "id": "b1", "component": "Hero", "props": {} }] }] }],
+  "dataModels": [{ "name": "Dish", "fields": [{ "name": "id", "type": "number" }] }],
+  "features": ["..."]
+}
+```
+
+**Testlar:** 66 → **78** ✅
 
 ---
 
