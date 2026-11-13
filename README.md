@@ -159,16 +159,50 @@ appnest/
 
 ## Muhim eslatmalar
 
-> ⚠️ **Autentifikatsiya demo darajasida.** `app/register/page.tsx` foydalanuvchi ma'lumotini
-> `sessionStorage` ga ochiq saqlaydi. Bu **faqat namoyish uchun**. Ishlab chiqarishda autentifikatsiya
-> server tomonda bo'lishi kerak: parolni hash qilish (bcrypt/argon2), sessiya yoki JWT, HTTP-only cookie.
-
-> ⚠️ **`app/clients/page.tsx`** tashqi demo API dan (`jsonplaceholder.typicode.com`) ma'lumot oladi.
-> Internetga ulanmagan holatda xato holati ko'rsatiladi ("Qayta urinish" tugmasi bilan).
-
+> ✅ **Autentifikatsiya haqiqiy.** Parollar `scrypt` hash bilan saqlanadi (`.data/appnest.db`),
+> sessiya HMAC imzolangan httpOnly cookie. `/dashboard`, `/clients`, `/settings` — `proxy.ts` bilan
+> himoyalangan.
+>
+> ✅ **Ma'lumotlar bazasi — SQLite.** `node:sqlite` (Node.js'ning o'z ichidagi moduli — qo'shimcha
+> paket yoki native build kerak emas). Jadvalar: `users`, `clients`, `activity`. Fayl: `.data/appnest.db`
+> (avtomatik yaratiladi va namuna ma'lumotlar bilan to'ldiriladi).
+>
+> ⚠️ **Production (Vercel) uchun:** Vercel'da fayl tizimi faqat o'qiladigan — SQLite ma'lumotlari
+> deploy'dan keyin saqlanmaydi. Ikki yo'l: (1) **Postgres/Turso** ulash (store interfeysi
+> `lib/*-store.ts` da tayyor), yoki (2) `lib/db.ts` dagi fayl yo'lini serverless DB ga almashtirish.
+>
+> ⚠️ **`AUTH_SECRET`** ni Vercel'ga **albatta** qo'ying — aks holda deploy'dan keyin barcha
+> sessiyalar bekor bo'ladi. Kalitni generatsiya qilish:
+> `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+>
 > ℹ️ **Turbopack root.** `next.config.ts` da `turbopack.root` aniq belgilangan — kompyuterda
 > `C:\Users\user\package-lock.json` kabi tashqaridagi lockfile'lar Next.js root'ni noto'g'ri
 > aniqlashiga olib kelardi.
+
+---
+
+## Ma'lumotlar bazasi (SQLite)
+
+```sql
+users    (id, name, email UNIQUE, password_hash, created_at)
+clients  (id, name, email, status, note, created_at, updated_at)
+activity (id, client_id, action, created_at)   -- jurnal: create / update / delete
+```
+
+**API endpoint'lar:**
+
+| Metod | Yo'l | Vazifasi |
+|---|---|---|
+| `GET` | `/api/clients?search=&status=` | Ro'yxat (server tomonda qidirish) |
+| `POST` | `/api/clients` | Yangi mijoz |
+| `PATCH` | `/api/clients/[id]` | Yangilash (holat, ism, email, izoh) |
+| `DELETE` | `/api/clients/[id]` | O'chirish |
+| `GET` | `/api/stats` | Dashboard statistikalari |
+| `POST` | `/api/auth/register` \| `login` \| `logout` | Autentifikatsiya |
+| `GET` | `/api/auth/session` | Joriy foydalanuvchi |
+
+**Ma'lumotlarni tozalash:** `.data/appnest.db` faylini o'chirib, keyin `npm run dev` bilan qayta
+yaratish — baza avtomatik seed qilinadi.
 
 ---
 

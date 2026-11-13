@@ -20,6 +20,7 @@ interface Client {
   name: string;
   email: string;
   status: "Faol" | "Arxiv";
+  note: string | null;
 }
 
 export default function ClientsPage() {
@@ -31,124 +32,174 @@ export default function ClientsPage() {
   const [toast, setToast] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [note, setNote] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const { setTotalClients } = useUser();
 
-  /** Ma'lumotni oladi — holatni o'zgartirmaydi (faqat Promise qaytaradi) */
-  const fetchClients = useCallback(async (): Promise<Client[]> => {
-    const res = await fetch("https://jsonplaceholder.typicode.com/users");
-    if (!res.ok) throw new Error(`Server javobi: ${res.status}`);
+  const loadClients = useCallback(async (query = "") => {
+    setLoading(true);
+    setError(null);
 
-    const data: { id: number; name: string; email: string }[] = await res.json();
-    return data.map((u) => ({
-      id: u.id,
-      name: u.name,
-      email: u.email,
-      status: "Faol" as const,
-    }));
+    try {
+      const res = await fetch(
+        `/api/clients${query ? `?search=${encodeURIComponent(query)}` : ""}`
+      );
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error ?? "Ma'lumotni yuklab bo'lmadi");
+      }
+
+      setClients(data.clients ?? []);
+    } catch (e) {
+      setError(
+        e instanceof Error
+          ? `Ma'lumotni yuklab bo'lmadi: ${e.message}`
+          : "Ma'lumotni yuklab bo'lmadi"
+      );
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  /**
-   * React 19 `set-state-in-effect` qoidasi: effekt ichida setState
-   * chaqirilmasligi kerak — shuning uchun holat yangilanishlari
-   * promise callback'larida bajariladi.
-   */
+  // Boshlang'ich yuklash + qidiruv (server tomonda, kechiktirilgan)
   useEffect(() => {
-    let cancelled = false;
+    const timer = setTimeout(() => {
+      void loadClients(search);
+    }, search ? 300 : 0);
 
-    fetchClients()
-      .then((mapped) => {
-        if (cancelled) return;
-        setClients(mapped);
-        setTotalClients(mapped.length);
-        setError(null);
-        setLoading(false);
-      })
-      .catch((e: unknown) => {
-        if (cancelled) return;
-        setError(
-          e instanceof Error
-            ? `Ma'lumotni yuklab bo'lmadi: ${e.message}`
-            : "Ma'lumotni yuklab bo'lmadi"
-        );
-        setLoading(false);
-      });
+    return () => clearTimeout(timer);
+  }, [search, loadClients]);
 
-    return () => {
-      cancelled = true;
-    };
-  }, [fetchClients, setTotalClients]);
+  // Jami mijozlar soni kontekstga
+  useEffect(() => {
+    setTotalClients(clients.length);
+  }, [clients.length, setTotalClients]);
 
-  /** "Qayta urinish" tugmasi uchun qayta yuklash */
-  const reload = () => {
-    setLoading(true);
-    fetchClients()
-      .then((mapped) => {
-        setClients(mapped);
-        setTotalClients(mapped.length);
-        setError(null);
-        setLoading(false);
-      })
-      .catch((e: unknown) => {
-        setError(
-          e instanceof Error
-            ? `Ma'lumotni yuklab bo'lmadi: ${e.message}`
-            : "Ma'lumotni yuklab bo'lmadi"
-        );
-        setLoading(false);
-      });
-  };
+  const toggleStatus = async (id: number) => {
+    const current = clients.find((c) => c.id === id);
+    if (!current) return;
 
-  const toggleStatus = (id: number) => {
+    const next = current.status === "Faol" ? "Arxiv" : "Faol";
+
     setClients((prev) =>
-      prev.map((c) =>
-        c.id === id ? { ...c, status: c.status === "Faol" ? "Arxiv" : "Faol" } : c
-      )
+      prev.map((c) => (c.id === id ? { ...c, status: next } : c))
     );
+
+    try {
+      const res = await fetch(`/api/clients/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: next }),
+      });
+
+      if (!res.ok) throw new Error("Holatni saqlab bo'lmadi");
+    } catch {
+      setClients((prev) =>
+        prev.map((c) => (c.id === id ? { ...c, status: current.status } : c))
+      );
+      setError("Holatni saqlab bo'lmadi");
+    }
   };
 
-  const deleteClient = (id: number) => {
-    setClients((prev) => {
-      const next = prev.filter((c) => c.id !== id);
-      setTotalClients(next.length);
-      return next;
-    });
-    setToast("Mijoz o'chirildi");
+  const deleteClient = async (id: number) => {
+    const backup = clients;
+    setClients((prev) => prev.filter((c) => c.id !== id));
+
+    try {
+      const res = await fetch(`/api/clients/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("O'chirib bo'lmadi");
+      setToast("Mijoz o'chirildi");
+    } catch {
+      setClients(backup);
+      setError("Mijozni o'chirib bo'lmadi");
+    }
   };
 
-  const addClient = () => {
-    if (!name.trim() || !email.trim()) {
-      setFormError("Ism va email to'ldirilishi shart");
+  const addClient = async () => {
+    setFormError(null);
+
+    if (!name.trim()) {
+      setFormError("Ismni kiriting");
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setFormError("Email manzili noto'g'ri");
       return;
     }
 
-    setFormError(null);
-    setClients((prev) => {
-      const next = [
-        ...prev,
-        { id: prev.length + 1, name, email, status: "Faol" as const },
-      ];
-      setTotalClients(next.length);
-      return next;
-    });
-    setName("");
-    setEmail("");
-    setModalOpen(false);
-    setToast("Yangi mijoz qo'shildi");
+    setSaving(true);
+
+    try {
+      const res = await fetch("/api/clients", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, note }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setFormError(data.error ?? "Saqlab bo'lmadi");
+        setSaving(false);
+        return;
+      }
+
+      setClients((prev) => [data.client, ...prev]);
+      setName("");
+      setEmail("");
+      setNote("");
+      setModalOpen(false);
+      setToast("Yangi mijoz qo'shildi");
+    } catch {
+      setFormError("Serverga ulanib bo'lmadi");
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const filtered = clients.filter((c) =>
-    c.name.toLowerCase().includes(search.trim().toLowerCase())
-  );
+  const archiveAll = async () => {
+    const active = clients.filter((c) => c.status === "Faol");
+    setClients((prev) => prev.map((c) => ({ ...c, status: "Arxiv" })));
+
+    try {
+      await Promise.all(
+        active.map((c) =>
+          fetch(`/api/clients/${c.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: "Arxiv" }),
+          })
+        )
+      );
+      setToast("Barcha mijozlar arxivlandi");
+    } catch {
+      setClients((prev) =>
+        prev.map((c) => {
+          const wasActive = active.find((a) => a.id === c.id);
+          return wasActive ? { ...c, status: "Faol" } : c;
+        })
+      );
+      setError("Arxivlashda xatolik yuz berdi");
+    }
+  };
 
   const columns: TableColumn<Client>[] = [
     { key: "id", label: "ID", accessor: (c) => c.id },
-    { key: "name", label: "Ism", accessor: (c) => c.name },
+    {
+      key: "name",
+      label: "Ism",
+      render: (c) => (
+        <div>
+          <p className="font-medium text-slate-900 dark:text-white">{c.name}</p>
+          {c.note && (
+            <p className="text-xs text-slate-500 dark:text-slate-400">{c.note}</p>
+          )}
+        </div>
+      ),
+    },
     { key: "email", label: "Email", accessor: (c) => c.email },
     {
       key: "status",
@@ -190,10 +241,8 @@ export default function ClientsPage() {
           <Dropdown
             label="Amallar"
             items={[
-              { label: "Ma'lumotni yangilash", onClick: reload },
-              { label: "Hammasini arxivlash", danger: true, onClick: () =>
-                setClients((prev) => prev.map((c) => ({ ...c, status: "Arxiv" as const })))
-              },
+              { label: "Ma'lumotni yangilash", onClick: () => void loadClients(search) },
+              { label: "Hammasini arxivlash", danger: true, onClick: archiveAll },
             ]}
           />
           <Button onClick={() => setModalOpen(true)}>+ Yangi mijoz</Button>
@@ -203,7 +252,7 @@ export default function ClientsPage() {
       {error ? (
         <Card className="border-red-200 dark:border-red-500/30">
           <p className="font-medium text-red-600 dark:text-red-400">{error}</p>
-          <Button className="mt-4" variant="outline" onClick={reload}>
+          <Button className="mt-4" variant="outline" onClick={() => void loadClients(search)}>
             Qayta urinish
           </Button>
         </Card>
@@ -211,7 +260,7 @@ export default function ClientsPage() {
         <Card hover={false} className="overflow-hidden p-0">
           <Table<Client>
             columns={columns}
-            data={filtered}
+            data={clients}
             loading={loading}
             emptyMessage="Mijoz topilmadi"
             onDelete={(row) => deleteClient(row.id)}
@@ -229,7 +278,9 @@ export default function ClientsPage() {
             <Button variant="ghost" onClick={() => setModalOpen(false)}>
               Bekor qilish
             </Button>
-            <Button onClick={addClient}>Saqlash</Button>
+            <Button onClick={addClient} loading={saving}>
+              Saqlash
+            </Button>
           </>
         }
       >
@@ -248,6 +299,12 @@ export default function ClientsPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             error={formError && name.trim() ? formError : undefined}
+          />
+          <Input
+            label="Izoh (ixtiyoriy)"
+            placeholder="Loyiha turi..."
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
           />
         </div>
       </Modal>

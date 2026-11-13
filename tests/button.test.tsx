@@ -45,7 +45,7 @@ describe("Button", () => {
   });
 
   it("fullWidth klassini qo'shadi", () => {
-    render(<Button fullWidth>To'liq</Button>);
+    render(<Button fullWidth>To&apos;liq</Button>);
     expect(screen.getByRole("button").className).toContain("w-full");
   });
 });

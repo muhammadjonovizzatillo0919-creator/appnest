@@ -1,14 +1,11 @@
-import { promises as fs } from "node:fs";
-import path from "node:path";
+﻿import { getDb, nowIso } from "./db";
 import { hashPassword } from "./auth";
 
 /**
- * Foydalanuvchilar saqlanishi.
+ * Foydalanuvchilar saqlanishi вЂ” SQLite.
  *
- * ⚠️ Development uchun JSON fayl (`.data/users.json`).
- * Production'da Vercel'ning fayl tizimi faqat o'qiladigan — shuning uchun
- * `UserStore` interfeysi orqali DB ga almashtirish mumkin:
- * yangi `lib/user-store.ts` yozib, shu interfeysni bajarish kifoya.
+ * `UserStore` interfeysi saqlanadi: kelajakda Postgres/Turso bilan
+ * almashtirish uchun faqat shu interfeysni bajarish yetarli.
  */
 
 export interface StoredUser {
@@ -25,9 +22,6 @@ export interface PublicUser {
   email: string;
 }
 
-const DATA_DIR = path.join(process.cwd(), ".data");
-const USERS_FILE = path.join(DATA_DIR, "users.json");
-
 export interface UserStore {
   findByEmail(email: string): Promise<StoredUser | null>;
   findById(id: string): Promise<StoredUser | null>;
@@ -37,58 +31,69 @@ export interface UserStore {
 
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
-async function readAll(): Promise<StoredUser[]> {
-  try {
-    const raw = await fs.readFile(USERS_FILE, "utf8");
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as StoredUser[]) : [];
-  } catch {
-    return [];
-  }
+interface UserRow {
+  id: string;
+  name: string;
+  email: string;
+  password_hash: string;
+  created_at: string;
 }
 
-async function writeAll(users: StoredUser[]): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  const tmp = `${USERS_FILE}.tmp`;
-  await fs.writeFile(tmp, JSON.stringify(users, null, 2), "utf8");
-  await fs.rename(tmp, USERS_FILE);
-}
+const toStored = (row: UserRow): StoredUser => ({
+  id: row.id,
+  name: row.name,
+  email: row.email,
+  passwordHash: row.password_hash,
+  createdAt: row.created_at,
+});
 
-export const fileUserStore: UserStore = {
+export const sqliteUserStore: UserStore = {
   async findByEmail(email) {
-    const users = await readAll();
-    const target = normalizeEmail(email);
-    return users.find((u) => normalizeEmail(u.email) === target) ?? null;
+    const row = getDb()
+      .prepare("SELECT * FROM users WHERE email = ?")
+      .get(normalizeEmail(email)) as UserRow | undefined;
+    return row ? toStored(row) : null;
   },
 
   async findById(id) {
-    const users = await readAll();
-    return users.find((u) => u.id === id) ?? null;
+    const row = getDb()
+      .prepare("SELECT * FROM users WHERE id = ?")
+      .get(id) as unknown as UserRow | undefined;
+    return row ? toStored(row) : null;
   },
 
   async create({ name, email, password }) {
-    const users = await readAll();
     const normalized = normalizeEmail(email);
 
-    if (users.some((u) => normalizeEmail(u.email) === normalized)) {
-      throw new Error("EMAIL_TAKEN");
-    }
+    const existing = getDb()
+      .prepare("SELECT id FROM users WHERE email = ?")
+      .get(normalized);
+    if (existing) throw new Error("EMAIL_TAKEN");
 
     const user: StoredUser = {
       id: crypto.randomUUID(),
       name: name.trim(),
       email: normalized,
       passwordHash: hashPassword(password),
-      createdAt: new Date().toISOString(),
+      createdAt: nowIso(),
     };
 
-    await writeAll([...users, user]);
+    getDb()
+      .prepare(
+        "INSERT INTO users (id, name, email, password_hash, created_at) VALUES (?, ?, ?, ?, ?)"
+      )
+      .run(user.id, user.name, user.email, user.passwordHash, user.createdAt);
+
     return { id: user.id, name: user.name, email: user.email };
   },
 
   async count() {
-    return (await readAll()).length;
+    const row = getDb()
+      .prepare("SELECT COUNT(*) AS count FROM users")
+      .get() as unknown as { count: number };
+    return row.count;
   },
 };
 
-export const userStore: UserStore = fileUserStore;
+export const userStore: UserStore = sqliteUserStore;
+
