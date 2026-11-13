@@ -4,14 +4,24 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BlockPalette } from "./BlockPalette";
 import { BuilderCanvas } from "./BuilderCanvas";
+import { MobileCanvas } from "./MobileCanvas";
 import { PropertyPanel } from "./PropertyPanel";
 import { Button } from "@/components/core";
 import {
   type BuilderBlock,
   type BuilderLayout,
+  type MobileBlock,
   specToLayout,
   updateBlockProps,
 } from "@/lib/builder";
+import {
+  addMobileBlock,
+  findFreeSlot,
+  findMobileRule,
+  normalizeMobileLayout,
+  removeMobileBlock,
+  webToMobile,
+} from "@/lib/grid";
 
 /**
  * Builder qobig'i — palitra | canvas | property panel.
@@ -28,6 +38,7 @@ export function BuilderShell({ projectId }: { projectId: string }) {
     platform: "web",
     rows: [],
   });
+  const [view, setView] = useState<"web" | "mobile">("web");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -84,12 +95,69 @@ export function BuilderShell({ projectId }: { projectId: string }) {
 
   const selectedBlock = useMemo<BuilderBlock | null>(() => {
     if (!selectedId) return null;
+
+    if (view === "mobile") {
+      return layout.blocks?.find((b) => b.id === selectedId) ?? null;
+    }
+
     for (const row of layout.rows) {
       const found = row.blocks.find((b) => b.id === selectedId);
       if (found) return found;
     }
     return null;
-  }, [layout, selectedId]);
+  }, [layout, selectedId, view]);
+
+  const mobileBlocks = layout.blocks ?? [];
+
+  /* ── Platforma almashtirish ── */
+  const switchView = (next: "web" | "mobile") => {
+    if (next === view) return;
+
+    if (next === "mobile") {
+      // Web layout'dan mobilga o'tkazish
+      const blocks = webToMobile(layout.rows);
+      setLayout((prev) => ({
+        ...prev,
+        platform: "mobile",
+        rows: prev.rows,
+        blocks: normalizeMobileLayout(blocks),
+      }));
+    } else {
+      setLayout((prev) => ({ ...prev, platform: "web" }));
+    }
+
+    setView(next);
+    setSelectedId(null);
+  };
+
+  /* ── Mobil blok qo'shish ── */
+  const addMobile = (component: string) => {
+    const rule = findMobileRule(component);
+    const size = rule?.defaultSize ?? { w: 12, h: 1 };
+    const slot = findFreeSlot(component, mobileBlocks);
+
+    const block: MobileBlock = {
+      id: `m${Date.now().toString(36)}`,
+      component,
+      props: {},
+      grid: slot ?? { x: 0, y: mobileBlocks.length, w: size.w, h: size.h },
+    };
+
+    setLayout((prev) => ({
+      ...prev,
+      platform: "mobile",
+      blocks: normalizeMobileLayout(addMobileBlock(prev.blocks ?? [], block)),
+    }));
+    setSelectedId(block.id);
+  };
+
+  const removeMobile = (blockId: string) => {
+    setLayout((prev) => ({
+      ...prev,
+      blocks: removeMobileBlock(prev.blocks ?? [], blockId),
+    }));
+    if (selectedId === blockId) setSelectedId(null);
+  };
 
   // ── Saqlash ──
   const save = async () => {
@@ -131,7 +199,24 @@ export function BuilderShell({ projectId }: { projectId: string }) {
       const data = await res.json();
 
       if (data.spec) {
-        setLayout(specToLayout(data.spec));
+        const spec = data.spec;
+        if (spec.platform === "mobile") {
+          setLayout({
+            platform: "mobile",
+            rows: [],
+            blocks: normalizeMobileLayout(
+              specToLayout(spec).rows.flatMap((row) =>
+                row.blocks.map((block) => ({
+                  ...block,
+                  grid: { x: 0, y: 0, w: 12, h: 1 },
+                }))
+              )
+            ),
+          });
+          setView("mobile");
+        } else {
+          setLayout(specToLayout(spec));
+        }
       }
 
       setStatus(
@@ -189,6 +274,32 @@ export function BuilderShell({ projectId }: { projectId: string }) {
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Platforma almashtirgich */}
+          <div className="hidden rounded-lg border border-slate-200 p-0.5 sm:flex dark:border-slate-700">
+            <button
+              type="button"
+              onClick={() => switchView("web")}
+              className={`rounded-md px-3 py-1 text-xs font-medium transition ${
+                view === "web"
+                  ? "bg-[#0057FF] text-white"
+                  : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
+              }`}
+            >
+              Web
+            </button>
+            <button
+              type="button"
+              onClick={() => switchView("mobile")}
+              className={`rounded-md px-3 py-1 text-xs font-medium transition ${
+                view === "mobile"
+                  ? "bg-[#0057FF] text-white"
+                  : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
+              }`}
+            >
+              Mobil
+            </button>
+          </div>
+
           {status && (
             <span className="hidden text-xs text-slate-500 sm:inline">{status}</span>
           )}
@@ -221,12 +332,23 @@ export function BuilderShell({ projectId }: { projectId: string }) {
 
         {/* Canvas */}
         <main className="min-h-0 overflow-y-auto">
-          <BuilderCanvas
-            layout={layout}
-            onChange={setLayout}
-            selectedId={selectedId}
-            onSelect={setSelectedId}
-          />
+          {view === "web" ? (
+            <BuilderCanvas
+              layout={layout}
+              onChange={setLayout}
+              selectedId={selectedId}
+              onSelect={setSelectedId}
+            />
+          ) : (
+            <MobileCanvas
+              blocks={mobileBlocks}
+              onChange={(blocks) => setLayout((prev) => ({ ...prev, blocks }))}
+              selectedId={selectedId}
+              onSelect={setSelectedId}
+              onAdd={addMobile}
+              onRemove={removeMobile}
+            />
+          )}
         </main>
 
         {/* Property panel */}

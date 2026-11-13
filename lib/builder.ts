@@ -27,9 +27,25 @@ export interface BuilderRow {
   blocks: BuilderBlock[];
 }
 
+/** Grid katagi (mobil quruvchi uchun) */
+export interface GridCell {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+/** Mobil blok — grid pozisiyasi bilan */
+export interface MobileBlock extends BuilderBlock {
+  grid: GridCell;
+}
+
 export interface BuilderLayout {
   platform: "web" | "mobile";
+  /** Web quruvchi uchun — qatorlar */
   rows: BuilderRow[];
+  /** Mobil quruvchi uchun — grid'dagi bloklar */
+  blocks?: MobileBlock[];
 }
 
 export interface BlockMeta {
