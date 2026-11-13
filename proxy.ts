@@ -10,7 +10,7 @@ import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth";
  * Sessiya yo'q bo'lsa — /login ga yuboriladi (savol saqlanadi).
  */
 
-const PROTECTED = ["/dashboard", "/clients", "/settings"];
+const PROTECTED = ["/dashboard", "/clients", "/settings", "/projects"];
 
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
@@ -36,5 +36,10 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/clients/:path*", "/settings/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/clients/:path*",
+    "/settings/:path*",
+    "/projects/:path*",
+  ],
 };

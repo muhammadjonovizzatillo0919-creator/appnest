@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Button } from "./Button";
 import { ThemeToggle } from "./ThemeToggle";
 import { Dropdown } from "./Dropdown";
 import { useUser } from "@/context/UserContext";
@@ -9,9 +10,13 @@ interface NavbarProps {
   title: string;
   /** Mobil menyuni ochish tugmasi */
   onMenuClick?: () => void;
+  /** Qo'shimcha havolalar (vizual quruvchi uchun) */
+  links?: string[];
+  /** O'ng tomondagi tugma matni */
+  action?: string;
 }
 
-export const Navbar = ({ title, onMenuClick }: NavbarProps) => {
+export const Navbar = ({ title, onMenuClick, links, action }: NavbarProps) => {
   const router = useRouter();
   const { user, logout } = useUser();
 
@@ -41,25 +46,41 @@ export const Navbar = ({ title, onMenuClick }: NavbarProps) => {
         <h1 className="text-lg font-semibold text-slate-800 dark:text-white sm:text-xl">
           {title}
         </h1>
+
+        {links && links.length > 0 && (
+          <div className="ml-4 hidden items-center gap-3 md:flex">
+            {links.map((link) => (
+              <span key={link} className="text-sm text-slate-500 dark:text-slate-400">
+                {link}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="flex items-center gap-3">
-        <ThemeToggle />
-        <Dropdown
-          label={
-            <span className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0057FF] text-xs font-bold text-white">
-                {initial}
-              </span>
-              <span className="hidden sm:inline">{user?.name ?? "Admin"}</span>
-            </span>
-          }
-          items={[
-            { label: "Profil", onClick: () => router.push("/settings") },
-            { label: "Sozlamalar", onClick: () => router.push("/settings") },
-            { label: "Chiqish", onClick: handleLogout, danger: true },
-          ]}
-        />
+        {action ? (
+          <Button size="sm">{action}</Button>
+        ) : (
+          <>
+            <ThemeToggle />
+            <Dropdown
+              label={
+                <span className="flex items-center gap-2">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0057FF] text-xs font-bold text-white">
+                    {initial}
+                  </span>
+                  <span className="hidden sm:inline">{user?.name ?? "Admin"}</span>
+                </span>
+              }
+              items={[
+                { label: "Profil", onClick: () => router.push("/settings") },
+                { label: "Sozlamalar", onClick: () => router.push("/settings") },
+                { label: "Chiqish", onClick: handleLogout, danger: true },
+              ]}
+            />
+          </>
+        )}
       </div>
     </nav>
   );

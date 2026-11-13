@@ -15,6 +15,19 @@ interface Params {
 }
 
 /**
+ * JSON maydonini normalizatsiya qiladi:
+ * - obyekt kelgan bo'lsa → JSON.stringify
+ * - allaqachon JSON satr bo'lsa → o'zgarishsiz
+ * (ikki marta kodlashdan saqlaydi)
+ */
+function toJsonColumn(value: unknown): string | null | undefined {
+  if (value === undefined) return undefined;
+  if (value === null) return null;
+  if (typeof value === "string") return value;
+  return JSON.stringify(value);
+}
+
+/**
  * GET    /api/projects/[id] — loyiha + AI urinishlari
  * PATCH  /api/projects/[id] — yangilash (status: active = faollashtirish)
  * DELETE /api/projects/[id] — o'chirish
@@ -113,9 +126,8 @@ export async function PATCH(req: Request, { params }: Params) {
     brief: body.brief,
     platform: body.platform,
     status: body.status,
-    aiSpec:
-      body.aiSpec === undefined ? undefined : JSON.stringify(body.aiSpec),
-    layout: body.layout === undefined ? undefined : JSON.stringify(body.layout),
+    aiSpec: toJsonColumn(body.aiSpec),
+    layout: toJsonColumn(body.layout),
   });
 
   return NextResponse.json({ project: updated });
