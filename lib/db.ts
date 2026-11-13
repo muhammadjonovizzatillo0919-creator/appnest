@@ -43,6 +43,8 @@ const SCHEMA = `
     name          TEXT NOT NULL,
     email         TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
+    role          TEXT NOT NULL DEFAULT 'user',
+    plan          TEXT NOT NULL DEFAULT 'free',
     created_at    TEXT NOT NULL
   );
 
@@ -63,10 +65,50 @@ const SCHEMA = `
     created_at TEXT NOT NULL
   );
 
-  CREATE INDEX IF NOT EXISTS idx_clients_status ON clients(status);
-  CREATE INDEX IF NOT EXISTS idx_clients_name   ON clients(name);
-  CREATE INDEX IF NOT EXISTS idx_activity_time  ON activity(created_at);
+  CREATE TABLE IF NOT EXISTS projects (
+    id         TEXT PRIMARY KEY,
+    user_id    TEXT NOT NULL,
+    title      TEXT NOT NULL,
+    category   TEXT NOT NULL,
+    brief      TEXT,
+    platform   TEXT NOT NULL DEFAULT 'web',
+    status     TEXT NOT NULL DEFAULT 'draft',
+    ai_spec    TEXT,
+    layout     TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS generation_attempts (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    project_id   TEXT NOT NULL,
+    attempt_no   INTEGER NOT NULL DEFAULT 1,
+    model        TEXT,
+    duration_ms  INTEGER,
+    status       TEXT NOT NULL DEFAULT 'ok',
+    error        TEXT,
+    created_at   TEXT NOT NULL
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_clients_status    ON clients(status);
+  CREATE INDEX IF NOT EXISTS idx_clients_name      ON clients(name);
+  CREATE INDEX IF NOT EXISTS idx_activity_time     ON activity(created_at);
+  CREATE INDEX IF NOT EXISTS idx_projects_user      ON projects(user_id);
+  CREATE INDEX IF NOT EXISTS idx_projects_category ON projects(category);
+  CREATE INDEX IF NOT EXISTS idx_projects_status   ON projects(status);
+  CREATE INDEX IF NOT EXISTS idx_attempts_project  ON generation_attempts(project_id);
 `;
+
+/**
+ * Eski bazalarga ustun qo'shish (ALTER TABLE).
+ * `CREATE TABLE IF NOT EXISTS` mavjud jadvalni o'zgartirmaydi — shuning uchun
+ * yangi ustunlar alohida tekshiriladi.
+ */
+const COLUMN_MIGRATIONS: { table: string; column: string; ddl: string }[] = [
+  { table: "users", column: "role", ddl: "ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'user'" },
+  { table: "users", column: "plan", ddl: "ALTER TABLE users ADD COLUMN plan TEXT NOT NULL DEFAULT 'free'" },
+  { table: "users", column: "created_at", ddl: "ALTER TABLE users ADD COLUMN created_at TEXT" },
+];
 
 /* ── Namuna ma'lumotlar ────────────────────────────────── */
 
@@ -191,6 +233,21 @@ export async function createTursoDb(
 
 let dbPromise: Promise<Db> | null = null;
 
+/** Yetishmayotgan ustunlarni qo'shadi (eski bazalar uchun) */
+async function migrateColumns(db: Db) {
+  for (const migration of COLUMN_MIGRATIONS) {
+    const rows = await db.all<{ name: string }>(
+      `PRAGMA table_info(${migration.table})`
+    );
+    if (rows.some((r) => r.name === migration.column)) continue;
+    try {
+      await db.execute(migration.ddl);
+    } catch {
+      // Ustun allaqachon qo'shilgan bo'lishi mumkin
+    }
+  }
+}
+
 /**
  * Joriy ma'lumotlar bazasi.
  *
@@ -203,11 +260,15 @@ export function getDb(): Promise<Db> {
       const url = process.env.TURSO_DATABASE_URL;
 
       if (url) {
-        return await createTursoDb(url, process.env.TURSO_AUTH_TOKEN);
+        const remote = await createTursoDb(url, process.env.TURSO_AUTH_TOKEN);
+        await migrateColumns(remote);
+        return remote;
       }
 
       const file = path.join(process.cwd(), ".data", "appnest.db");
-      return createSqliteDb(file);
+      const local = createSqliteDb(file);
+      await migrateColumns(local);
+      return local;
     })();
   }
 
