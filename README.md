@@ -163,13 +163,14 @@ appnest/
 > sessiya HMAC imzolangan httpOnly cookie. `/dashboard`, `/clients`, `/settings` — `proxy.ts` bilan
 > himoyalangan.
 >
-> ✅ **Ma'lumotlar bazasi — SQLite.** `node:sqlite` (Node.js'ning o'z ichidagi moduli — qo'shimcha
-> paket yoki native build kerak emas). Jadvalar: `users`, `clients`, `activity`. Fayl: `.data/appnest.db`
-> (avtomatik yaratiladi va namuna ma'lumotlar bilan to'ldiriladi).
+> ✅ **Ma'lumotlar bazasi — SQLite / Turso.** Lokol muhitda `node:sqlite` (Node.js'ning o'z
+> moduli — qo'shimcha paket kerak emas), production'da **Turso/libSQL** (serverless).
+> Tanlash avtomatik: `TURSO_DATABASE_URL` belgilangan bo'lsa — Turso, aks holda lokal fayl.
+> Jadvalar: `users`, `clients`, `activity`. Sxema birinchi ulanishda avtomatik yaratiladi.
 >
-> ⚠️ **Production (Vercel) uchun:** Vercel'da fayl tizimi faqat o'qiladigan — SQLite ma'lumotlari
-> deploy'dan keyin saqlanmaydi. Ikki yo'l: (1) **Postgres/Turso** ulash (store interfeysi
-> `lib/*-store.ts` da tayyor), yoki (2) `lib/db.ts` dagi fayl yo'lini serverless DB ga almashtirish.
+> ⚠️ **Production (Vercel) uchun:** Vercel'da fayl tizimi faqat o'qiladigan — shuning uchun
+> `AUTH_SECRET` va `TURSO_DATABASE_URL` / `TURSO_AUTH_TOKEN` muhit o'zgaruvchilarini
+> **albatta** qo'ying (quyida ko'rsatilgan).
 >
 > ⚠️ **`AUTH_SECRET`** ni Vercel'ga **albatta** qo'ying — aks holda deploy'dan keyin barcha
 > sessiyalar bekor bo'ladi. Kalitni generatsiya qilish:
@@ -181,7 +182,45 @@ appnest/
 
 ---
 
-## Ma'lumotlar bazasi (SQLite)
+## Ma'lumotlar bazasi — SQLite / Turso
+
+Bitta kod, ikkala muhit. Tanlash avtomatik: `TURSO_DATABASE_URL` belgilangan bo'lsa — Turso,
+aks holda lokal fayl.
+
+| Muhit | Nima | Qayerda |
+|---|---|---|
+| **Lokal (development)** | `node:sqlite` — Node.js'ning o'z moduli, **0 qo'shimcha paket** | `.data/appnest.db` |
+| **Production (Vercel)** | **Turso / libSQL** — serverless, bepul tier | Turso cloud |
+
+> Nega Turso? SQL dialekti SQLite bilan **bir xil** — shuning uchun store kodi ikkala
+> muhitda ham o'zgarmasdan ishlaydi. Vercel serverless'da fayl tizimi faqat o'qiladigan
+> bo'lgani uchun oddiy fayl ishlamaydi.
+
+### Turso'ni ulash (3 qadam)
+
+1. **https://turso.tech** → hisob yarating (GitHub bilan)
+2. **Create Database** → `DATABASE_URL` va `Auth Token` oling
+3. `.env` fayliga yozing:
+
+```bash
+TURSO_DATABASE_URL=libsql://your-db-your-org.turso.io
+TURSO_AUTH_TOKEN=your_auth_token
+```
+
+**Sxema avtomatik yaratiladi** — birinchi ulanishda `lib/db.ts` jadvallarni yaratadi va
+bo'sh bo'lsa namuna ma'lumotlarni qo'shadi. Qo'shimcha migratsiya buyrug'i kerak emas.
+
+### Vercel'ga o'tkazish
+
+1. Vercel → Project → **Settings → Environment Variables**
+2. Quyidagilarni qo'shing:
+   - `AUTH_SECRET` — `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+   - `TURSO_DATABASE_URL`
+   - `TURSO_AUTH_TOKEN`
+3. **Settings → Deployment Protection → Disabled** (sayt ommaga ochiq bo'lishi uchun)
+4. Deploy
+
+### Schema
 
 ```sql
 users    (id, name, email UNIQUE, password_hash, created_at)
@@ -189,7 +228,7 @@ clients  (id, name, email, status, note, created_at, updated_at)
 activity (id, client_id, action, created_at)   -- jurnal: create / update / delete
 ```
 
-**API endpoint'lar:**
+### API endpoint'lar
 
 | Metod | Yo'l | Vazifasi |
 |---|---|---|
@@ -201,8 +240,8 @@ activity (id, client_id, action, created_at)   -- jurnal: create / update / dele
 | `POST` | `/api/auth/register` \| `login` \| `logout` | Autentifikatsiya |
 | `GET` | `/api/auth/session` | Joriy foydalanuvchi |
 
-**Ma'lumotlarni tozalash:** `.data/appnest.db` faylini o'chirib, keyin `npm run dev` bilan qayta
-yaratish — baza avtomatik seed qilinadi.
+**Lokal ma'lumotlarni tozalash:** `.data/appnest.db` faylini o'chirib, keyin `npm run dev` bilan
+qayta yaratish — baza avtomatik seed qilinadi.
 
 ---
 

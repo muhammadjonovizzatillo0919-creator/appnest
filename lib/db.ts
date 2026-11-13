@@ -3,108 +3,218 @@ import { mkdirSync } from "node:fs";
 import path from "node:path";
 
 /**
- * Ma'lumotlar bazasi вЂ” SQLite (Node.js'ning o'z ichidagi `node:sqlite`).
+ * Ma'lumotlar bazasi qatlami.
  *
- * вњ… Qo'shimcha paket yoki native build kerak emas
- * вњ… Bir fayl вЂ” nusxalash, ko'chirish oson
- * вњ… ACID transakksiyalar, WAL rejimi
+ * Ikki implementatsiya — bitta interfeys orqali:
  *
- * вљ пёЏ Production (Vercel) da fayl tizimi faqat o'qiladigan вЂ” u yerda
- * Postgres/Turso kerak. `lib/*-store.ts` interfeyslari shu uchun
- * DB almashtirilishi mumkin.
+ * 1. **node:sqlite** ( lokal development) — Node.js'ning o'z moduli,
+ *    qo'shimcha paket yoki native build kerak emas.
+ * 2. **Turso / libSQL** ( production) — serverless, Vercel'da ishlaydi.
+ *    SQL dialekti bir xil (SQLite) — shuning uchun store kodi o'zgarmaydi.
+ *
+ * Tanlash avtomatik: `TURSO_DATABASE_URL` belgilangan bo'lsa — Turso,
+ * aks holda lokal fayl.
  */
 
-const DATA_DIR = path.join(process.cwd(), ".data");
-const DB_FILE = path.join(DATA_DIR, "appnest.db");
-
-let db: DatabaseSync | null = null;
-
-function migrate(database: DatabaseSync) {
-  database.exec(`
-    CREATE TABLE IF NOT EXISTS users (
-      id            TEXT PRIMARY KEY,
-      name          TEXT NOT NULL,
-      email         TEXT NOT NULL UNIQUE,
-      password_hash TEXT NOT NULL,
-      created_at    TEXT NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS clients (
-      id         INTEGER PRIMARY KEY AUTOINCREMENT,
-      name       TEXT NOT NULL,
-      email      TEXT NOT NULL,
-      status     TEXT NOT NULL DEFAULT 'Faol',
-      note       TEXT,
-      created_at TEXT NOT NULL,
-      updated_at TEXT NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS activity (
-      id         INTEGER PRIMARY KEY AUTOINCREMENT,
-      client_id  INTEGER,
-      action     TEXT NOT NULL,
-      created_at TEXT NOT NULL
-    );
-
-    CREATE INDEX IF NOT EXISTS idx_clients_status ON clients(status);
-    CREATE INDEX IF NOT EXISTS idx_clients_name   ON clients(name);
-    CREATE INDEX IF NOT EXISTS idx_activity_time  ON activity(created_at);
-  `);
+export interface Db {
+  all<T = Record<string, unknown>>(
+    sql: string,
+    params?: unknown[]
+  ): Promise<T[]>;
+  get<T = Record<string, unknown>>(
+    sql: string,
+    params?: unknown[]
+  ): Promise<T | undefined>;
+  run(
+    sql: string,
+    params?: unknown[]
+  ): Promise<{ lastInsertRowid: number; rowsAffected: number }>;
+  execute(sql: string): Promise<void>;
+  close(): void;
 }
 
-/** Ma'lumotlar bazasini ochadi (bir marta) */
-export function getDb(): DatabaseSync {
-  if (db) return db;
+export const nowIso = () => new Date().toISOString();
 
-  mkdirSync(DATA_DIR, { recursive: true });
+/* ── Schema ─────────────────────────────────────────────── */
 
-  db = new DatabaseSync(DB_FILE);
+const SCHEMA = `
+  CREATE TABLE IF NOT EXISTS users (
+    id            TEXT PRIMARY KEY,
+    name          TEXT NOT NULL,
+    email         TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    created_at    TEXT NOT NULL
+  );
 
-  // WAL вЂ” o'qish va yozish parallel ishlaydi
+  CREATE TABLE IF NOT EXISTS clients (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    name       TEXT NOT NULL,
+    email      TEXT NOT NULL,
+    status     TEXT NOT NULL DEFAULT 'Faol',
+    note       TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS activity (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    client_id  INTEGER,
+    action     TEXT NOT NULL,
+    created_at TEXT NOT NULL
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_clients_status ON clients(status);
+  CREATE INDEX IF NOT EXISTS idx_clients_name   ON clients(name);
+  CREATE INDEX IF NOT EXISTS idx_activity_time  ON activity(created_at);
+`;
+
+/* ── Namuna ma'lumotlar ────────────────────────────────── */
+
+const SEED_CLIENTS: [string, string, string, string][] = [
+  ["Alisher Karimov", "alisher@company.uz", "Faol", "Korporativ sayt — 2026"],
+  ["Dilnoza Rustamova", "dilnoza@company.uz", "Faol", "Brend identifikatsiyasi"],
+  ["Sardor Tursunov", "sardor@company.uz", "Arxiv", "Loyihani yopdi"],
+  ["Nilufar Aliyeva", "nilufar@company.uz", "Faol", "UX audit"],
+  ["Javlon Ergashev", "javlon@company.uz", "Faol", "Dashboard ishga tushdi"],
+];
+
+/* ── node:sqlite implementatsiyasi ──────────────────────── */
+
+export function createSqliteDb(file: string): Db {
+  mkdirSync(path.dirname(file), { recursive: true });
+
+  const db = new DatabaseSync(file);
   db.exec("PRAGMA journal_mode = WAL;");
   db.exec("PRAGMA foreign_keys = ON;");
   db.exec("PRAGMA busy_timeout = 5000;");
+  db.exec(SCHEMA);
 
-  migrate(db);
-  seedIfEmpty(db);
+  const count = db.prepare("SELECT COUNT(*) AS count FROM clients").get() as unknown as {
+    count: number;
+  };
 
-  return db;
+  if (count.count === 0) {
+    const now = nowIso();
+    const insert = db.prepare(
+      "INSERT INTO clients (name, email, status, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)"
+    );
+    for (const [name, email, status, note] of SEED_CLIENTS) {
+      insert.run(name, email, status, note, now, now);
+    }
+  }
+
+  return {
+    async all<T>(sql: string, params: unknown[] = []) {
+      return db.prepare(sql).all(...(params as never[])) as unknown as T[];
+    },
+    async get<T>(sql: string, params: unknown[] = []) {
+      return db.prepare(sql).get(...(params as never[])) as unknown as T | undefined;
+    },
+    async run(sql: string, params: unknown[] = []) {
+      const result = db.prepare(sql).run(...(params as never[]));
+      return {
+        lastInsertRowid: Number(result.lastInsertRowid),
+        rowsAffected: Number(result.changes),
+      };
+    },
+    async execute(sql: string) {
+      db.exec(sql);
+    },
+    close() {
+      db.close();
+    },
+  };
 }
 
-/** Test uchun: xotiradagi (`:memory:`) baza */
-export function createMemoryDb(): DatabaseSync {
-  const memory = new DatabaseSync(":memory:");
-  memory.exec("PRAGMA foreign_keys = ON;");
-  migrate(memory);
-  return memory;
+/** Test uchun: xotiradagi baza */
+export function createMemoryDb(): Db {
+  return createSqliteDb(":memory:");
 }
 
-/** Baza bo'sh bo'lsa namuna ma'lumotlar bilan to'ldiradi */
-function seedIfEmpty(database: DatabaseSync) {
-  const row = database
-    .prepare("SELECT COUNT(*) AS count FROM clients")
-    .get() as unknown as { count: number };
+/* ── Turso / libSQL implementatsiyasi ───────────────────── */
 
-  if (row.count > 0) return;
-
-  const now = new Date().toISOString();
-  const insert = database.prepare(
-    "INSERT INTO clients (name, email, status, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)"
+export async function createTursoDb(
+  url: string,
+  authToken?: string
+): Promise<Db> {
+  const { createClient } = await import("@libsql/client");
+  const client = createClient(
+    authToken ? { url, authToken } : { url }
   );
 
-  const samples: [string, string, string, string][] = [
-    ["Alisher Karimov", "alisher@company.uz", "Faol", "Korporativ sayt вЂ” 2026"],
-    ["Dilnoza Rustamova", "dilnoza@company.uz", "Faol", "Brend identifikatsiyasi"],
-    ["Sardor Tursunov", "sardor@company.uz", "Arxiv", "Loyihani yopdi"],
-    ["Nilufar Aliyeva", "nilufar@company.uz", "Faol", "UX audit"],
-    ["Javlon Ergashev", "javlon@company.uz", "Faol", "Dashboard ishga tushdi"],
-  ];
-
-  for (const [name, email, status, note] of samples) {
-    insert.run(name, email, status, note, now, now);
+  // Schema — bir necha statementni alohida bajarish kerak
+  for (const statement of SCHEMA.split(";").map((s) => s.trim()).filter(Boolean)) {
+    await client.execute(statement);
   }
+
+  const countRow = await client.execute("SELECT COUNT(*) AS count FROM clients");
+  const count = Number(
+    (countRow.rows[0] as unknown as { count: number }).count
+  );
+
+  if (count === 0) {
+    const now = nowIso();
+    for (const [name, email, status, note] of SEED_CLIENTS) {
+      await client.execute({
+        sql: "INSERT INTO clients (name, email, status, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
+        args: [name, email, status, note, now, now],
+      });
+    }
+  }
+
+  return {
+    async all<T>(sql: string, params: unknown[] = []) {
+      const result = await client.execute({ sql, args: params as never[] });
+      return result.rows as unknown as T[];
+    },
+    async get<T>(sql: string, params: unknown[] = []) {
+      const result = await client.execute({ sql, args: params as never[] });
+      return result.rows[0] as unknown as T | undefined;
+    },
+    async run(sql: string, params: unknown[] = []) {
+      const result = await client.execute({ sql, args: params as never[] });
+      return {
+        lastInsertRowid: Number(result.lastInsertRowid ?? 0),
+        rowsAffected: Number(result.rowsAffected ?? 0),
+      };
+    },
+    async execute(sql: string) {
+      await client.execute(sql);
+    },
+    close() {
+      client.close();
+    },
+  };
 }
 
-/** Joriy vaqt (ISO) */
-export const nowIso = () => new Date().toISOString();
+/* ── Global obyekt ─────────────────────────────────────── */
 
+let dbPromise: Promise<Db> | null = null;
+
+/**
+ * Joriy ma'lumotlar bazasi.
+ *
+ * - `TURSO_DATABASE_URL` belgilangan → Turso (production)
+ * - Aks holda → lokal `.data/appnest.db` fayli (development)
+ */
+export function getDb(): Promise<Db> {
+  if (!dbPromise) {
+    dbPromise = (async () => {
+      const url = process.env.TURSO_DATABASE_URL;
+
+      if (url) {
+        return await createTursoDb(url, process.env.TURSO_AUTH_TOKEN);
+      }
+
+      const file = path.join(process.cwd(), ".data", "appnest.db");
+      return createSqliteDb(file);
+    })();
+  }
+
+  return dbPromise;
+}
+
+/** Turso moduli faqat serverda ishlatiladi — testlarda kerak emas */
+export function isRemoteDb(): boolean {
+  return Boolean(process.env.TURSO_DATABASE_URL);
+}

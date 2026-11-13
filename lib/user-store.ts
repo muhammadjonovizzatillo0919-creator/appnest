@@ -1,10 +1,10 @@
-﻿import { getDb, nowIso } from "./db";
+﻿import { getDb, nowIso, type Db } from "./db";
 import { hashPassword } from "./auth";
 
 /**
- * Foydalanuvchilar saqlanishi вЂ” SQLite.
+ * Foydalanuvchilar saqlanishi.
  *
- * `UserStore` interfeysi saqlanadi: kelajakda Postgres/Turso bilan
+ * `UserStore` interfeysi saqlanadi: kelajakda boshqa DB bilan
  * almashtirish uchun faqat shu interfeysni bajarish yetarli.
  */
 
@@ -47,53 +47,75 @@ const toStored = (row: UserRow): StoredUser => ({
   createdAt: row.created_at,
 });
 
-export const sqliteUserStore: UserStore = {
+export function createUserStore(db: Db): UserStore {
+  return {
+    async findByEmail(email) {
+      const row = await db.get<UserRow>(
+        "SELECT * FROM users WHERE email = ?",
+        [normalizeEmail(email)]
+      );
+      return row ? toStored(row) : null;
+    },
+
+    async findById(id) {
+      const row = await db.get<UserRow>("SELECT * FROM users WHERE id = ?", [id]);
+      return row ? toStored(row) : null;
+    },
+
+    async create({ name, email, password }) {
+      const normalized = normalizeEmail(email);
+
+      const existing = await db.get<{ id: string }>(
+        "SELECT id FROM users WHERE email = ?",
+        [normalized]
+      );
+      if (existing) throw new Error("EMAIL_TAKEN");
+
+      const user: StoredUser = {
+        id: crypto.randomUUID(),
+        name: name.trim(),
+        email: normalized,
+        passwordHash: hashPassword(password),
+        createdAt: nowIso(),
+      };
+
+      await db.run(
+        "INSERT INTO users (id, name, email, password_hash, created_at) VALUES (?, ?, ?, ?, ?)",
+        [user.id, user.name, user.email, user.passwordHash, user.createdAt]
+      );
+
+      return { id: user.id, name: user.name, email: user.email };
+    },
+
+    async count() {
+      const row = await db.get<{ count: number }>(
+        "SELECT COUNT(*) AS count FROM users"
+      );
+      return Number(row?.count ?? 0);
+    },
+  };
+}
+
+let storePromise: Promise<UserStore> | null = null;
+
+function getStore(): Promise<UserStore> {
+  if (!storePromise) {
+    storePromise = getDb().then((db) => createUserStore(db));
+  }
+  return storePromise;
+}
+
+export const userStore: UserStore = {
   async findByEmail(email) {
-    const row = getDb()
-      .prepare("SELECT * FROM users WHERE email = ?")
-      .get(normalizeEmail(email)) as UserRow | undefined;
-    return row ? toStored(row) : null;
+    return (await getStore()).findByEmail(email);
   },
-
   async findById(id) {
-    const row = getDb()
-      .prepare("SELECT * FROM users WHERE id = ?")
-      .get(id) as unknown as UserRow | undefined;
-    return row ? toStored(row) : null;
+    return (await getStore()).findById(id);
   },
-
-  async create({ name, email, password }) {
-    const normalized = normalizeEmail(email);
-
-    const existing = getDb()
-      .prepare("SELECT id FROM users WHERE email = ?")
-      .get(normalized);
-    if (existing) throw new Error("EMAIL_TAKEN");
-
-    const user: StoredUser = {
-      id: crypto.randomUUID(),
-      name: name.trim(),
-      email: normalized,
-      passwordHash: hashPassword(password),
-      createdAt: nowIso(),
-    };
-
-    getDb()
-      .prepare(
-        "INSERT INTO users (id, name, email, password_hash, created_at) VALUES (?, ?, ?, ?, ?)"
-      )
-      .run(user.id, user.name, user.email, user.passwordHash, user.createdAt);
-
-    return { id: user.id, name: user.name, email: user.email };
+  async create(input) {
+    return (await getStore()).create(input);
   },
-
   async count() {
-    const row = getDb()
-      .prepare("SELECT COUNT(*) AS count FROM users")
-      .get() as unknown as { count: number };
-    return row.count;
+    return (await getStore()).count();
   },
 };
-
-export const userStore: UserStore = sqliteUserStore;
-
