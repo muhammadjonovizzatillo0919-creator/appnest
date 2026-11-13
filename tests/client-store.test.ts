@@ -1,10 +1,11 @@
+﻿// @vitest-environment node
 import { describe, expect, it } from "vitest";
 import { createMemoryDb } from "@/lib/db";
 import { createClientStore } from "@/lib/client-store";
 
 /**
  * Mijozlar ombori testlari.
- * Xotiradagi (`:memory:`) baza ishlatiladi — faylga tegilmaydi.
+ * Xotiradagi (`:memory:`) baza ishlatiladi вЂ” faylga tegilmaydi.
  */
 
 function setup() {
@@ -147,3 +148,4 @@ describe("client store", () => {
     expect(rows.map((r) => r.action)).toEqual(["create", "update", "delete"]);
   });
 });
+

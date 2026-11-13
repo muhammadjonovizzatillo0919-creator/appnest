@@ -8,7 +8,7 @@ on:
 
 jobs:
   quality:
-    name: Lint · Test · Build
+    name: Tip · Lint · Test · Build
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -19,20 +19,26 @@ jobs:
       - name: Node.js o'rnatish
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          # node:sqlite (lokal DB) — Node 22.13+ da flag'siz ishlaydi.
+          # Mahalliy muhit bilan bir xil versiyani ishlatish uchun 24.
+          node-version: 24
           cache: npm
 
       - name: Bog'liqliklarni o'rnatish
         run: npm ci
 
       - name: Tip tekshiruvi
-        run: npx tsc --noEmit
+        run: npm run typecheck
 
       - name: Lint
         run: npm run lint
 
       - name: Testlar
-        run: npm test
+        run: npm test -- --reporter=verbose 2>&1 | tee test-output.txt
+
+      - name: Test natijalarini ko'rsatish (xato bo'lsa)
+        if: failure()
+        run: cat test-output.txt
 
       - name: Production build
         run: npm run build

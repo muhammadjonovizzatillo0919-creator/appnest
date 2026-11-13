@@ -1,3 +1,4 @@
+﻿// @vitest-environment node
 import { describe, expect, it } from "vitest";
 import {
   createSessionToken,
@@ -60,7 +61,8 @@ describe("sessiya tokeni", () => {
     payload.exp = Date.now() - 1000;
     const forged = `${Buffer.from(JSON.stringify(payload)).toString("base64url")}.${signature}`;
 
-    // Imzo mos kelmaydi → rad etiladi
+    // Imzo mos kelmaydi в†’ rad etiladi
     expect(verifySessionToken(forged)).toBeNull();
   });
 });
+

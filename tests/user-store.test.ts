@@ -1,9 +1,10 @@
+﻿// @vitest-environment node
 import { describe, expect, it } from "vitest";
 import { createMemoryDb } from "@/lib/db";
 import { createUserStore } from "@/lib/user-store";
 
 /**
- * Foydalanuvchilar ombori — xotiradagi bazada.
+ * Foydalanuvchilar ombori вЂ” xotiradagi bazada.
  */
 function setup() {
   const db = createMemoryDb();
@@ -96,3 +97,4 @@ describe("user store (SQLite)", () => {
     expect(await store.count()).toBe(before + 1);
   });
 });
+
