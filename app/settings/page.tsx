@@ -23,7 +23,7 @@ function ProfileForm({ user }: { user: SessionUser }) {
       return;
     }
     setEmailError(undefined);
-    setUser({ id: user.id, name, email });
+    setUser({ ...user, name, email });
     setSaved(true);
     setToast("Ma'lumotlar muvaffaqiyatli saqlandi");
   };

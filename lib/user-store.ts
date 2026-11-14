@@ -36,6 +36,8 @@ export interface UserStore {
   setRole(id: string, role: UserRole): Promise<PublicUser | null>;
   count(): Promise<number>;
   countByPlan(plan: Plan): Promise<number>;
+  /** Barcha foydalanuvchilar (admin paneli uchun) */
+  listAll(): Promise<PublicUser[]>;
 }
 
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
@@ -171,6 +173,13 @@ export function createUserStore(db: Db): UserStore {
       );
       return Number(row?.count ?? 0);
     },
+
+    async listAll() {
+      const rows = await db.all<UserRow>(
+        "SELECT * FROM users ORDER BY created_at DESC, name ASC"
+      );
+      return rows.map(toPublic);
+    },
   };
 }
 
@@ -207,5 +216,8 @@ export const userStore: UserStore = {
   },
   async countByPlan(plan) {
     return (await getStore()).countByPlan(plan);
+  },
+  async listAll() {
+    return (await getStore()).listAll();
   },
 };

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AppLogo } from "./AppLogo";
+import { useUser } from "@/context/UserContext";
 
 interface SidebarProps {
   /** Mobil menyuda ochiq/closed holati */
@@ -18,13 +19,26 @@ const NAV_ITEMS = [
   { href: "/settings", label: "Sozlamalar", icon: "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" },
 ];
 
+const ADMIN_ITEM = {
+  href: "/admin",
+  label: "Super Admin",
+  icon: "M12 2l3 6 6 1-4 4 1 6-6-3-6 3 1-6-4-6 6 1z",
+};
+
 export const Sidebar = ({ open = false, onClose, className = "" }: SidebarProps) => {
   const pathname = usePathname();
+  const { user } = useUser();
 
   const isActive = (href: string) =>
     href === "/dashboard"
       ? pathname === "/dashboard"
       : pathname.startsWith(href);
+
+  // Admin bo'limi faqat super admin uchun
+  const items =
+    user?.role === "superadmin"
+      ? [...NAV_ITEMS, ADMIN_ITEM]
+      : NAV_ITEMS;
 
   return (
     <>
@@ -57,7 +71,7 @@ export const Sidebar = ({ open = false, onClose, className = "" }: SidebarProps)
         </div>
 
         <nav className="flex flex-col gap-1">
-          {NAV_ITEMS.map((item) => (
+          {items.map((item) => (
             <Link
               key={item.href}
               href={item.href}

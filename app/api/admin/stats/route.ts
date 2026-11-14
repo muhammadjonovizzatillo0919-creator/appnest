@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { projectStore } from "@/lib/project-store";
 import { userStore } from "@/lib/user-store";
+import { projectStore } from "@/lib/project-store";
 import { getCurrentUser, unauthorized, forbidden } from "@/lib/session";
 
 export const runtime = "nodejs";
@@ -21,7 +21,7 @@ export async function GET() {
   const stats = await projectStore.adminStats();
   const projects = await projectStore.listAll();
 
-  // Har bir loyiha uchun urinishlar soni
+  // Loyihalar + egasi + urinishlar
   const projectsWithAttempts = await Promise.all(
     projects.map(async (project) => {
       const attempts = await projectStore.attempts(project.id);
@@ -33,7 +33,14 @@ export async function GET() {
         category: project.category,
         platform: project.platform,
         status: project.status,
-        owner: owner ? { name: owner.name, email: owner.email, plan: owner.plan } : null,
+        owner: owner
+          ? {
+              id: owner.id,
+              name: owner.name,
+              email: owner.email,
+              plan: owner.plan,
+            }
+          : null,
         attempts: attempts.length,
         failedAttempts: attempts.filter((a) => a.status === "error").length,
         totalDurationMs: attempts.reduce((sum, a) => sum + (a.durationMs ?? 0), 0),
@@ -42,5 +49,8 @@ export async function GET() {
     })
   );
 
-  return NextResponse.json({ stats, projects: projectsWithAttempts });
+  // Foydalanuvchilar ro'yxati
+  const users = await userStore.listAll();
+
+  return NextResponse.json({ stats, projects: projectsWithAttempts, users });
 }
