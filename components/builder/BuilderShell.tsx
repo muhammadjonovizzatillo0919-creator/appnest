@@ -43,9 +43,11 @@ export function BuilderShell({ projectId }: { projectId: string }) {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [publishing, setPublishing] = useState(false);
   const [status, setStatus] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [projectTitle, setProjectTitle] = useState("");
+  const [projectStatus, setProjectStatus] = useState<string>("draft");
 
   // ── Loyihani yuklash ──
   useEffect(() => {
@@ -63,6 +65,7 @@ export function BuilderShell({ projectId }: { projectId: string }) {
         }
 
         setProjectTitle(project.title);
+        setProjectStatus(project.status);
 
         // Saqlangan layout bo'lsa — uni ishlatamiz, yo'q bo'lsa AI spetsifikatsiyasidan
         if (project.layout) {
@@ -239,6 +242,40 @@ export function BuilderShell({ projectId }: { projectId: string }) {
     setLayout((prev) => updateBlockProps(prev, selectedId, props));
   };
 
+  /* ── Publish (faqat PRO) ── */
+  const publish = async () => {
+    setPublishing(true);
+    setError(null);
+    setStatus("Yayqlanmoqda...");
+
+    try {
+      const res = await fetch(`/api/projects/${projectId}/publish`, {
+        method: "POST",
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error ?? "Yayqlab bo'lmadi");
+        setStatus("");
+        return;
+      }
+
+      setStatus("Yayqlandi ✓");
+      setProjectStatus(data.project.status);
+      setTimeout(() => setStatus(""), 2500);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Yayqlab bo'lmadi");
+      setStatus("");
+    } finally {
+      setPublishing(false);
+    }
+  };
+
+  /* ── Eksport (ZIP) ── */
+  const exportZip = () => {
+    window.location.href = `/api/projects/${projectId}/export`;
+  };
+
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-slate-50 text-sm text-slate-500 dark:bg-[#0b1120]">
@@ -303,6 +340,30 @@ export function BuilderShell({ projectId }: { projectId: string }) {
           {status && (
             <span className="hidden text-xs text-slate-500 sm:inline">{status}</span>
           )}
+
+          <a
+            href={`/api/projects/${projectId}/preview`}
+            target="_blank"
+            rel="noreferrer"
+            className="hidden rounded-lg border border-white/15 px-3 py-1.5 text-xs text-slate-300 transition hover:bg-white/10 sm:inline-block"
+          >
+            Preview
+          </a>
+
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={publish}
+            loading={publishing}
+            disabled={projectStatus === "active"}
+          >
+            {projectStatus === "active" ? "Faollashtirilgan ✓" : "Yayqlash"}
+          </Button>
+
+          <Button size="sm" variant="outline" onClick={exportZip}>
+            ⬇ ZIP
+          </Button>
+
           <Button
             size="sm"
             variant="outline"

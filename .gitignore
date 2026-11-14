@@ -51,3 +51,7 @@ server-log.txt
 # test loglari
 test-log.txt
 install-log.txt
+
+# eksport sinovi
+test-unzip/
+test-export.zip
