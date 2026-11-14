@@ -5,7 +5,13 @@ import {
   type AppSpec,
   type Platform,
 } from "./ai-generator";
-import { MODELS, ensureContextCache, getClient, hasGeminiKey } from "./gemini";
+import {
+  MODELS,
+  MODEL_CHAIN,
+  ensureContextCache,
+  getClient,
+  hasGeminiKey,
+} from "./gemini";
 
 /**
  * Ilova spetsifikatsiyasini generatsiya qilish.
@@ -162,7 +168,8 @@ export async function generateAppSpec(input: {
   }
 
   const ai = getClient();
-  const model = input.brief && input.brief.length > 200 ? MODELS.deep : MODELS.fast;
+  const useDeep = Boolean(input.brief && input.brief.length > 200);
+  const chain = MODEL_CHAIN[useDeep ? "deep" : "fast"];
 
   const categoryList = CATEGORIES.map((c) => `- ${c.key}: ${c.label} — ${c.summary}`).join("\n");
   const known = CATEGORIES.find((c) => c.key === input.category.trim().toLowerCase());
@@ -185,49 +192,57 @@ ${platform}
 
 Design the app specification now. JSON only.`;
 
-  try {
-    const cacheName = await ensureContextCache(ai, model, SYSTEM_PROMPT);
+  let lastError: unknown = null;
+  let usedModel: string = chain[0];
+  for (const candidate of chain) {
+    try {
+      const cacheName = await ensureContextCache(ai, candidate, SYSTEM_PROMPT);
 
-    const response = await ai.models.generateContent({
-      model,
-      contents: prompt,
-      config: {
-        systemInstruction: SYSTEM_PROMPT,
-        responseMimeType: "application/json",
-        responseSchema: RESPONSE_SCHEMA as never,
-        ...(cacheName ? { cachedContent: cacheName } : {}),
-      },
-    });
+      const response = await ai.models.generateContent({
+        model: candidate,
+        contents: prompt,
+        config: {
+          systemInstruction: SYSTEM_PROMPT,
+          responseMimeType: "application/json",
+          responseSchema: RESPONSE_SCHEMA as never,
+          ...(cacheName ? { cachedContent: cacheName } : {}),
+        },
+      });
 
-    const raw = response.text;
-    if (!raw) throw new Error("AI bo'sh javob qaytardi");
+      const raw = response.text;
+      if (!raw) throw new Error("AI bo'sh javob qaytardi");
 
-    const parsed = JSON.parse(raw) as unknown;
-    const validation = validateAppSpec(parsed);
+      const parsed = JSON.parse(raw) as unknown;
+      const validation = validateAppSpec(parsed);
 
-    if (!validation.valid) {
-      throw new Error(`AI natijasi to'g'ri emas: ${validation.errors.join(", ")}`);
+      if (!validation.valid) {
+        throw new Error(`AI natijasi to'g'ri emas: ${validation.errors.join(", ")}`);
+      }
+
+      const spec = parsed as AppSpec;
+
+      return {
+        spec: { ...spec, generatedBy: "gemini" },
+        generatedBy: "gemini",
+        model: candidate,
+        durationMs: Date.now() - startedAt,
+      };
+    } catch (error) {
+      lastError = error;
+      usedModel = candidate;
+      // Keyingi modelni sinab ko'ramiz
     }
-
-    const spec = parsed as AppSpec;
-
-    return {
-      spec: { ...spec, generatedBy: "gemini" },
-      generatedBy: "gemini",
-      model,
-      durationMs: Date.now() - startedAt,
-    };
-  } catch (error) {
-    // Xato bo'lsa — shablon bilan ishlaymiz, foydalanuvchi hech narsaga olmaydi
-    return {
-      spec: buildTemplateSpec({ ...input, platform }),
-      generatedBy: "template",
-      model,
-      durationMs: Date.now() - startedAt,
-      error:
-        error instanceof Error
-          ? `AI ishlamadi (${error.message}) — shablon asosida spec yaratildi.`
-          : "AI ishlamadi — shablon asosida spec yaratildi.",
-    };
   }
+
+  // Barcha modellar ishlamadi — shablon bilan qaytaramiz
+  return {
+    spec: buildTemplateSpec({ ...input, platform }),
+    generatedBy: "template",
+    model: usedModel,
+    durationMs: Date.now() - startedAt,
+    error:
+      lastError instanceof Error
+        ? `AI ishlamadi (${lastError.message}) — shablon asosida spec yaratildi.`
+        : "AI ishlamadi — shablon asosida spec yaratildi.",
+  };
 }

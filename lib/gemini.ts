@@ -8,11 +8,26 @@ import { GoogleGenAI } from "@google/genai";
  */
 
 export const MODELS = {
-  fast: "gemini-2.5-flash",
-  deep: "gemini-2.5-pro",
+  fast: "gemini-3.5-flash",
+  deep: "gemini-3.1-pro-preview",
 } as const;
 
 export type ModelName = (typeof MODELS)[keyof typeof MODELS];
+
+/**
+ * Model zanjiri — birinchi ishlamagan modelni keyingisiga o'tamiz.
+ *
+ * Sabablar:
+ * - Ba'zi model yangi foydalanuvchilarga berilmaydi (404)
+ * - Preview modellar vaqtincha band bo'lishi mumkin (503)
+ * - Bepul kvota daqiqasiga limit qo'yadi (429)
+ *
+ * Shuning uchun har bir chaqiruvda zanjir bo'ylab sinab ko'ramiz.
+ */
+export const MODEL_CHAIN: Record<"fast" | "deep", string[]> = {
+  fast: ["gemini-3.5-flash", "gemini-3.6-flash", "gemini-3.8-flash"],
+  deep: ["gemini-3.1-pro-preview", "gemini-3.5-flash", "gemini-3.6-flash"],
+};
 
 let client: GoogleGenAI | null = null;
 

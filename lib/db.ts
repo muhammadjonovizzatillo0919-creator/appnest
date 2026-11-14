@@ -122,9 +122,27 @@ const SEED_CLIENTS: [string, string, string, string][] = [
 
 /* ── node:sqlite implementatsiyasi ──────────────────────── */
 
+/**
+ * SQLite bazasini ochadi.
+ *
+ * ⚠️ Vercel serverless muhitida fayl tizimi **faqat o'qiladigan** — `.data/` papkasini
+ * yaratib bo'lmaydi. Shu holatda biz xotiradagi (`:memory:`) bazaga o'tamiz:
+ * sayt ishlaydi, lekin ma'lumotlar saqlanmaydi.
+ *
+ * Doimiy saqlanish uchun **Turso** (yoki Postgres) ulanish kerak:
+ * `TURSO_DATABASE_URL` + `TURSO_AUTH_TOKEN` muhit o'zgaruvchilarini qo'ying.
+ */
 export function createSqliteDb(file: string): Db {
-  mkdirSync(path.dirname(file), { recursive: true });
+  try {
+    mkdirSync(path.dirname(file), { recursive: true });
+    return openSqliteFile(file);
+  } catch {
+    // Faqat o'qiladigan fayl tizimi (Vercel) — xotirada ishlaymiz
+    return openSqliteFile(":memory:");
+  }
+}
 
+function openSqliteFile(file: string): Db {
   const db = new DatabaseSync(file);
   db.exec("PRAGMA journal_mode = WAL;");
   db.exec("PRAGMA foreign_keys = ON;");
@@ -170,7 +188,7 @@ export function createSqliteDb(file: string): Db {
 
 /** Test uchun: xotiradagi baza */
 export function createMemoryDb(): Db {
-  return createSqliteDb(":memory:");
+  return openSqliteFile(":memory:");
 }
 
 /* ── Turso / libSQL implementatsiyasi ───────────────────── */
