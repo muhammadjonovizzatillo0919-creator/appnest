@@ -1,5 +1,6 @@
 ﻿import { getDb, nowIso, type Db } from "./db";
 import { hashPassword } from "./auth";
+import { ensureEnvLoaded } from "./env";
 import type { Plan, UserRole } from "./entitlements";
 
 /**
@@ -42,6 +43,37 @@ export interface UserStore {
 
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
+/**
+ * Avtomatik superadmin.
+ *
+ * `SUPERADMIN_EMAILS` muhit o'zgaruvchisida ko'rsatilgan email bilan
+ * ro'yxatdan o'tgan foydalanuvchi darhol superadmin bo'ladi.
+ *
+ * Bu production'da DB'ga to'g'ridan-to'g'ri kirishsiz admin yaratishning
+ * xavfsiz yo'li — foydalanuvchi ro'yxatdan o'tkanda roli server tomonda
+ * belgilanadi.
+ *
+ * Misol: SUPERADMIN_EMAILS=admin@appnest.uz,boss@appnest.uz
+ */
+function superadminEmails(): string[] {
+  ensureEnvLoaded();
+  const raw = process.env.SUPERADMIN_EMAILS ?? "";
+  return raw
+    .split(",")
+    .map((e) => normalizeEmail(e))
+    .filter(Boolean);
+}
+
+/**
+ * Yangi foydalanuvchining roli.
+ *
+ * 1. `SUPERADMIN_EMAILS` ro'yxatidagi email → superadmin
+ * 2. Butun bazada foydalanuvchi yo'q bo'lsa (birinchi ro'yxatdan o'tish) → superadmin
+ * 3. Aks holda → oddiy foydalanuvchi
+ *
+ * 2-band bootstrap uchun: yangi o'rnatilgan tizimda birinchi foydalanuvchi
+ * administrator bo'lishi kerak — aks holda admin panelga hech kim kirolmaydi.
+ */
 interface UserRow {
   id: string;
   name: string;
@@ -74,6 +106,23 @@ const toPublic = (row: UserRow): PublicUser => {
 };
 
 export function createUserStore(db: Db): UserStore {
+  /**
+   * Yangi foydalanuvchining roli:
+   * 1. `SUPERADMIN_EMAILS` ro'yxatidagi email → superadmin
+   * 2. Bazada foydalanuvchi yo'q bo'lsa (birinchi ro'yxatdan o'tish) → superadmin
+   * 3. Aks holda → oddiy foydalanuvchi
+   */
+  const roleForEmail = async (email: string): Promise<UserRole> => {
+    if (superadminEmails().includes(normalizeEmail(email))) {
+      return "superadmin";
+    }
+
+    const row = await db.get<{ count: number }>(
+      "SELECT COUNT(*) AS count FROM users"
+    );
+    return Number(row?.count ?? 0) === 0 ? "superadmin" : "user";
+  };
+
   return {
     async findByEmail(email) {
       const row = await db.get<UserRow>(
@@ -97,12 +146,14 @@ export function createUserStore(db: Db): UserStore {
       );
       if (existing) throw new Error("EMAIL_TAKEN");
 
+      const role = await roleForEmail(normalized);
+
       const user: StoredUser = {
         id: crypto.randomUUID(),
         name: name.trim(),
         email: normalized,
         passwordHash: hashPassword(password),
-        role: "user",
+        role,
         plan: "free",
         createdAt: nowIso(),
       };

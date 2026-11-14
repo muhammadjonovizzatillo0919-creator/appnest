@@ -144,17 +144,61 @@ describe("project store", () => {
 });
 
 describe("user store — rol va tarif", () => {
-  it("yangi foydalanuvchi free + user bo'ladi", async () => {
+  it("birinchi foydalanuvchi superadmin bo'ladi (bootstrap)", async () => {
     const { users } = setup();
 
-    const user = await users.create({
-      name: "Yangi",
-      email: "yangi@example.com",
+    const first = await users.create({
+      name: "Birinchi",
+      email: "first@example.com",
       password: "parol12345",
     });
 
-    expect(user.plan).toBe("free");
-    expect(user.role).toBe("user");
+    expect(first.role).toBe("superadmin");
+    expect(first.plan).toBe("free");
+  });
+
+  it("keyingi foydalanuvchilar oddiy bo'ladi", async () => {
+    const { users } = setup();
+
+    await users.create({
+      name: "Birinchi",
+      email: "first@example.com",
+      password: "parol12345",
+    });
+
+    const second = await users.create({
+      name: "Ikkinchi",
+      email: "second@example.com",
+      password: "parol12345",
+    });
+
+    expect(second.role).toBe("user");
+    expect(second.plan).toBe("free");
+  });
+
+  it("SUPERADMIN_EMAILS ro'yxatidagi email admin bo'ladi", async () => {
+    const { users } = setup();
+
+    await users.create({
+      name: "Oddiy",
+      email: "oddiy@example.com",
+      password: "parol12345",
+    });
+
+    // Ro'yxatga qo'shilgan email — keyingi ro'yxatdan o'tishda admin bo'ladi
+    const previous = process.env.SUPERADMIN_EMAILS;
+    process.env.SUPERADMIN_EMAILS = "boss@example.com";
+
+    const boss = await users.create({
+      name: "Boss",
+      email: "boss@example.com",
+      password: "parol12345",
+    });
+
+    if (previous === undefined) delete process.env.SUPERADMIN_EMAILS;
+    else process.env.SUPERADMIN_EMAILS = previous;
+
+    expect(boss.role).toBe("superadmin");
   });
 
   it("tarifni PRO ga o'tkazish mumkin", async () => {
