@@ -10,22 +10,37 @@ AppNest'ni Vercel'da **jamoqqa ochiq** qilish uchun 3 ta qadam. Umumiy vaqt: **1
 2. Nom bering: `appnest-setup` · **Scope: Full Account** · **Expiration: 30 days**
 3. Tokenni **darhol nusxalang** — u ko'rsatilmaydi.
 
-## 2-qadam · Token bilan skriptni ishga tushiring
+## 2-qadam · Gemini API kalitini oling
+
+1. [aistudio.google.com/apikey](https://aistudio.google.com/apikey) → **Create API key**
+2. Nom bering: `AppNest` → **Create**
+3. Kalitni nusxalang (`AIza...` bilan boshlanadi)
+
+> Gemini bepul kvota bilan ishlaydi. Bu kalitsiz ham tizim ishlaydi — AI o'rniga
+> shablon asosidagi spec yaratiladi (xato chiqmaydi, lekin tahlil sodda bo'ladi).
+
+## 3-qadam · Token va kalitlar bilan skriptni ishga tushiring
 
 PowerShell:
 
 ```powershell
 cd C:\Users\user\Desktop\appnest
 
+# 1) Vercel token
 $env:VERCEL_TOKEN = "vercel_xxxxxxxxxxxxxxxxxxxx"
 
-# .env faylidagi kalitlarni ham o'zgaruvchiga aylantiramiz
-$env:AUTH_SECRET        = (Get-Content .env | Select-String "^AUTH_SECRET=").ToString().Split("=")[1]
-$env:SUPERADMIN_EMAILS  = (Get-Content .env | Select-String "^SUPERADMIN_EMAILS=").ToString().Split("=")[1]
-$env:GEMINI_API_KEY     = "AIza..."      # aistudio.google.com/apikey dan
-$env:TURSO_DATABASE_URL = "libsql://..." # turso.tech dan (ixtiyoriy)
+# 2) .env faylidagi kalitlarni o'zgaruvchiga aylantiramiz
+$env:AUTH_SECRET       = (Select-String -Path .env -Pattern '^AUTH_SECRET=(.*)$').Matches[0].Groups[1].Value
+$env:SUPERADMIN_EMAILS = (Select-String -Path .env -Pattern '^SUPERADMIN_EMAILS=(.*)$').Matches[0].Groups[1].Value
+
+# 3) Gemini kaliti (2-qadamda olganingiz)
+$env:GEMINI_API_KEY = "AIza..."
+
+# 4) Turso (ixtiyoriy, lekin production uchun kerak)
+$env:TURSO_DATABASE_URL = "libsql://..."
 $env:TURSO_AUTH_TOKEN   = "..."
 
+# 5) Ishga tushiramiz
 node scripts/setup-vercel.mjs
 ```
 
@@ -36,17 +51,27 @@ node scripts/setup-vercel.mjs
 Tayyor bo'lganda chiqadi:
 ```
 ✅ Sayt endi tashqaridan ochiq (Login - Vercel yo'qoladi)
-   ➕ AUTH_SECRET qo'shildi
+   ♻️  AUTH_SECRET yangilandi
    ➕ SUPERADMIN_EMAILS qo'shildi
+   ➕ GEMINI_API_KEY qo'shildi
 ```
 
-## 3-qadam · Deploy
+## 4-qadam · Deploy
 
 ```powershell
 git push origin main
 ```
 
 Vercel avtomatik deploy qiladi (~2 daqiqa).
+
+## 5-qadam · Birinchi administrator
+
+Deploy tugagach `https://appnest-mir07.vercel.app/register` oching va
+**`admin@appnest.uz`** bilan ro'yxatdan o'ting — bu foydalanuvchi avtomatik
+superadmin bo'ladi (bootstrap qoidasi).
+
+Keyin `https://appnest-mir07.vercel.app/admin` — statistika, loyiha tarihi va
+tarif boshqaruvi ochiladi.
 
 ---
 
