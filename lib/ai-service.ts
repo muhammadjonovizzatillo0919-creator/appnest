@@ -6,7 +6,6 @@ import {
   type Platform,
 } from "./ai-generator";
 import {
-  MODELS,
   MODEL_CHAIN,
   ensureContextCache,
   getClient,

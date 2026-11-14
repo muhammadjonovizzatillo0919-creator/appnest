@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { userStore } from "@/lib/user-store";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -7,8 +8,20 @@ export const dynamic = "force-dynamic";
 /**
  * POST /api/auth/register
  * body: { name, email, password }
+ *
+ * Rate limit: IP bo'yicha daqiqada 5 ta ro'yxatdan o'tish.
  */
 export async function POST(req: Request) {
+  const limit = rateLimit(`register:${clientIp(req)}`, 5, 60);
+  if (!limit.allowed) {
+    return NextResponse.json(
+      {
+        error: `Juda ko'p urinishlar. ${limit.retryAfterSeconds} soniya kutib, qayta urinib ko'ring.`,
+      },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } }
+    );
+  }
+
   let body: { name?: string; email?: string; password?: string };
   try {
     body = await req.json();
