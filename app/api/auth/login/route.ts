@@ -17,19 +17,10 @@ export const dynamic = "force-dynamic";
  * body: { email, password }
  * Muvaffaqiyatli bo'lsa — httpOnly sessiya cookie qo'yiladi.
  *
- * Rate limit: IP bo'yicha daqiqada 10 ta urinish (brute force himoyasi).
+ * Rate limit: faqat **muvaffaqiyatsiz** urinishlar hisoblanadi
+ * (IP bo'yicha daqiqada 10 ta) — muvaffaqiyatli kirish cheklanmaydi.
  */
 export async function POST(req: Request) {
-  const limit = rateLimit(`login:${clientIp(req)}`, 10, 60);
-  if (!limit.allowed) {
-    return NextResponse.json(
-      {
-        error: `Juda ko'p urinishlar. ${limit.retryAfterSeconds} soniya kutib, qayta urinib ko'ring.`,
-      },
-      { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } }
-    );
-  }
-
   let body: { email?: string; password?: string };
   try {
     body = await req.json();
@@ -48,6 +39,17 @@ export async function POST(req: Request) {
 
   // Xato javob har doim bir xil — foydalanuvchi mavjudligini oshkor qilmaydi
   if (!user || !verifyPassword(password, user.passwordHash)) {
+    // Faqat muvaffaqiyatsiz urinishlar limitga hisoblanadi
+    const limit = rateLimit(`login:${clientIp(req)}`, 10, 60);
+    if (!limit.allowed) {
+      return NextResponse.json(
+        {
+          error: `Juda ko'p urinishlar. ${limit.retryAfterSeconds} soniya kutib, qayta urinib ko'ring.`,
+        },
+        { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } }
+      );
+    }
+
     return NextResponse.json(
       { error: "Email yoki parol noto'g'ri" },
       { status: 401 }
