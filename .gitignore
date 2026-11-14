@@ -55,3 +55,6 @@ install-log.txt
 # eksport sinovi
 test-unzip/
 test-export.zip
+
+# vaqtincha test skriptlari
+tmp-*.ps1
