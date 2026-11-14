@@ -49,13 +49,25 @@ export function getClient(): GoogleGenAI {
 /** Kontekst cache (1 soat) */
 let cacheName: string | null = null;
 let cacheModel: string | null = null;
+let cachePending = false;
 
-export async function ensureContextCache(
+/**
+ * Kontekst cache (1 soat) — system prompt va tool spetsiyalarini keshlaydi.
+ *
+ * ⚠️ Cache YARATISH sekin (1-2 sekund). Shuning uchun u so'rovning kritik
+ * yo'lida bloklamaydi: `primeContextCache` fon rejimida yaratadi, keyin
+ * keyingi so'rovlar undan foydalanadi.
+ */
+export async function primeContextCache(
   ai: GoogleGenAI,
   model: string,
   systemInstruction: string
-): Promise<string | null> {
-  if (cacheName && cacheModel === model) return cacheName;
+): Promise<void> {
+  if (cacheName && cacheModel === model) return;
+  if (cachePending) return;
+
+  cachePending = true;
+  cacheModel = model;
 
   try {
     const cache = await ai.caches.create({
@@ -77,12 +89,15 @@ export async function ensureContextCache(
     });
 
     cacheName = cache.name ?? null;
-    cacheModel = model;
-    return cacheName;
   } catch {
     cacheName = null;
-    cacheModel = model;
-    return null;
+  } finally {
+    cachePending = false;
   }
+}
+
+/** Kesh tayyor bo'lsa — uni darhol qaytaradi */
+export function getReadyCache(model: string): string | null {
+  return cacheName && cacheModel === model ? cacheName : null;
 }
 

@@ -7,7 +7,8 @@ import {
 } from "./ai-generator";
 import {
   MODEL_CHAIN,
-  ensureContextCache,
+  getReadyCache,
+  primeContextCache,
   getClient,
   hasGeminiKey,
 } from "./gemini";
@@ -195,7 +196,9 @@ Design the app specification now. JSON only.`;
   let usedModel: string = chain[0];
   for (const candidate of chain) {
     try {
-      const cacheName = await ensureContextCache(ai, candidate, SYSTEM_PROMPT);
+      // Kesh fon rejimida tayyorlanadi (so'rovni kechiktirmaydi)
+      void primeContextCache(ai, candidate, SYSTEM_PROMPT);
+      const cacheName = getReadyCache(candidate);
 
       const response = await ai.models.generateContent({
         model: candidate,

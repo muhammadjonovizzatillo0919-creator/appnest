@@ -7,6 +7,12 @@ import { getCurrentUser, unauthorized, forbidden } from "@/lib/session";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+/**
+ * AI generatsiya sekin bo'lishi mumkin (model chaqiruvi + JSON tahlil).
+ * Vercel'da standart limit 10 soniya — timeout bo'lishi uchun oshiriladi.
+ */
+export const maxDuration = 60;
+
 interface Params {
   params: Promise<{ id: string }>;
 }
