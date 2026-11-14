@@ -246,6 +246,25 @@ export default function AdminPage() {
         </div>
       )}
 
+      {/* Ogohlantirish: ma'lumotlar saqlanmasligi mumkin */}
+      {stats && (
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+          <span>
+            ⚠️ Ma&apos;lumotlar saqlanmayapti — serverless muhitida bazasi vaqtinchalik.
+            Doimiy saqlash uchun <b>Turso</b> ulanish kerak
+            (<code className="font-mono text-xs">TURSO_DATABASE_URL</code>).
+          </span>
+          <a
+            href="https://turso.tech"
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-lg border border-amber-400/50 px-3 py-1.5 text-xs font-semibold transition hover:bg-amber-400/20"
+          >
+            Turso&apos;ni ulash →
+          </a>
+        </div>
+      )}
+
       {loading ? (
         <p className="py-10 text-center text-sm text-slate-500">Yuklanmoqda...</p>
       ) : (
