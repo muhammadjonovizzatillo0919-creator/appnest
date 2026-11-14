@@ -135,9 +135,11 @@ const SEED_CLIENTS: [string, string, string, string][] = [
 export function createSqliteDb(file: string): Db {
   try {
     mkdirSync(path.dirname(file), { recursive: true });
+    storageMode = "file";
     return openSqliteFile(file);
   } catch {
     // Faqat o'qiladigan fayl tizimi (Vercel) — xotirada ishlaymiz
+    storageMode = "memory";
     return openSqliteFile(":memory:");
   }
 }
@@ -250,6 +252,18 @@ export async function createTursoDb(
 /* ── Global obyekt ─────────────────────────────────────── */
 
 let dbPromise: Promise<Db> | null = null;
+
+/**
+ * Saqlash rejimi:
+ * - "file"   — ma'lumotlar diskda saqlanadi (lokal yoki Turso)
+ * - "memory" — faqat jarayon ichida (Vercel serverless, fayl tizimi faqat o'qiladigan)
+ */
+export type StorageMode = "file" | "memory";
+let storageMode: StorageMode = "file";
+
+export function getStorageMode(): StorageMode {
+  return storageMode;
+}
 
 /** Yetishmayotgan ustunlarni qo'shadi (eski bazalar uchun) */
 async function migrateColumns(db: Db) {
