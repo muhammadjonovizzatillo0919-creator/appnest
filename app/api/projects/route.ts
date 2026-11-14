@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { projectStore } from "@/lib/project-store";
 import { canCreateProject, describeEntitlements } from "@/lib/entitlements";
+import { findTemplate } from "@/data/templates";
 import { getCurrentUser, unauthorized, badRequest } from "@/lib/session";
 
 export const runtime = "nodejs";
@@ -30,6 +31,7 @@ export async function POST(req: Request) {
     category?: string;
     brief?: string;
     platform?: "web" | "mobile";
+    template?: string;
   };
 
   try {
@@ -42,11 +44,16 @@ export async function POST(req: Request) {
   const category = String(body.category ?? "").trim();
   const brief = body.brief ? String(body.brief).trim() : undefined;
   const platform = body.platform === "mobile" ? "mobile" : "web";
+  const template = body.template ? findTemplate(body.template) : undefined;
 
-  if (title.length < 2) {
+  const finalTitle = template?.title ?? title;
+  const finalCategory = template?.category ?? category;
+  const finalBrief = template?.brief ?? brief;
+
+  if (finalTitle.length < 2) {
     return badRequest("Loyiha nomi kamida 2 ta belgidan iborat bo'lishi kerak");
   }
-  if (!category) {
+  if (!finalCategory) {
     return badRequest("Kategoriya tanlanish shart (yoki 'Boshqa' + erkin matn)");
   }
 
@@ -67,11 +74,18 @@ export async function POST(req: Request) {
 
   const project = await projectStore.create({
     userId: user.id,
-    title,
-    category,
-    brief,
+    title: finalTitle,
+    category: finalCategory,
+    brief: finalBrief,
     platform,
   });
+
+  // Namuna loyiha tanlangan bo'lsa — tayyor layout saqlanadi
+  if (template) {
+    await projectStore.update(project.id, {
+      layout: JSON.stringify(template.layout),
+    });
+  }
 
   const entitlements = describeEntitlements(user, currentCount + 1);
 
