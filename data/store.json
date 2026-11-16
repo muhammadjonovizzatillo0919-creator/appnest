@@ -11,6 +11,20 @@
     }
   ],
   "clients": [],
-  "projects": [],
+  "projects": [
+    {
+      "id": "3be37e71-c1ac-4ab8-bca2-c4b26bf23629",
+      "user_id": "036975ee-b3cf-454e-8c2f-e39ed6ea6803",
+      "title": "GitHub ombori testi",
+      "category": "restoran",
+      "brief": "Test",
+      "platform": "web",
+      "status": "draft",
+      "ai_spec": null,
+      "layout": null,
+      "created_at": "2026-11-16T01:11:53.959Z",
+      "updated_at": "2026-11-16T01:11:53.959Z"
+    }
+  ],
   "activity": []
 }
