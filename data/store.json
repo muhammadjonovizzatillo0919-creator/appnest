@@ -1,1 +1,16 @@
-{"users":[],"clients":[],"projects":[],"activity":[]}
+{
+  "users": [
+    {
+      "id": "036975ee-b3cf-454e-8c2f-e39ed6ea6803",
+      "name": "GitHub User",
+      "email": "gh@test.uz",
+      "password_hash": "0eed3d5bd1e5078ffab1531ba40482b8:1ec79524b256227b170663ef7077f553a02114bbb07b797d807e03e139e92ce94c072ccb14ad522f21be3f84a333fb14a52d0a1a72598ada6c52a1b215a06ca2",
+      "role": "user",
+      "plan": "free",
+      "created_at": "2026-11-16T01:11:49.724Z"
+    }
+  ],
+  "clients": [],
+  "projects": [],
+  "activity": []
+}
