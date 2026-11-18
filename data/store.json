@@ -121,6 +121,19 @@
       "layout": null,
       "created_at": "2026-11-18T17:15:35.703Z",
       "updated_at": "2026-11-18T17:15:35.703Z"
+    },
+    {
+      "id": "6845d8c6-735b-42ed-b133-36d59e9ae392",
+      "user_id": "d616a720-1c29-4d58-ba83-bf54465e955c",
+      "title": "Kafe menyusi",
+      "category": "restoran",
+      "brief": "Kafe uchun menyu va buyurtma ilovasi",
+      "platform": "web",
+      "status": "draft",
+      "ai_spec": null,
+      "layout": null,
+      "created_at": "2026-11-18T17:21:42.590Z",
+      "updated_at": "2026-11-18T17:21:42.590Z"
     }
   ],
   "activity": [
