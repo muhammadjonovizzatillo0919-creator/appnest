@@ -21,48 +21,11 @@ import {
  * Yo'q bo'lsa yoki xato bersa → kategoriya shabloni (fallback).
  */
 
-const SYSTEM_PROMPT = `You are the AI architect of "AppNest", a no-code app builder for people who cannot code.
+const SYSTEM_PROMPT = `Design a small app spec for a no-code builder. Return JSON only, no markdown, no commentary.
 
-Given a business CATEGORY and a free-text BRIEF, you design a complete application specification.
+JSON: {"title":string,"category":string,"platform":"web","summary":string,"pages":[{"id":string,"name":string,"route":string,"purpose":string,"rows":[{"id":string,"type":"window","blocks":[{"id":string,"component":string,"props":object}]}]}],"dataModels":[{"name":string,"fields":[{"name":string,"type":string}]}],"features":string[]}
 
-RULES
-- Design PAGES the user actually needs for this business (2 to 5 pages).
-- Each page contains ROWS. A row is a vertical section ("window") containing 1 to 4 BLOCKS.
-- Only use these block components: Navbar, Hero, Card, Grid, Button, Input, Table, StatCard, Badge, Alert, Dropdown, Toast, Loading, Footer.
-- Keep the structure simple and buildable. Every block must have sensible default props.
-- dataModels lists the data the app stores, with field names and types.
-- features lists 3 to 6 user-facing capabilities.
-- summary is one clear sentence describing the app.
-- Respond with JSON only. No markdown fences, no commentary.
-
-OUTPUT SCHEMA
-{
-  "title": string,
-  "category": string,
-  "platform": "web" | "mobile",
-  "summary": string,
-  "pages": [
-    {
-      "id": string,
-      "name": string,
-      "route": string,
-      "purpose": string,
-      "rows": [
-        {
-          "id": string,
-          "type": "window",
-          "blocks": [
-            { "id": string, "component": string, "props": object }
-          ]
-        }
-      ]
-    }
-  ],
-  "dataModels": [
-    { "name": string, "fields": [{ "name": string, "type": string }] }
-  ],
-  "features": string[]
-}`;
+RULES: 2-3 pages. Each page has 2-3 rows. Each row has 2-3 blocks. Allowed components: Navbar, Hero, Card, Grid, Button, Input, Table, StatCard, Badge, Alert, Dropdown, Toast, Loading, Footer. Keep props short. IDs must be short and unique. features: 3 items. dataModels: 1-2 items.`;
 
 
 export interface GenerateResult {

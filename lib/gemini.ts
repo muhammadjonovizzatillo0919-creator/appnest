@@ -25,14 +25,14 @@ export type ModelName = (typeof MODELS)[keyof typeof MODELS];
  * Shuning uchun har bir chaqiruvda zanjir bo'ylab sinab ko'ramiz.
  */
 export const MODEL_CHAIN: Record<"fast" | "deep", string[]> = {
-  // Faqat ishlab sinovdan o'tgan modellar. 3.8-flash 503 qaytaradi,
-  // 3.1-pro-preview bepul kvotada 429 — ularni zanjirdan chiqardik.
-  fast: ["gemini-3.5-flash", "gemini-3.6-flash"],
-  deep: ["gemini-3.5-flash", "gemini-3.6-flash"],
+  // Bitta model, bitta urinish — serverless 60 s limitiga mos.
+  // 3.8-flash 503, 3.1-pro 429 qaytargan — sinovdan o'tgan 3.5 ishlatamiz.
+  fast: ["gemini-3.5-flash"],
+  deep: ["gemini-3.5-flash"],
 };
 
-/** Har bir model chaqiruvining maksimal vaqti (serverless limit uchun) */
-export const MODEL_TIMEOUT_MS = 18_000;
+/** Har bir model chaqiruvining maksimal vaqti */
+export const MODEL_TIMEOUT_MS = 28_000;
 
 let client: GoogleGenAI | null = null;
 
