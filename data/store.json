@@ -35,6 +35,15 @@
       "role": "user",
       "plan": "free",
       "created_at": "2026-11-18T17:14:43.661Z"
+    },
+    {
+      "id": "f96f34b0-2aeb-4e31-bc99-6829a2287418",
+      "name": "Warn Admin",
+      "email": "warn@appnest.uz",
+      "password_hash": "e06b27ce1c99e721923c8427a438264f:e3f11d53866f5a3931f0bc8c0d75d07ba356bf37dc0574776c16acd0bbc00a8fa5d88ce0eb1f1f2b5f5933835cd086632ecb7676543ff73d6a0e7ac4bf3180a6",
+      "role": "user",
+      "plan": "free",
+      "created_at": "2026-11-18T17:15:32.865Z"
     }
   ],
   "clients": [],
