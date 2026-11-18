@@ -8,6 +8,15 @@
       "role": "user",
       "plan": "free",
       "created_at": "2026-11-16T01:11:49.724Z"
+    },
+    {
+      "id": "830129b8-ae77-4b2b-a562-283efec7635e",
+      "name": "Final Admin",
+      "email": "final@appnest.uz",
+      "password_hash": "de5336416dbcebb2e4c6803e5a143609:bb7ec1d69b74069d43d363c56f7369933bcfaac8e6eade962800a863d87a0c30eeaa9d53027dd8fd4846aee7ced584f65f3a89f920cf2f9953547a37498c0bf6",
+      "role": "user",
+      "plan": "free",
+      "created_at": "2026-11-18T16:48:03.557Z"
     }
   ],
   "clients": [],
