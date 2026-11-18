@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { userStore } from "@/lib/user-store";
 import { projectStore } from "@/lib/project-store";
 import { getCurrentUser, unauthorized, forbidden } from "@/lib/session";
+import { githubStoreConfig } from "@/lib/json-db";
+import { getStorageMode } from "@/lib/db";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -52,5 +54,16 @@ export async function GET() {
   // Foydalanuvchilar ro'yxati
   const users = await userStore.listAll();
 
-  return NextResponse.json({ stats, projects: projectsWithAttempts, users });
+  const storage = githubStoreConfig()
+    ? "github"
+    : getStorageMode() === "file"
+      ? "file"
+      : "memory";
+
+  return NextResponse.json({
+    stats,
+    projects: projectsWithAttempts,
+    users,
+    storage,
+  });
 }

@@ -42,6 +42,7 @@ interface Stats {
   projects: { total: number; draft: number; active: number };
   categories: { category: string; count: number }[];
   attempts: { total: number; failed: number; avgDurationMs: number };
+  storage?: "github" | "file" | "memory";
 }
 
 export default function AdminPage() {
@@ -247,12 +248,12 @@ export default function AdminPage() {
       )}
 
       {/* Ogohlantirish: ma'lumotlar saqlanmasligi mumkin */}
-      {stats && (
+      {stats && stats.storage === "memory" && (
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
           <span>
             ⚠️ Ma&apos;lumotlar saqlanmayapti — serverless muhitida bazasi vaqtinchalik.
-            Doimiy saqlash uchun <b>Turso</b> ulanish kerak
-            (<code className="font-mono text-xs">TURSO_DATABASE_URL</code>).
+            Doimiy saqlash uchun <b>Turso</b> yoki <b>GitHub ombori</b> kerak
+            (<code className="font-mono text-xs">GITHUB_TOKEN</code> + <code className="font-mono text-xs">GITHUB_REPO</code>).
           </span>
           <a
             href="https://turso.tech"
@@ -262,6 +263,13 @@ export default function AdminPage() {
           >
             Turso&apos;ni ulash →
           </a>
+        </div>
+      )}
+
+      {stats && (stats.storage === "github" || stats.storage === "file") && (
+        <div className="mb-6 rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
+          ✅ Ma&apos;lumotlar doimiy saqlanmoqda
+          ({stats.storage === "github" ? "GitHub ombori" : "lokal fayl / Turso"}).
         </div>
       )}
 

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDb, getStorageMode } from "@/lib/db";
+import { githubStoreConfig } from "@/lib/json-db";
 import { hasGeminiKey } from "@/lib/gemini";
-import { isRemoteDb } from "@/lib/db";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,6 +15,17 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const checks: Record<string, { ok: boolean; detail: string }> = {};
 
+  // 0) Qaysi ombor ishlatiladi
+  const github = githubStoreConfig();
+  checks.storage = {
+    ok: true,
+    detail: github
+      ? `GitHub ombori (${github.repo}) — doimiy`
+      : getStorageMode() === "file"
+        ? "fayl / Turso — doimiy"
+        : "xotira (memory) — VERTINCHALIK, ma'lumot o'chadi",
+  };
+
   // 1) Ma'lumotlar bazasi
   try {
     const db = await getDb();
@@ -27,9 +38,7 @@ export async function GET() {
 
     checks.database = {
       ok: true,
-      detail: `${getStorageMode()}${
-        isRemoteDb() ? " (Turso)" : ""
-      } | ${users?.count ?? 0} foydalanuvchi, ${
+      detail: `${getStorageMode()}${github ? " (GitHub orqali)" : ""} | ${users?.count ?? 0} foydalanuvchi, ${
         projects?.count ?? 0
       } loyiha`,
     };
