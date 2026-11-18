@@ -26,6 +26,15 @@
       "role": "user",
       "plan": "free",
       "created_at": "2026-11-18T17:04:03.139Z"
+    },
+    {
+      "id": "f874f169-e6c7-4fd2-a96a-3f8aea53cc55",
+      "name": "Speed2 Admin",
+      "email": "speed2@appnest.uz",
+      "password_hash": "9fb0023da0f6a930300773787e23af59:f36774da288993b6654f7f6a1205d6ad3eff405b4b75c291e81e39d5944da68f4421da7ae579f946158a694a2a79b66537d187f9a751d26070d56e062d9968d8",
+      "role": "user",
+      "plan": "free",
+      "created_at": "2026-11-18T17:14:43.661Z"
     }
   ],
   "clients": [],
