@@ -17,6 +17,15 @@
       "role": "user",
       "plan": "free",
       "created_at": "2026-11-18T16:48:03.557Z"
+    },
+    {
+      "id": "431e3ec4-e074-45c2-9c7a-76f6717d6edb",
+      "name": "Speed Admin",
+      "email": "speed@appnest.uz",
+      "password_hash": "659823d989b3e8ba1a49c7b045a4b83a:358cd7f6260788f3bcef5eb5638a34cdab2ebd560baca4a3eea8b10cf949890ccd161173ac868f906781378a517570da21d730d2612e64451514937578ba1a4a",
+      "role": "user",
+      "plan": "free",
+      "created_at": "2026-11-18T17:04:03.139Z"
     }
   ],
   "clients": [],
