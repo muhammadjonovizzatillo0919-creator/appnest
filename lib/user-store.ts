@@ -1,8 +1,8 @@
 ﻿import { getDb, nowIso, type Db } from "./db";
 import { hashPassword } from "./auth";
-import { ensureEnvLoaded } from "./env";
 import { createJsonStores } from "./json-stores";
-import { roleForNewUser, type UserRole } from "./roles";
+import { roleForNewUser } from "./roles";
+import type { UserRole } from "./roles";
 import type { Plan } from "./entitlements";
 
 /**

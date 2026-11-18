@@ -2,14 +2,12 @@ import { GitHubJsonDb, githubStoreConfig } from "./json-db";
 import { roleForNewUser } from "./roles";
 import type {
   UserStore,
-  StoredUser,
   PublicUser,
 } from "./user-store";
 import type { ClientStore, Client, ClientStatus } from "./client-store";
 import type {
   ProjectStore,
   Project,
-  GenerationAttempt,
 } from "./project-store";
 
 /**

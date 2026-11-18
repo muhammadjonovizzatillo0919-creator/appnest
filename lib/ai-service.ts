@@ -7,6 +7,7 @@ import {
 } from "./ai-generator";
 import {
   MODEL_CHAIN,
+  MODEL_TIMEOUT_MS,
   getReadyCache,
   primeContextCache,
   getClient,
@@ -63,74 +64,6 @@ OUTPUT SCHEMA
   "features": string[]
 }`;
 
-const RESPONSE_SCHEMA = {
-  type: "object",
-  properties: {
-    title: { type: "string" },
-    category: { type: "string" },
-    platform: { type: "string", enum: ["web", "mobile"] },
-    summary: { type: "string" },
-    pages: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          id: { type: "string" },
-          name: { type: "string" },
-          route: { type: "string" },
-          purpose: { type: "string" },
-          rows: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                id: { type: "string" },
-                type: { type: "string" },
-                blocks: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      id: { type: "string" },
-                      component: { type: "string" },
-                      props: { type: "object" },
-                    },
-                    required: ["id", "component", "props"],
-                  },
-                },
-              },
-              required: ["id", "type", "blocks"],
-            },
-          },
-        },
-        required: ["id", "name", "route", "purpose", "rows"],
-      },
-    },
-    dataModels: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          name: { type: "string" },
-          fields: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                name: { type: "string" },
-                type: { type: "string" },
-              },
-              required: ["name", "type"],
-            },
-          },
-        },
-        required: ["name", "fields"],
-      },
-    },
-    features: { type: "array", items: { type: "string" } },
-  },
-  required: ["title", "category", "platform", "summary", "pages", "dataModels", "features"],
-} as const;
 
 export interface GenerateResult {
   spec: AppSpec;
@@ -206,9 +139,11 @@ Design the app specification now. JSON only.`;
         config: {
           systemInstruction: SYSTEM_PROMPT,
           responseMimeType: "application/json",
-          responseSchema: RESPONSE_SCHEMA as never,
           ...(cacheName ? { cachedContent: cacheName } : {}),
-        },
+          // Har bir modelga 18 s — bitta osib qolsa, keyingisiga o'tamiz.
+          // Vercel serverless limiti 60 s, shuning uchun umumiy vaqt nazoratda.
+          abortSignal: AbortSignal.timeout(MODEL_TIMEOUT_MS),
+        } as never,
       });
 
       const raw = response.text;
