@@ -77,6 +77,19 @@
       "layout": null,
       "created_at": "2026-11-18T17:04:28.645Z",
       "updated_at": "2026-11-18T17:04:28.645Z"
+    },
+    {
+      "id": "f3d0f800-8318-422e-b32a-c41d3f528ef4",
+      "user_id": "f874f169-e6c7-4fd2-a96a-3f8aea53cc55",
+      "title": "Kafe menyusi",
+      "category": "restoran",
+      "brief": "Kafe uchun menyu",
+      "platform": "web",
+      "status": "draft",
+      "ai_spec": null,
+      "layout": null,
+      "created_at": "2026-11-18T17:14:46.370Z",
+      "updated_at": "2026-11-18T17:14:46.370Z"
     }
   ],
   "activity": [
