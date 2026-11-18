@@ -102,6 +102,16 @@
       "status": "error",
       "error": "AI ishlamadi (This operation was aborted) — shablon asosida spec yaratildi.",
       "created_at": "2026-11-18T17:05:06.889Z"
+    },
+    {
+      "id": 2,
+      "project_id": "f3d0f800-8318-422e-b32a-c41d3f528ef4",
+      "attempt_no": 1,
+      "model": "gemini-3.5-flash",
+      "duration_ms": 488,
+      "status": "error",
+      "error": "AI ishlamadi ({\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}) — shablon asosida spec yaratildi.",
+      "created_at": "2026-11-18T17:14:49.209Z"
     }
   ]
 }
