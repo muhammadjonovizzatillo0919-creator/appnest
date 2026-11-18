@@ -44,6 +44,15 @@
       "role": "user",
       "plan": "free",
       "created_at": "2026-11-18T17:15:32.865Z"
+    },
+    {
+      "id": "d616a720-1c29-4d58-ba83-bf54465e955c",
+      "name": "Final User",
+      "email": "final88987@appnest.uz",
+      "password_hash": "d40da23e1403e7a3e2a29e99ac3bb21d:2ddaff05995043595e5a0b6b0c48ceafd652c1251c9c8e877cbfdcbca9d837bdb4a28f86027ba1a3ceb020f1f9f9a043b820aa9f9f28165c2577a1739af39588",
+      "role": "user",
+      "plan": "free",
+      "created_at": "2026-11-18T17:21:38.760Z"
     }
   ],
   "clients": [],
