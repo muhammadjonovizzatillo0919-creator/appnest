@@ -1,7 +1,9 @@
 ﻿import { getDb, nowIso, type Db } from "./db";
 import { hashPassword } from "./auth";
 import { ensureEnvLoaded } from "./env";
-import type { Plan, UserRole } from "./entitlements";
+import { createJsonStores } from "./json-stores";
+import { roleForNewUser, type UserRole } from "./roles";
+import type { Plan } from "./entitlements";
 
 /**
  * Foydalanuvchilar saqlanishi.
@@ -55,14 +57,6 @@ const normalizeEmail = (email: string) => email.trim().toLowerCase();
  *
  * Misol: SUPERADMIN_EMAILS=admin@appnest.uz,boss@appnest.uz
  */
-function superadminEmails(): string[] {
-  ensureEnvLoaded();
-  const raw = process.env.SUPERADMIN_EMAILS ?? "";
-  return raw
-    .split(",")
-    .map((e) => normalizeEmail(e))
-    .filter(Boolean);
-}
 
 /**
  * Yangi foydalanuvchining roli.
@@ -113,14 +107,10 @@ export function createUserStore(db: Db): UserStore {
    * 3. Aks holda → oddiy foydalanuvchi
    */
   const roleForEmail = async (email: string): Promise<UserRole> => {
-    if (superadminEmails().includes(normalizeEmail(email))) {
-      return "superadmin";
-    }
-
     const row = await db.get<{ count: number }>(
       "SELECT COUNT(*) AS count FROM users"
     );
-    return Number(row?.count ?? 0) === 0 ? "superadmin" : "user";
+    return roleForNewUser(email, Number(row?.count ?? 0));
   };
 
   return {
@@ -243,7 +233,7 @@ function getStore(): Promise<UserStore> {
   return storePromise;
 }
 
-export const userStore: UserStore = {
+const sqlUserStore: UserStore = {
   async findByEmail(email) {
     return (await getStore()).findByEmail(email);
   },
@@ -269,6 +259,19 @@ export const userStore: UserStore = {
     return (await getStore()).countByPlan(plan);
   },
   async listAll() {
-    return (await getStore()).listAll();
+    const db = await getDb();
+    const rows = await db.all<UserRow>(
+      "SELECT id, name, email, role, plan, created_at FROM users ORDER BY created_at DESC"
+    );
+    return rows.map(toPublic);
   },
 };
+
+/**
+ * Qaysi ombor ishlatiladi:
+ * 1. `GITHUB_TOKEN` + `GITHUB_REPO` → GitHub omborasi (serverless'ga mos)
+ * 2. Aks holda → SQL (Turso yoki lokal SQLite)
+ */
+const jsonStores = createJsonStores();
+
+export const userStore: UserStore = jsonStores?.users ?? sqlUserStore;

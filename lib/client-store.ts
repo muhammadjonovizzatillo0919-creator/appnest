@@ -1,4 +1,5 @@
 ﻿import { getDb, nowIso, type Db } from "./db";
+import { createJsonStores } from "./json-stores";
 
 /**
  * Mijozlar saqlanishi.
@@ -189,7 +190,7 @@ function getStore(): Promise<ClientStore> {
   return storePromise;
 }
 
-export const clientStore: ClientStore = {
+const sqlClientStore: ClientStore = {
   async list(options) {
     return (await getStore()).list(options);
   },
@@ -209,3 +210,12 @@ export const clientStore: ClientStore = {
     return (await getStore()).stats();
   },
 };
+
+/**
+ * Qaysi ombor ishlatiladi:
+ * 1. `GITHUB_TOKEN` + `GITHUB_REPO` → GitHub omborasi (serverless'ga mos)
+ * 2. Aks holda → SQL (Turso yoki lokal SQLite)
+ */
+const jsonStores = createJsonStores();
+
+export const clientStore: ClientStore = jsonStores?.clients ?? sqlClientStore;

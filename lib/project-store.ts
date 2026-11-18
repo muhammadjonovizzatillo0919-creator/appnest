@@ -1,4 +1,5 @@
 import { getDb, nowIso, type Db } from "./db";
+import { createJsonStores } from "./json-stores";
 
 /**
  * Loyihalar saqlanishi — AI no-code builder uchun.
@@ -344,7 +345,7 @@ function getStore(): Promise<ProjectStore> {
   return storePromise;
 }
 
-export const projectStore: ProjectStore = {
+const sqlProjectStore: ProjectStore = {
   async listByUser(userId) {
     return (await getStore()).listByUser(userId);
   },
@@ -376,3 +377,12 @@ export const projectStore: ProjectStore = {
     return (await getStore()).adminStats();
   },
 };
+
+/**
+ * Qaysi ombor ishlatiladi:
+ * 1. `GITHUB_TOKEN` + `GITHUB_REPO` → GitHub omborasi (serverless'ga mos)
+ * 2. Aks holda → SQL (Turso yoki lokal SQLite)
+ */
+const jsonStores = createJsonStores();
+
+export const projectStore: ProjectStore = jsonStores?.projects ?? sqlProjectStore;
