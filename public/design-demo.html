@@ -4,6 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AppNest — Dizayn tizimi demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
 /* ============================================================
    AppNest Design System — CSS o'zgaruvchilari
@@ -28,22 +31,27 @@
   --code-fg: #FFD9C0;
 
   /* --- Tipografiya --- */
-  --font-sans: "Inter", "Segoe UI", "Geist", system-ui, -apple-system, sans-serif;
+  --font-sans: "Manrope", "Inter", "Segoe UI", "Geist", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", "Consolas", monospace;
-  --fs-xs: 0.75rem;   /* 12px */
-  --fs-sm: 0.875rem;  /* 14px */
-  --fs-base: 1rem;    /* 16px */
-  --fs-lg: 1.25rem;   /* 20px */
-  --fs-xl: 1.5rem;    /* 24px */
-  --fs-2xl: 2rem;     /* 32px */
-  --fs-3xl: 3rem;     /* 48px */
-  --lh-tight: 1.15;
-  --lh-normal: 1.6;
+  --fs-2xs: 0.6875rem; /* 11px */
+  --fs-xs: 0.75rem;    /* 12px */
+  --fs-sm: 0.875rem;   /* 14px */
+  --fs-base: 1rem;     /* 16px */
+  --fs-lg: 1.125rem;   /* 18px */
+  --fs-xl: 1.5rem;     /* 24px */
+  --fs-2xl: 2rem;      /* 32px */
+  --fs-3xl: 3rem;      /* 48px */
+  --lh-tight: 1.1;      /* katta sarlavhalar */
+  --lh-heading: 1.25;   /* o'rta sarlavhalar */
+  --lh-normal: 1.65;    /* asosiy matn — o'qish uchun qulay */
+  --lh-caption: 1.45;   /* kichik matn */
   --fw-normal: 400;
   --fw-medium: 500;
   --fw-semibold: 600;
   --fw-bold: 700;
-  --tracking-tight: -0.02em;
+  --fw-extrabold: 800;
+  --tracking-tight: -0.025em;
+  --tracking-wide: 0.08em;
 
   /* --- Spacing (4px asos) --- */
   --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
@@ -265,14 +273,33 @@ section { margin-top: var(--sp-12); }
   font-family: var(--font-mono); font-size: var(--fs-xs);
   color: var(--primary); min-width: 130px;
 }
-.type-sample { flex: 1; }
-.sample-h1 { font-size: var(--fs-3xl); font-weight: var(--fw-bold); letter-spacing: var(--tracking-tight); line-height: var(--lh-tight); }
-.sample-h2 { font-size: var(--fs-2xl); font-weight: var(--fw-bold); letter-spacing: var(--tracking-tight); }
-.sample-h3 { font-size: var(--fs-xl); font-weight: var(--fw-semibold); }
-.sample-lead { font-size: var(--fs-lg); color: var(--muted); }
-.sample-body { font-size: var(--fs-base); }
-.sample-sm { font-size: var(--fs-sm); color: var(--muted); }
-.sample-xs { font-size: var(--fs-xs); color: var(--muted); }
+.type-sample { flex: 1; min-width: 0; }
+.sample-h1 {
+  font-size: var(--fs-3xl); font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-tight); line-height: var(--lh-tight);
+}
+.sample-h2 {
+  font-size: var(--fs-2xl); font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tight); line-height: var(--lh-heading);
+}
+.sample-h3 {
+  font-size: var(--fs-xl); font-weight: var(--fw-semibold);
+  letter-spacing: -0.015em; line-height: var(--lh-heading);
+}
+.sample-lead { font-size: var(--fs-lg); color: var(--muted); line-height: var(--lh-normal); }
+.sample-body { font-size: var(--fs-base); line-height: var(--lh-normal); }
+.sample-sm { font-size: var(--fs-sm); color: var(--muted); line-height: var(--lh-normal); }
+.sample-xs { font-size: var(--fs-xs); color: var(--muted); line-height: var(--lh-caption); }
+.sample-label {
+  font-size: var(--fs-2xs); font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-wide); text-transform: uppercase;
+}
+.sample-quote {
+  font-size: var(--fs-lg); font-style: italic; line-height: var(--lh-normal);
+  border-left: 3px solid var(--primary); padding-left: var(--sp-4);
+}
+.sample-link { color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+.type-num { font-variant-numeric: tabular-nums; font-family: var(--font-mono); }
 code, .mono { font-family: var(--font-mono); }
 .code-chip {
   background: var(--code-bg); color: var(--code-fg);
@@ -379,18 +406,28 @@ footer { margin-top: var(--sp-12); text-align: center; color: var(--muted); font
     <div class="sec-head">
       <span class="kicker">02 / Typography</span>
       <h2>Matn tipografikasi</h2>
-      <p>Sarlavha, asosiy matn, izoh va kod uslublari.</p>
+      <p>Sarlavha, asosiy matn, izoh, iqtibos va kod uslublari — barchasi o'zbek tilida.</p>
     </div>
     <div class="card">
-      <div class="type-row"><span class="type-tag">h1 / 48px / 700</span><span class="type-sample sample-h1">Ilovangizni yarating</span></div>
-      <div class="type-row"><span class="type-tag">h2 / 32px / 700</span><span class="type-sample sample-h2">AI bilan dizayn</span></div>
-      <div class="type-row"><span class="type-tag">h3 / 24px / 600</span><span class="type-sample sample-h3">Loyihalar ro'yxati</span></div>
-      <div class="type-row"><span class="type-tag">lead / 20px / 400</span><span class="type-sample sample-lead">Kod bilmasdan, bir necha daqiqada tayyor ilova.</span></div>
-      <div class="type-row"><span class="type-tag">body / 16px / 400</span><span class="type-sample sample-body">Asosiy matn uslubi — o'qish uchun qulay, 1.6 liniya balandligi.</span></div>
-      <div class="type-row"><span class="type-tag">small / 14px / 400</span><span class="type-sample sample-sm">Qo'shimcha ma'lumot va izoh matnlari.</span></div>
-      <div class="type-row"><span class="type-tag">caption / 12px / 400</span><span class="type-sample sample-xs">Eng kichik yordamchi matn.</span></div>
-      <div class="type-row"><span class="type-tag">mono / 14px</span><span class="type-sample"><code class="code-chip">npm run dev</code> &nbsp; <code class="code-chip">--brand: #0057FF</code></span></div>
-      <div class="type-row"><span class="type-tag">bold / semibold</span><span class="type-sample" style="font-weight:var(--fw-bold)">Qalin</span> &nbsp; <span class="type-sample" style="font-weight:var(--fw-semibold)">Yarim qalin</span> &nbsp; <span class="type-sample" style="font-weight:var(--fw-normal)">Oddiy</span></div>
+      <div class="type-row"><span class="type-tag">h1 / 48px / 800</span><span class="type-sample sample-h1">G‘oyaingizni haqiqatga aylantiring</span></div>
+      <div class="type-row"><span class="type-tag">h2 / 32px / 700</span><span class="type-sample sample-h2">AI bilan bir necha daqiqada</span></div>
+      <div class="type-row"><span class="type-tag">h3 / 24px / 600</span><span class="type-sample sample-h3">Loyihalar ro‘yxati</span></div>
+      <div class="type-row"><span class="type-tag">lead / 18px / 400</span><span class="type-sample sample-lead">Kod yozmasdan, professionallar darajasidagi ilova yarating — g‘oya yetarli.</span></div>
+      <div class="type-row"><span class="type-tag">body / 16px / 400</span><span class="type-sample sample-body">Asosiy matn 1.65 liniya balandligida — uzoq o‘qishda ham ko‘z charchamaydi. Matnlar o‘zbek imlosiga mos keladi.</span></div>
+      <div class="type-row"><span class="type-tag">small / 14px / 400</span><span class="type-sample sample-sm">Qo‘shimcha ma'lumot, izoh va yordamchi matnlar.</span></div>
+      <div class="type-row"><span class="type-tag">caption / 12px / 400</span><span class="type-sample sample-xs">Eng kichik yordamchi matn · so‘nggi yangilanish bugun</span></div>
+      <div class="type-row"><span class="type-tag">label / 11px / 800</span><span class="type-sample sample-label">Yangi loyiha · cheksiz imkoniyat</span></div>
+      <div class="type-row"><span class="type-tag">quote / 18px / italic</span><span class="type-sample sample-quote">«Eng yaxshi interfeys — ko‘rinmaydigan interfeys».</span></div>
+      <div class="type-row"><span class="type-tag">link / 16px / 600</span><span class="type-sample"><a href="#" class="sample-link" onclick="return false">Batafsil ma'lumot olish →</a></span></div>
+      <div class="type-row"><span class="type-tag">mono / 14px / 500</span><span class="type-sample"><code class="code-chip">npm run dev</code> &nbsp; <code class="code-chip">--brand: #FFBE98</code></span></div>
+      <div class="type-row"><span class="type-tag">weight / 400–800</span><span class="type-sample">
+        <span style="font-weight:400">Oddiy</span> &nbsp;
+        <span style="font-weight:500">O‘rtacha</span> &nbsp;
+        <span style="font-weight:600">Yarim qalin</span> &nbsp;
+        <span style="font-weight:700">Qalin</span> &nbsp;
+        <span style="font-weight:800">Juda qalin</span>
+      </span></div>
+      <div class="type-row"><span class="type-tag">numeric / tabular</span><span class="type-sample type-num">1 234 567 · 48% · 2026</span></div>
     </div>
   </section>
 
@@ -399,23 +436,25 @@ footer { margin-top: var(--sp-12); text-align: center; color: var(--muted); font
     <div class="sec-head">
       <span class="kicker">03 / Font size</span>
       <h2>Shrift o'lchami shkalasi</h2>
-      <p>7 ta standart o'lcham — hamma joyda shu shkala ishlatiladi.</p>
+      <p>8 ta standart o'lcham — hamma joyda shu shkala ishlatiladi. Har biri o'z vazifasiga ega.</p>
     </div>
     <div class="grid g2">
       <div class="card">
-        <div class="size-item"><span class="size-num">12px</span><span style="font-size:12px">Caption matn</span><div class="size-bar" style="width:12%"></div></div>
-        <div class="size-item"><span class="size-num">14px</span><span style="font-size:14px">Small matn</span><div class="size-bar" style="width:22%"></div></div>
-        <div class="size-item"><span class="size-num">16px</span><span style="font-size:16px">Body matn</span><div class="size-bar" style="width:32%"></div></div>
-        <div class="size-item"><span class="size-num">20px</span><span style="font-size:20px">Lead matn</span><div class="size-bar" style="width:42%"></div></div>
-        <div class="size-item"><span class="size-num">24px</span><span style="font-size:24px">Kichik sarlavha</span><div class="size-bar" style="width:54%"></div></div>
-        <div class="size-item"><span class="size-num">32px</span><span style="font-size:32px">Sarlavha</span><div class="size-bar" style="width:70%"></div></div>
-        <div class="size-item"><span class="size-num">48px</span><span style="font-size:48px">Katta sarlavha</span><div class="size-bar" style="width:100%"></div></div>
+        <div class="size-item"><span class="size-num">11px</span><span style="font-size:11px;font-weight:800;letter-spacing:.08em">YORLIQ</span><div class="size-bar" style="width:10%"></div></div>
+        <div class="size-item"><span class="size-num">12px</span><span style="font-size:12px">Izoh · oxirgi o'zgartirish</span><div class="size-bar" style="width:16%"></div></div>
+        <div class="size-item"><span class="size-num">14px</span><span style="font-size:14px">Yordamchi matn</span><div class="size-bar" style="width:24%"></div></div>
+        <div class="size-item"><span class="size-num">16px</span><span style="font-size:16px">Asosiy matn — o'qish uchun</span><div class="size-bar" style="width:34%"></div></div>
+        <div class="size-item"><span class="size-num">18px</span><span style="font-size:18px">Kirish matni (lead)</span><div class="size-bar" style="width:44%"></div></div>
+        <div class="size-item"><span class="size-num">24px</span><span style="font-size:24px">Kichik sarlavha</span><div class="size-bar" style="width:56%"></div></div>
+        <div class="size-item"><span class="size-num">32px</span><span style="font-size:32px">Bo'lim sarlavhasi</span><div class="size-bar" style="width:72%"></div></div>
+        <div class="size-item"><span class="size-num">48px</span><span style="font-size:48px">Asosiy sarlavha</span><div class="size-bar" style="width:100%"></div></div>
       </div>
       <div class="card demo-card">
         <span class="pill">Amaliy namuna</span>
-        <h3 style="margin:var(--sp-4) 0 var(--sp-2);font-size:var(--fs-xl)">Karta sarlavhasi</h3>
-        <p style="color:var(--muted);font-size:var(--fs-sm);margin:0 0 var(--sp-5)">
-          Karta ichida turli o'lchamlar qanday ko'rinishini ko'ring. Sarlavha 24px, izoh 14px.
+        <h3 style="margin:var(--sp-4) 0 var(--sp-2);font-size:var(--fs-xl)">Loyihangiz tayyor bo'ldi</h3>
+        <p style="color:var(--muted);font-size:var(--fs-sm);margin:0 0 var(--sp-5);line-height:var(--lh-normal)">
+          Karta ichida turli o'lchamlar qanday ko'rinishini ko'ring: sarlavha 24px, izoh 14px,
+          barcha matnlar o'zbek imlosida.
         </p>
         <button class="btn btn-primary">Asosiy harakat</button>
         <button class="btn" style="margin-left:var(--sp-2)">Ikkilamchi</button>
