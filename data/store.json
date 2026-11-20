@@ -154,6 +154,20 @@
       "layout": null,
       "created_at": "2026-11-18T17:21:42.590Z",
       "updated_at": "2026-11-18T17:21:42.590Z"
+    },
+    {
+      "id": "7c5fc553-5303-4414-ae9c-53942732c58c",
+      "user_id": "d19f7dd8-6969-46b8-8338-6c87809eadd9",
+      "title": "KUAF",
+      "category": "universitet",
+      "brief": "WEB ilova",
+      "platform": "web",
+      "status": "draft",
+      "ai_spec": null,
+      "layout": null,
+      "palette": "#db0a1f",
+      "created_at": "2026-11-20T04:26:35.039Z",
+      "updated_at": "2026-11-20T04:26:35.039Z"
     }
   ],
   "activity": [
