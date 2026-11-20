@@ -81,12 +81,12 @@ html[data-theme="dark"] {
    Fon shaffof, xiralashgan; logo va yozuv jigarrang + pushti rangda. */
 html[data-theme="light"] {
   --page-bg: #FBF7F3;
-  --page-fg: #5C3A21;                 /* jigarrang yozuv */
-  --card-bg: rgba(255, 255, 255, 0.5);/* shaffof oyna */
-  --card-border: rgba(255, 255, 255, 0.75);
-  --muted: #8B7355;
-  --code-bg: rgba(255, 255, 255, 0.6);
-  --code-fg: #5C3A21;
+  --page-fg: #FFFFFF;                 /* oq yozuv — rasm ustida ko'rinadi */
+  --card-bg: rgba(60, 35, 20, 0.5);   /* jigarrang shaffof oyna */
+  --card-border: rgba(255, 255, 255, 0.28);
+  --muted: rgba(255, 255, 255, 0.82); /* oqni biroz xira */
+  --code-bg: rgba(60, 35, 20, 0.55);
+  --code-fg: #FFFFFF;
   --sh-sm: 0 1px 3px rgba(92, 58, 33, .08);
   --sh-md: 0 6px 20px rgba(92, 58, 33, .12);
   --sh-lg: 0 16px 40px rgba(92, 58, 33, .16);
@@ -126,11 +126,12 @@ html[data-theme="light"] body {
 html[data-theme="light"] .card,
 html[data-theme="light"] .topbar,
 html[data-theme="light"] .shadow-item {
-  background: rgba(255, 255, 255, 0.5);
+  /* Jigarrang shaffof oyna — ustida oq yozuv aniq ko'rinadi */
+  background: rgba(60, 35, 20, 0.5);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border-color: rgba(255, 255, 255, 0.75);
-  box-shadow: 0 8px 32px rgba(92, 58, 33, 0.1);
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
 }
 
 /* Oq rejimda logo — jigarrang + pushti gradient */
@@ -144,16 +145,21 @@ html[data-theme="light"] .logo {
   text-shadow: 0 1px 4px rgba(0, 0, 0, .35);
 }
 
+html[data-theme="light"] .field {
+  background: rgba(60, 35, 20, 0.45);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+html[data-theme="light"] .field::placeholder { color: rgba(255, 255, 255, 0.7); }
+
 html[data-theme="light"] .brand,
 html[data-theme="light"] .sec-head h2,
 html[data-theme="light"] .swatch .name,
-html[data-theme="light"] .type-sample {
-  color: #5C3A21;
-}
-
+html[data-theme="light"] .type-sample,
 html[data-theme="light"] .kicker,
 html[data-theme="light"] .type-tag {
-  color: #B5566B;   /* pushti yozuv */
+  color: #FFFFFF;   /* hamma yozuv oq — rasm ustida aniq ko'rinadi */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .35);
 }
 
 .wrap { max-width: 1120px; margin: 0 auto; padding: var(--sp-8) var(--sp-6) var(--sp-16); }
