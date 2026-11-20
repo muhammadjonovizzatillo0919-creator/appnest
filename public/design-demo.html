@@ -12,11 +12,11 @@
    ============================================================ */
 :root {
   /* --- Palitra (JS orqali o'zgaradi) --- */
-  --primary:   #E63946;
-  --accent:    #3B82F6;
-  --bg-deep:   #0E1A3C;
-  --surface:   #16264F;
-  --surface-2: #1F3463;
+  --primary:   #0F4C81;
+  --accent:    #6FA8DC;
+  --bg-deep:   #0A1A2F;
+  --surface:   #102940;
+  --surface-2: #173856;
 
   /* --- Rejim ranglari --- */
   --page-bg: #f8fafc;
@@ -64,7 +64,7 @@
 
 /* --- Qora rejim --- */
 html[data-theme="dark"] {
-  --page-bg: #0E1A3C;
+  --page-bg: #0A1A2F;
   --page-fg: #FFFFFF;
   --card-bg: var(--surface);
   --card-border: #ffffff18;
@@ -286,7 +286,7 @@ footer { margin-top: var(--sp-12); text-align: center; color: var(--muted); font
 
     <div class="card" style="margin-bottom:var(--sp-4)">
       <div style="font-size:var(--fs-sm);font-weight:var(--fw-semibold);margin-bottom:var(--sp-3)">
-        Tayyor palitralar <span style="color:var(--muted);font-weight:400">— 2 variant: tayyor yoki o'zingiznikini qo'ying</span>
+        Dunyodagi eng ommabop ranglar <span style="color:var(--muted);font-weight:400">— Pantone yil ranglari (2018–2025). Bosing yoki o'zingiznikini qo'ying</span>
       </div>
       <div class="controls" id="paletteRow"></div>
       <div class="controls" style="margin-top:var(--sp-4)">
@@ -444,12 +444,14 @@ footer { margin-top: var(--sp-12); text-align: center; color: var(--muted); font
    Palitralar — AppNest platformasidagi 6 ta tayyor palitra
    ============================================================ */
 const PALETTES = [
-  { id:'appnest', name:'Crimson Navy',  emoji:'🇺🇿', primary:'#E63946', accent:'#3B82F6', bg:'#0E1A3C', surface:'#16264F', surface2:'#1F3463' },
-  { id:'gold',    name:'Red Sky',       emoji:'🌅', primary:'#EF4444', accent:'#60A5FA', bg:'#111C3A', surface:'#1B2C55', surface2:'#253A68' },
-  { id:'violet',  name:'Fire & Ice',    emoji:'🔥', primary:'#DC2626', accent:'#38BDF8', bg:'#0B1733', surface:'#132450', surface2:'#1C3060' },
-  { id:'emerald', name:'Azure Rouge',   emoji:'💙', primary:'#F43F5E', accent:'#2563EB', bg:'#0A1633', surface:'#13224A', surface2:'#1B2C5A' },
-  { id:'coral',   name:'Scarlet Blue',  emoji:'⚔️', primary:'#B91C1C', accent:'#0EA5E9', bg:'#0F172A', surface:'#1A2645', surface2:'#233357' },
-  { id:'ocean',   name:'Patriot',       emoji:'⭐', primary:'#E63946', accent:'#1D4ED8', bg:'#0E1A3C', surface:'#1A2C5A', surface2:'#243A6E' },
+  { id:'classic-blue',  name:'Classic Blue · 2020',   emoji:'🔵', primary:'#0F4C81', accent:'#6FA8DC', bg:'#0A1A2F', surface:'#102940', surface2:'#173856' },
+  { id:'viva-magenta',  name:'Viva Magenta · 2023',   emoji:'🌺', primary:'#BB2649', accent:'#F4A6B7', bg:'#1F0A14', surface:'#321020', surface2:'#47162D' },
+  { id:'mocha-mousse',  name:'Mocha Mousse · 2025',   emoji:'☕', primary:'#A47864', accent:'#D9BBA8', bg:'#1A1310', surface:'#2A1E18', surface2:'#3B2A22' },
+  { id:'peach-fuzz',    name:'Peach Fuzz · 2024',     emoji:'🍑', primary:'#FFBE98', accent:'#FFD9C0', bg:'#2A1913', surface:'#3D261D', surface2:'#523328' },
+  { id:'very-peri',     name:'Very Peri · 2022',      emoji:'💜', primary:'#6667AB', accent:'#A5A5D6', bg:'#12122A', surface:'#1E1E3D', surface2:'#2B2B55' },
+  { id:'illuminating',  name:'Illuminating · 2021',   emoji:'💡', primary:'#F5DF4D', accent:'#FFF3A6', bg:'#1F1C0A', surface:'#302B10', surface2:'#433B16' },
+  { id:'living-coral',  name:'Living Coral · 2019',   emoji:'🪸', primary:'#FF6F61', accent:'#FFB3AA', bg:'#2A1210', surface:'#3D1C18', surface2:'#522721' },
+  { id:'ultra-violet',  name:'Ultra Violet · 2018',   emoji:'💫', primary:'#5F4B8B', accent:'#9B86C4', bg:'#150F26', surface:'#221A38', surface2:'#30254D' },
 ];
 
 let currentPalette = PALETTES[0];

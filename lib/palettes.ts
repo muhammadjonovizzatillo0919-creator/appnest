@@ -1,11 +1,9 @@
 /**
  * AppNest ranglar palitrasi.
  *
- * Ikki xil ishlatiladi:
- * 1. Foydalanuvchi ish muhiti (dashboard) rangi — user.accentColor
- * 2. Generatsiya qilinadigan loyiha rangi — project.palette
- *
- * Ranglar CSS o'zgaruvchilari orqali qo'llanadi: --brand, --brand-accent.
+ * Dunyodagi eng ommabop ranglar — Pantone "Yil rangi" (2018–2025)
+ * va klassik mashhur ranglar asosida tuzilgan.
+ * Foydalanuvchi shular ichidan o'zi xohlaganini tanlaydi.
  */
 
 export interface Palette {
@@ -25,62 +23,79 @@ export interface Palette {
   emoji: string;
 }
 
-/** Tayyor palitralar — foydalanuvchi bir bosishda tanlaydi */
+/** Eng ommabop ranglar — Pantone yil ranglari va klassiklar */
 export const PRESET_PALETTES: Palette[] = [
   {
-    // Qizil + to'q ko'k + oq + moviy (asosiy tavsiya)
-    id: "appnest",
-    name: "Crimson Navy",
-    primary: "#E63946",
-    accent: "#3B82F6",
-    background: "#0E1A3C",
-    surface: "#16264F",
-    emoji: "🇺🇿",
+    id: "classic-blue",
+    name: "Classic Blue · Pantone 2020",
+    primary: "#0F4C81",
+    accent: "#6FA8DC",
+    background: "#0A1A2F",
+    surface: "#102940",
+    emoji: "🔵",
   },
   {
-    id: "gold",
-    name: "Red Sky",
-    primary: "#EF4444",
-    accent: "#60A5FA",
-    background: "#111C3A",
-    surface: "#1B2C55",
-    emoji: "🌅",
+    id: "viva-magenta",
+    name: "Viva Magenta · Pantone 2023",
+    primary: "#BB2649",
+    accent: "#F4A6B7",
+    background: "#1F0A14",
+    surface: "#321020",
+    emoji: "🌺",
   },
   {
-    id: "violet",
-    name: "Fire & Ice",
-    primary: "#DC2626",
-    accent: "#38BDF8",
-    background: "#0B1733",
-    surface: "#132450",
-    emoji: "🔥",
+    id: "mocha-mousse",
+    name: "Mocha Mousse · Pantone 2025",
+    primary: "#A47864",
+    accent: "#D9BBA8",
+    background: "#1A1310",
+    surface: "#2A1E18",
+    emoji: "☕",
   },
   {
-    id: "emerald",
-    name: "Azure Rouge",
-    primary: "#F43F5E",
-    accent: "#2563EB",
-    background: "#0A1633",
-    surface: "#13224A",
-    emoji: "💙",
+    id: "peach-fuzz",
+    name: "Peach Fuzz · Pantone 2024",
+    primary: "#FFBE98",
+    accent: "#FFD9C0",
+    background: "#2A1913",
+    surface: "#3D261D",
+    emoji: "🍑",
   },
   {
-    id: "coral",
-    name: "Scarlet Blue",
-    primary: "#B91C1C",
-    accent: "#0EA5E9",
-    background: "#0F172A",
-    surface: "#1A2645",
-    emoji: "⚔️",
+    id: "very-peri",
+    name: "Very Peri · Pantone 2022",
+    primary: "#6667AB",
+    accent: "#A5A5D6",
+    background: "#12122A",
+    surface: "#1E1E3D",
+    emoji: "💜",
   },
   {
-    id: "ocean",
-    name: "Patriot",
-    primary: "#E63946",
-    accent: "#1D4ED8",
-    background: "#0E1A3C",
-    surface: "#1A2C5A",
-    emoji: "⭐",
+    id: "illuminating",
+    name: "Illuminating · Pantone 2021",
+    primary: "#F5DF4D",
+    accent: "#FFF3A6",
+    background: "#1F1C0A",
+    surface: "#302B10",
+    emoji: "💡",
+  },
+  {
+    id: "living-coral",
+    name: "Living Coral · Pantone 2019",
+    primary: "#FF6F61",
+    accent: "#FFB3AA",
+    background: "#2A1210",
+    surface: "#3D1C18",
+    emoji: "🪸",
+  },
+  {
+    id: "ultra-violet",
+    name: "Ultra Violet · Pantone 2018",
+    primary: "#5F4B8B",
+    accent: "#9B86C4",
+    background: "#150F26",
+    surface: "#221A38",
+    emoji: "💫",
   },
 ];
 
