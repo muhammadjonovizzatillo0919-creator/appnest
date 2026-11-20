@@ -12,11 +12,11 @@
    ============================================================ */
 :root {
   /* --- Palitra (JS orqali o'zgaradi) --- */
-  --primary:   #6366F1;
-  --accent:    #A5B4FC;
-  --bg-deep:   #0B0B14;
-  --surface:   #151527;
-  --surface-2: #1F1F35;
+  --primary:   #D8A7B8;
+  --accent:    #6B2D5C;
+  --bg-deep:   #1A0F1C;
+  --surface:   #2A1A2E;
+  --surface-2: #3A2440;
 
   /* --- Rejim ranglari --- */
   --page-bg: #f8fafc;
@@ -64,8 +64,8 @@
 
 /* --- Qora rejim --- */
 html[data-theme="dark"] {
-  --page-bg: #0B0B14;
-  --page-fg: #f5f3ff;
+  --page-bg: #1A0F1C;
+  --page-fg: #f7f0f5;
   --card-bg: var(--surface);
   --card-border: #ffffff18;
   --muted: #94a3b8;
@@ -444,12 +444,12 @@ footer { margin-top: var(--sp-12); text-align: center; color: var(--muted); font
    Palitralar — AppNest platformasidagi 6 ta tayyor palitra
    ============================================================ */
 const PALETTES = [
-  { id:'appnest', name:'Noir Indigo',  emoji:'🌌', primary:'#6366F1', accent:'#A5B4FC', bg:'#0B0B14', surface:'#151527', surface2:'#1F1F35' },
-  { id:'gold',    name:'Rose Gold',    emoji:'🌸', primary:'#F43F5E', accent:'#FDA4AF', bg:'#1A0F14', surface:'#2A1620', surface2:'#3A1E2C' },
-  { id:'violet',  name:'Sage Mist',    emoji:'🌿', primary:'#2DD4BF', accent:'#5EEAD4', bg:'#0F1F1C', surface:'#16302B', surface2:'#1D4038' },
-  { id:'emerald', name:'Cream Cocoa',  emoji:'☕', primary:'#D97706', accent:'#FCD34D', bg:'#1C1917', surface:'#292524', surface2:'#3A332D' },
-  { id:'coral',   name:'Cyber Lime',   emoji:'⚡', primary:'#A3E635', accent:'#FDE047', bg:'#0C0F0A', surface:'#171C12', surface2:'#212918' },
-  { id:'ocean',   name:'Ocean Deep',   emoji:'🌊', primary:'#0EA5E9', accent:'#38BDF8', bg:'#071620', surface:'#0D2C40', surface2:'#123D57' },
+  { id:'appnest', name:'Dusty Plum',          emoji:'🌫️', primary:'#D8A7B8', accent:'#6B2D5C', bg:'#1A0F1C', surface:'#2A1A2E', surface2:'#3A2440' },
+  { id:'gold',    name:'Moss & Ember',        emoji:'🍂', primary:'#7C9A6D', accent:'#D9713F', bg:'#141A12', surface:'#1E271B', surface2:'#2A3626' },
+  { id:'violet',  name:'Sienna Blue',         emoji:'🏜️', primary:'#C96F4A', accent:'#6E8BA8', bg:'#12161F', surface:'#1D2432', surface2:'#283144' },
+  { id:'emerald', name:'Peach Teal',          emoji:'🍑', primary:'#F5A98C', accent:'#1F7A75', bg:'#0E1A1A', surface:'#152626', surface2:'#1D3535' },
+  { id:'coral',   name:'Lavender Mustard',    emoji:'🌾', primary:'#9C8FB5', accent:'#D8A928', bg:'#16141F', surface:'#221F30', surface2:'#302B42' },
+  { id:'ocean',   name:'Burgundy Champagne',  emoji:'🥂', primary:'#8C2F4B', accent:'#E8D3A0', bg:'#1A0F12', surface:'#2A181E', surface2:'#3B222B' },
 ];
 
 let currentPalette = PALETTES[0];
