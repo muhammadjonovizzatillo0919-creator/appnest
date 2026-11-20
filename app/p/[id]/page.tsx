@@ -56,6 +56,7 @@ export default async function PublicProjectPage({
   }
 
   let layout: BuilderLayout = { platform: "web", rows: [] };
+  let specPalette: string | undefined;
 
   if (project.layout) {
     try {
@@ -66,6 +67,7 @@ export default async function PublicProjectPage({
   } else if (project.aiSpec) {
     try {
       const spec = JSON.parse(project.aiSpec);
+      specPalette = spec.palette;
       layout = {
         platform: spec.platform ?? "web",
         rows: (spec.pages ?? []).flatMap(
@@ -88,6 +90,7 @@ export default async function PublicProjectPage({
       category={project.category}
       layout={layout}
       isDraft={project.status !== "active"}
+      palette={project.palette ?? specPalette}
     />
   );
 }

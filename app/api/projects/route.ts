@@ -3,6 +3,7 @@ import { projectStore } from "@/lib/project-store";
 import { canCreateProject, describeEntitlements } from "@/lib/entitlements";
 import { findTemplate } from "@/data/templates";
 import { getCurrentUser, unauthorized, badRequest } from "@/lib/session";
+import { normalizePaletteValue } from "@/lib/palettes";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -32,6 +33,8 @@ export async function POST(req: Request) {
     brief?: string;
     platform?: "web" | "mobile";
     template?: string;
+    /** Foydalanuvchi tanlagan rang: preset id yoki #hex */
+    palette?: string;
   };
 
   try {
@@ -49,6 +52,7 @@ export async function POST(req: Request) {
   const finalTitle = template?.title ?? title;
   const finalCategory = template?.category ?? category;
   const finalBrief = template?.brief ?? brief;
+  const palette = normalizePaletteValue(body.palette) ?? "appnest";
 
   if (finalTitle.length < 2) {
     return badRequest("Loyiha nomi kamida 2 ta belgidan iborat bo'lishi kerak");
@@ -78,6 +82,7 @@ export async function POST(req: Request) {
     category: finalCategory,
     brief: finalBrief,
     platform,
+    palette,
   });
 
   // Namuna loyiha tanlangan bo'lsa — tayyor layout saqlanadi

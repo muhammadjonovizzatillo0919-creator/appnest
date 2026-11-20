@@ -43,6 +43,8 @@ export interface AppSpec {
   dataModels: { name: string; fields: { name: string; type: string }[] }[];
   features: string[];
   generatedBy: "gemini" | "template";
+  /** Foydalanuvchi tanlagan rang palitrasi (preset id yoki #hex) */
+  palette?: string;
 }
 
 /* в”Ђв”Ђ Kategoriyalar в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
@@ -303,6 +305,7 @@ export function buildTemplateSpec(input: {
   category: string;
   brief?: string;
   platform?: Platform;
+  palette?: string | null;
 }): AppSpec {
   const template = findCategory(input.category);
 
@@ -367,6 +370,7 @@ export function buildTemplateSpec(input: {
       "Ma'lumot kiritish va ko'rsatish",
     ],
     generatedBy: "template",
+    palette: input.palette ?? undefined,
   };
 }
 

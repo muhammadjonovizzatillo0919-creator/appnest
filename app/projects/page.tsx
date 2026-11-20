@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Badge, Button, Card, Input, Modal, Toast } from "@/components/core";
 import { PROJECT_TEMPLATES } from "@/data/templates";
 import { useUser } from "@/context/UserContext";
+import { PRESET_PALETTES, resolvePalette } from "@/lib/palettes";
 
 interface Project {
   id: string;
@@ -14,6 +15,7 @@ interface Project {
   platform: "web" | "mobile";
   status: "draft" | "active" | "archived";
   createdAt: string;
+  palette?: string | null;
 }
 
 interface Entitlements {
@@ -66,6 +68,7 @@ export default function ProjectsPage() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("restoran");
   const [brief, setBrief] = useState("");
+  const [palette, setPalette] = useState("appnest");
 
   useEffect(() => {
     let cancelled = false;
@@ -95,6 +98,7 @@ export default function ProjectsPage() {
     category?: string;
     brief?: string;
     template?: string;
+    palette?: string;
   }) => {
     setSaving(true);
     setError(null);
@@ -398,7 +402,10 @@ export default function ProjectsPage() {
             <Button variant="ghost" onClick={() => setModalOpen(false)}>
               Bekor qilish
             </Button>
-            <Button onClick={() => create({ title, category, brief })} loading={saving}>
+            <Button
+              onClick={() => create({ title, category, brief, palette })}
+              loading={saving}
+            >
               Yaratish
             </Button>
           </>
@@ -441,6 +448,42 @@ export default function ProjectsPage() {
               className="w-full resize-none rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm outline-none transition focus:border-[#0057FF] dark:border-slate-700 dark:bg-slate-900"
             />
           </label>
+
+          {/* Loyiha rangi — tayyor palitra yoki o'z hex'i */}
+          <div>
+            <span className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
+              Loyiha rangi
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {PRESET_PALETTES.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setPalette(p.id)}
+                  title={p.name}
+                  className={`flex h-9 w-9 items-center justify-center rounded-full border-2 transition ${
+                    palette === p.id
+                      ? "scale-110 border-white ring-2 ring-brand"
+                      : "border-transparent hover:scale-105"
+                  }`}
+                  style={{ backgroundColor: p.primary }}
+                >
+                  {palette === p.id && <span className="text-xs">✓</span>}
+                </button>
+              ))}
+              <input
+                type="color"
+                value={resolvePalette(palette).primary}
+                onChange={(e) => setPalette(e.target.value)}
+                title="O'z rangingiz"
+                aria-label="O'z rangingiz"
+                className="h-9 w-9 cursor-pointer rounded-full border-2 border-slate-300 bg-transparent p-0.5 dark:border-slate-600"
+              />
+            </div>
+            <p className="mt-2 text-xs text-slate-400">
+              Tayyor palitra tanlang yoki oxirgi doira bilan o&apos;z rangingizni qo&apos;ying. AI shu ranglarda loyiha yaratadi.
+            </p>
+          </div>
         </div>
       </Modal>
 

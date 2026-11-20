@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { resolvePalette, paletteToCss } from "@/lib/palettes";
 
 /**
  * Foydalanuvchi konteksti.
@@ -17,6 +18,8 @@ export interface SessionUser {
   role: "user" | "superadmin";
   /** "free" | "pro" */
   plan: "free" | "pro";
+  /** Tanlangan ish muhiti palitrasi (preset id yoki #hex) */
+  accentColor: string;
 }
 
 interface UserContextType {
@@ -54,6 +57,20 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       cancelled = true;
     };
   }, []);
+
+  /**
+   * Foydalanuvchi tanlagan rangni butun UI ga qo'llaymiz.
+   * Tailwind @theme inline orqali --brand → bg-brand/text-brand klasslari ishlaydi.
+   */
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const palette = resolvePalette(user?.accentColor);
+    const css = paletteToCss(palette);
+    const root = document.documentElement;
+    for (const [key, value] of Object.entries(css)) {
+      root.style.setProperty(key, value);
+    }
+  }, [user?.accentColor, user?.id]);
 
   const logout = useCallback(async () => {
     await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});

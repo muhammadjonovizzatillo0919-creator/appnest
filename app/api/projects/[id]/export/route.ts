@@ -66,6 +66,7 @@ export async function GET(_req: Request, { params }: Params) {
     title: project.title,
     category: project.category,
     summary: project.brief ?? undefined,
+    palette: project.palette,
   });
 
   const zip = createZip(files);

@@ -1,4 +1,5 @@
 import type { BuilderLayout, MobileBlock } from "./builder";
+import { resolvePalette } from "./palettes";
 
 /**
  * Eksporter — builder layout'ini haqiqiy Next.js loyiha fayllariga aylantiradi.
@@ -16,6 +17,7 @@ export interface ExportMeta {
   title: string;
   category: string;
   summary?: string;
+  palette?: string | null;
 }
 
 /** Blok komponentini JSX atributlariga aylantirish */
@@ -126,13 +128,15 @@ export default config;
     content: `@import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
-  --brand: ${meta.category === "restoran" ? "#e11d48" : meta.category === "do-kon" ? "#0057FF" : "#0d9488"};
+  --background: ${resolvePalette(meta.palette).background};
+  --foreground: #e2e8f0;
+  --brand: ${resolvePalette(meta.palette).primary};
+  --brand-accent: ${resolvePalette(meta.palette).accent};
+  --surface: ${resolvePalette(meta.palette).surface};
 }
 
 .dark {
-  --background: #0b1120;
+  --background: ${resolvePalette(meta.palette).background};
   --foreground: #e2e8f0;
 }
 

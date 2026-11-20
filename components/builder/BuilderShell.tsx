@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { resolvePalette, paletteToCss } from "@/lib/palettes";
 import { useRouter } from "next/navigation";
 import { BlockPalette } from "./BlockPalette";
 import { BuilderCanvas } from "./BuilderCanvas";
@@ -48,6 +49,7 @@ export function BuilderShell({ projectId }: { projectId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [projectTitle, setProjectTitle] = useState("");
   const [projectStatus, setProjectStatus] = useState<string>("draft");
+  const [projectPalette, setProjectPalette] = useState<string | null>(null);
 
   // ── Loyihani yuklash ──
   useEffect(() => {
@@ -66,6 +68,7 @@ export function BuilderShell({ projectId }: { projectId: string }) {
 
         setProjectTitle(project.title);
         setProjectStatus(project.status);
+        setProjectPalette(project.palette ?? null);
 
         // Saqlangan layout bo'lsa — uni ishlatamiz, yo'q bo'lsa AI spetsifikatsiyasidan
         if (project.layout) {
@@ -76,7 +79,9 @@ export function BuilderShell({ projectId }: { projectId: string }) {
           }
         } else if (project.aiSpec) {
           try {
-            setLayout(specToLayout(JSON.parse(project.aiSpec)));
+            const spec = JSON.parse(project.aiSpec);
+            setProjectPalette((old) => old ?? spec.palette ?? null);
+            setLayout(specToLayout(spec));
           } catch {
             setLayout({ platform: "web", rows: [] });
           }
@@ -284,8 +289,13 @@ export function BuilderShell({ projectId }: { projectId: string }) {
     );
   }
 
+  const cssVars = paletteToCss(resolvePalette(projectPalette));
+
   return (
-    <div className="flex h-screen flex-col bg-slate-50 dark:bg-[#0b1120]">
+    <div
+      className="flex h-screen flex-col bg-slate-50 dark:bg-[#0b1120]"
+      style={cssVars as CSSProperties}
+    >
       {/* Yuqori panel */}
       <header className="flex h-14 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 dark:border-slate-800 dark:bg-slate-900">
         <div className="flex min-w-0 items-center gap-3">
@@ -318,7 +328,7 @@ export function BuilderShell({ projectId }: { projectId: string }) {
               onClick={() => switchView("web")}
               className={`rounded-md px-3 py-1 text-xs font-medium transition ${
                 view === "web"
-                  ? "bg-[#0057FF] text-white"
+                  ? "bg-brand text-white"
                   : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
               }`}
             >
@@ -329,7 +339,7 @@ export function BuilderShell({ projectId }: { projectId: string }) {
               onClick={() => switchView("mobile")}
               className={`rounded-md px-3 py-1 text-xs font-medium transition ${
                 view === "mobile"
-                  ? "bg-[#0057FF] text-white"
+                  ? "bg-brand text-white"
                   : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
               }`}
             >

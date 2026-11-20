@@ -45,7 +45,8 @@ const SCHEMA = `
     password_hash TEXT NOT NULL,
     role          TEXT NOT NULL DEFAULT 'user',
     plan          TEXT NOT NULL DEFAULT 'free',
-    created_at    TEXT NOT NULL
+    created_at    TEXT NOT NULL,
+    accent_color  TEXT NOT NULL DEFAULT 'appnest'
   );
 
   CREATE TABLE IF NOT EXISTS clients (
@@ -75,6 +76,7 @@ const SCHEMA = `
     status     TEXT NOT NULL DEFAULT 'draft',
     ai_spec    TEXT,
     layout     TEXT,
+    palette    TEXT,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
   );
@@ -108,6 +110,8 @@ const COLUMN_MIGRATIONS: { table: string; column: string; ddl: string }[] = [
   { table: "users", column: "role", ddl: "ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'user'" },
   { table: "users", column: "plan", ddl: "ALTER TABLE users ADD COLUMN plan TEXT NOT NULL DEFAULT 'free'" },
   { table: "users", column: "created_at", ddl: "ALTER TABLE users ADD COLUMN created_at TEXT" },
+  { table: "users", column: "accent_color", ddl: "ALTER TABLE users ADD COLUMN accent_color TEXT NOT NULL DEFAULT 'appnest'" },
+  { table: "projects", column: "palette", ddl: "ALTER TABLE projects ADD COLUMN palette TEXT" },
 ];
 
 /* ── Namuna ma'lumotlar ────────────────────────────────── */

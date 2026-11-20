@@ -13,6 +13,7 @@ import {
   getClient,
   hasGeminiKey,
 } from "./gemini";
+import { resolvePalette, paletteToPrompt } from "./palettes";
 
 /**
  * Ilova spetsifikatsiyasini generatsiya qilish.
@@ -25,7 +26,8 @@ const SYSTEM_PROMPT = `Design a small app spec for a no-code builder. Return JSO
 
 JSON: {"title":string,"category":string,"platform":"web","summary":string,"pages":[{"id":string,"name":string,"route":string,"purpose":string,"rows":[{"id":string,"type":"window","blocks":[{"id":string,"component":string,"props":object}]}]}],"dataModels":[{"name":string,"fields":[{"name":string,"type":string}]}],"features":string[]}
 
-RULES: 2-3 pages. Each page has 2-3 rows. Each row has 2-3 blocks. Allowed components: Navbar, Hero, Card, Grid, Button, Input, Table, StatCard, Badge, Alert, Dropdown, Toast, Loading, Footer. Keep props short. IDs must be short and unique. features: 3 items. dataModels: 1-2 items.`;
+RULES: 2-3 pages. Each page has 2-3 rows. Each row has 2-3 blocks. Allowed components: Navbar, Hero, Card, Grid, Button, Input, Table, StatCard, Badge, Alert, Dropdown, Toast, Loading, Footer. Keep props short. IDs must be short and unique. features: 3 items. dataModels: 1-2 items.
+If a COLOR PALETTE is provided, reflect those colors in props (for example set "color"/"variant" style hints on Hero, Button, Badge components and mention the palette in summary). Do not invent conflicting colors.`;
 
 
 export interface GenerateResult {
@@ -48,9 +50,11 @@ export async function generateAppSpec(input: {
   category: string;
   brief?: string;
   platform?: Platform;
+  palette?: string | null;
 }): Promise<GenerateResult> {
   const startedAt = Date.now();
   const platform = input.platform ?? "web";
+  const palette = resolvePalette(input.palette);
 
   // Gemini kaliti yo'q — shablon bilan ishlaymiz
   if (!hasGeminiKey()) {
@@ -85,6 +89,9 @@ ${input.title.trim()}
 
 PLATFORM
 ${platform}
+
+COLOR PALETTE (user selected — use these colors in the design)
+${paletteToPrompt(palette)}
 
 Design the app specification now. JSON only.`;
 
@@ -122,7 +129,11 @@ Design the app specification now. JSON only.`;
       const spec = parsed as AppSpec;
 
       return {
-        spec: { ...spec, generatedBy: "gemini" },
+        spec: {
+          ...spec,
+          generatedBy: "gemini",
+          palette: input.palette ?? undefined,
+        },
         generatedBy: "gemini",
         model: candidate,
         durationMs: Date.now() - startedAt,

@@ -79,6 +79,7 @@ export async function PATCH(req: Request, { params }: Params) {
     status?: "draft" | "active" | "archived";
     aiSpec?: unknown;
     layout?: unknown;
+    palette?: string;
   };
 
   try {
@@ -128,6 +129,7 @@ export async function PATCH(req: Request, { params }: Params) {
     status: body.status,
     aiSpec: toJsonColumn(body.aiSpec),
     layout: toJsonColumn(body.layout),
+    palette: body.palette,
   });
 
   return NextResponse.json({ project: updated });

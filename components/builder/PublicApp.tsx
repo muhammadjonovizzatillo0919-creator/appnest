@@ -1,6 +1,8 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import type { BuilderBlock, BuilderLayout } from "@/lib/builder";
 import { BlockRenderer } from "@/components/builder/BlockRenderer";
+import { resolvePalette, paletteToCss } from "@/lib/palettes";
 
 /**
  * Ommaviy sahifa — foydalanuvchi qurgan ilova.
@@ -12,19 +14,27 @@ export function PublicApp({
   category,
   layout,
   isDraft,
+  palette,
 }: {
   title: string;
   category: string;
   layout: BuilderLayout;
   isDraft: boolean;
+  palette?: string | null;
 }) {
   const blocks: BuilderBlock[] = [
     ...layout.rows.flatMap((row) => row.blocks),
     ...(layout.blocks ?? []),
   ];
 
+  // Loyiha palitrasi — barcha komponentlarga CSS o'zgaruvchilari orqali ta'sir qiladi
+  const cssVars = paletteToCss(resolvePalette(palette));
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0b1120]">
+    <div
+      className="min-h-screen bg-slate-50 dark:bg-[#0b1120]"
+      style={cssVars as CSSProperties}
+    >
       {isDraft && (
         <div className="border-b border-amber-300 bg-amber-50 px-4 py-2 text-center text-xs font-medium text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300">
           Qoralama — faqat siz ko&apos;rasiz. Ommaga chiqarish uchun PRO tarifda

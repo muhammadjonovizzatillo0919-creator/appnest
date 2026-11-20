@@ -59,6 +59,7 @@ export async function POST(_req: Request, { params }: Params) {
     category: project.category,
     brief: project.brief ?? undefined,
     platform: project.platform,
+    palette: project.palette,
   });
 
   // Urishni jurnalga yozish

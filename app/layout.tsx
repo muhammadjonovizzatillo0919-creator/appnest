@@ -61,7 +61,16 @@ export const viewport: Viewport = {
  * Sahifa bo'yalishidan OLDIN tungi rejimni qo'llaydi (flash yo'q).
  * Klass `<html>` elementiga qo'yiladi, localStorage'da saqlanadi.
  */
-const themeScript = `(function(){try{var s=localStorage.getItem('appnest-theme');var d=s?s==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark');}catch(e){}})();`;
+const themeScript = `(function(){try{
+  var s=localStorage.getItem('appnest-theme');
+  var d=s?s==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if(d)document.documentElement.classList.add('dark');
+  var a=localStorage.getItem('appnest-accent');
+  if(a&&/^#[0-9a-f]{6}$/i.test(a)){
+    document.documentElement.style.setProperty('--brand',a);
+    document.documentElement.style.setProperty('--brand-accent',a);
+  }
+}catch(e){}})();`;
 
 export default function RootLayout({
   children,

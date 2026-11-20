@@ -1,5 +1,6 @@
 import { getDb, nowIso, type Db } from "./db";
 import { createJsonStores } from "./json-stores";
+import { normalizePaletteValue } from "./palettes";
 
 /**
  * Loyihalar saqlanishi — AI no-code builder uchun.
@@ -21,6 +22,8 @@ export interface Project {
   status: ProjectStatus;
   aiSpec: string | null;
   layout: string | null;
+  /** Loyiha rang palitrasi (preset id yoki #hex) */
+  palette: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -47,6 +50,7 @@ export interface ProjectStore {
     category: string;
     brief?: string;
     platform?: ProjectPlatform;
+    palette?: string;
   }): Promise<Project>;
   update(
     id: string,
@@ -58,6 +62,7 @@ export interface ProjectStore {
       status?: ProjectStatus;
       aiSpec?: string | null;
       layout?: string | null;
+      palette?: string;
     }
   ): Promise<Project | null>;
   remove(id: string): Promise<boolean>;
@@ -88,6 +93,7 @@ interface ProjectRow {
   status: string;
   ai_spec: string | null;
   layout: string | null;
+  palette: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -113,6 +119,7 @@ const toProject = (row: ProjectRow): Project => ({
   status: (row.status as ProjectStatus) ?? "draft",
   aiSpec: row.ai_spec,
   layout: row.layout,
+  palette: row.palette ?? null,
   createdAt: row.created_at,
   updatedAt: row.updated_at,
 });
@@ -160,15 +167,26 @@ export function createProjectStore(db: Db): ProjectStore {
       return Number(row?.count ?? 0);
     },
 
-    async create({ userId, title, category, brief, platform = "web" }) {
+    async create({ userId, title, category, brief, platform = "web", palette }) {
       const now = nowIso();
       const id = crypto.randomUUID();
+      const finalPalette = normalizePaletteValue(palette) ?? "appnest";
 
       await db.run(
         `INSERT INTO projects
-           (id, user_id, title, category, brief, platform, status, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, 'draft', ?, ?)`,
-        [id, userId, title.trim(), category.trim(), brief ?? null, platform, now, now]
+           (id, user_id, title, category, brief, platform, status, palette, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, 'draft', ?, ?, ?)`,
+        [
+          id,
+          userId,
+          title.trim(),
+          category.trim(),
+          brief ?? null,
+          platform,
+          finalPalette,
+          now,
+          now,
+        ]
       );
 
       const created = await store.get(id);
@@ -188,12 +206,14 @@ export function createProjectStore(db: Db): ProjectStore {
         status: input.status ?? existing.status,
         aiSpec: input.aiSpec !== undefined ? input.aiSpec : existing.aiSpec,
         layout: input.layout !== undefined ? input.layout : existing.layout,
+        palette:
+          input.palette !== undefined ? input.palette : existing.palette,
       };
 
       await db.run(
         `UPDATE projects
            SET title = ?, category = ?, brief = ?, platform = ?, status = ?,
-               ai_spec = ?, layout = ?, updated_at = ?
+               ai_spec = ?, layout = ?, palette = ?, updated_at = ?
          WHERE id = ?`,
         [
           next.title,
@@ -203,6 +223,7 @@ export function createProjectStore(db: Db): ProjectStore {
           next.status,
           next.aiSpec,
           next.layout,
+          normalizePaletteValue(next.palette) ?? "appnest",
           nowIso(),
           id,
         ]

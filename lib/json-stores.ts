@@ -4,6 +4,7 @@ import type {
   UserStore,
   PublicUser,
 } from "./user-store";
+import { normalizePaletteValue } from "./palettes";
 import type { ClientStore, Client, ClientStatus } from "./client-store";
 import type {
   ProjectStore,
@@ -25,6 +26,7 @@ interface UserRow {
   role: string;
   plan: string;
   created_at: string;
+  accent_color?: string;
 }
 
 interface ClientRow {
@@ -47,6 +49,7 @@ interface ProjectRow {
   status: string;
   ai_spec: string | null;
   layout: string | null;
+  palette?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -101,6 +104,7 @@ export function createJsonStores(): {
         role: row.role === "superadmin" ? "superadmin" : "user",
         plan: row.plan === "pro" ? "pro" : "free",
         createdAt: row.created_at,
+        accentColor: row.accent_color || "appnest",
       };
     },
 
@@ -116,6 +120,7 @@ export function createJsonStores(): {
         role: row.role === "superadmin" ? "superadmin" : "user",
         plan: row.plan === "pro" ? "pro" : "free",
         createdAt: row.created_at,
+        accentColor: row.accent_color || "appnest",
       };
     },
 
@@ -143,6 +148,7 @@ export function createJsonStores(): {
           role,
           plan: "free",
           created_at: nowIso(),
+          accent_color: "appnest",
         };
 
         data.users.push(user);
@@ -152,6 +158,7 @@ export function createJsonStores(): {
           email: user.email,
           role: user.role as "user" | "superadmin",
           plan: "free",
+          accentColor: "appnest",
         };
       });
 
@@ -159,7 +166,7 @@ export function createJsonStores(): {
       return created;
     },
 
-    async updateProfile(id, { name, email }) {
+    async updateProfile(id, { name, email, accentColor }) {
       let updated: PublicUser | null = null;
 
       await db.update((data) => {
@@ -167,12 +174,15 @@ export function createJsonStores(): {
         if (!row) return;
         if (name?.trim()) row.name = name.trim();
         if (email?.trim()) row.email = email.trim().toLowerCase();
+        const nextAccent = normalizePaletteValue(accentColor);
+        if (nextAccent) row.accent_color = nextAccent;
         updated = {
           id: row.id,
           name: row.name,
           email: row.email,
           role: row.role === "superadmin" ? "superadmin" : "user",
           plan: row.plan === "pro" ? "pro" : "free",
+          accentColor: row.accent_color || "appnest",
         };
       });
 
@@ -192,6 +202,7 @@ export function createJsonStores(): {
           email: row.email,
           role: row.role === "superadmin" ? "superadmin" : "user",
           plan,
+          accentColor: row.accent_color || "appnest",
         };
       });
 
@@ -211,6 +222,7 @@ export function createJsonStores(): {
           email: row.email,
           role,
           plan: row.plan === "pro" ? "pro" : "free",
+          accentColor: row.accent_color || "appnest",
         };
       });
 
@@ -235,6 +247,7 @@ export function createJsonStores(): {
         email: r.email,
         role: r.role === "superadmin" ? "superadmin" : "user",
         plan: r.plan === "pro" ? "pro" : "free",
+        accentColor: r.accent_color || "appnest",
       }));
     },
   };
@@ -364,6 +377,7 @@ export function createJsonStores(): {
     status: (row.status as Project["status"]) ?? "draft",
     aiSpec: row.ai_spec ?? null,
     layout: row.layout ?? null,
+    palette: row.palette ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   });
@@ -394,9 +408,10 @@ export function createJsonStores(): {
       return data.projects.filter((p) => p.user_id === userId).length;
     },
 
-    async create({ userId, title, category, brief, platform = "web" }) {
+    async create({ userId, title, category, brief, platform = "web", palette }) {
       const now = nowIso();
       const id = crypto.randomUUID();
+      const finalPalette = normalizePaletteValue(palette) ?? "appnest";
 
       await db.update((data) => {
         data.projects.push({
@@ -409,6 +424,7 @@ export function createJsonStores(): {
           status: "draft",
           ai_spec: null,
           layout: null,
+          palette: finalPalette,
           created_at: now,
           updated_at: now,
         });
@@ -424,6 +440,7 @@ export function createJsonStores(): {
         status: "draft" as const,
         aiSpec: null,
         layout: null,
+        palette: finalPalette,
         createdAt: now,
         updatedAt: now,
       };
@@ -444,6 +461,9 @@ export function createJsonStores(): {
         if (input.status) row.status = input.status;
         if (input.aiSpec !== undefined) row.ai_spec = input.aiSpec;
         if (input.layout !== undefined) row.layout = input.layout;
+        if (input.palette !== undefined) {
+          row.palette = normalizePaletteValue(input.palette) ?? "appnest";
+        }
         row.updated_at = nowIso();
         result = toProject(row);
       });
