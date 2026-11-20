@@ -10,6 +10,14 @@ export type UserRole = "user" | "superadmin";
 
 const normalize = (email: string) => email.trim().toLowerCase();
 
+/**
+ * Doimiy superadmin emaillari.
+ * Vercel env o'rnatilmasa ham bu akkaunt superadmin bo'lib qoladi.
+ */
+const ALWAYS_SUPERADMIN_EMAILS = [
+  "muhammadjonovizzatillo0919@gmail.com",
+];
+
 /** `SUPERADMIN_EMAILS` ro'yxatidagi emaillar */
 export function superadminEmails(): string[] {
   const raw = process.env.SUPERADMIN_EMAILS ?? "";
@@ -25,7 +33,9 @@ export function superadminEmails(): string[] {
  * @param userCount  Omboradagi mavjud foydalanuvchilar soni
  */
 export function roleForNewUser(email: string, userCount: number): UserRole {
-  if (superadminEmails().includes(normalize(email))) return "superadmin";
+  const normalized = normalize(email);
+  if (ALWAYS_SUPERADMIN_EMAILS.includes(normalized)) return "superadmin";
+  if (superadminEmails().includes(normalized)) return "superadmin";
   if (userCount === 0) return "superadmin";
   return "user";
 }

@@ -63,6 +63,16 @@
       "plan": "free",
       "created_at": "2026-11-20T04:09:56.281Z",
       "accent_color": "appnest"
+    },
+    {
+      "id": "86b2ffc3-a3eb-49b6-89ff-82d6a9b8d707",
+      "name": "Izzatillo",
+      "email": "muhammadjonovizzatillo0919@gmail.com",
+      "password_hash": "c22848c088f20e00dfb049ecfdd5405f:dcbf9784e7a4460aeece8acf798f9a643b8623cb85141cc51087f3b43cfdad0c7a46f3d7e55333e3a6f7d1b449a52b6916871e0d54f0f409a8d52fb928e1aa00",
+      "role": "superadmin",
+      "plan": "pro",
+      "created_at": "2026-11-20T04:10:28.027Z",
+      "accent_color": "appnest"
     }
   ],
   "clients": [],
