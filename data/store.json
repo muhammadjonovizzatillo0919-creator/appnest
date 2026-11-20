@@ -221,5 +221,11 @@
       "error": "AI ishlamadi (This operation was aborted) — shablon asosida spec yaratildi.",
       "created_at": "2026-11-20T04:29:17.599Z"
     }
-  ]
+  ],
+  "appSettings": {
+    "appearance": {
+      "palette": "gold",
+      "updatedAt": "2026-11-20T04:30:57.151Z"
+    }
+  }
 }
