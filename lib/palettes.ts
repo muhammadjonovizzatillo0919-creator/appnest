@@ -26,6 +26,16 @@ export interface Palette {
 /** Eng ommabop ranglar — Pantone yil ranglari va klassiklar */
 export const PRESET_PALETTES: Palette[] = [
   {
+    // Foydalanuvchi tanlagan asosiy palitra
+    id: "peach-fuzz",
+    name: "Peach Fuzz · Pantone 2024",
+    primary: "#FFBE98",
+    accent: "#FFD9C0",
+    background: "#2A1913",
+    surface: "#3D261D",
+    emoji: "🍑",
+  },
+  {
     id: "classic-blue",
     name: "Classic Blue · Pantone 2020",
     primary: "#0F4C81",
@@ -51,15 +61,6 @@ export const PRESET_PALETTES: Palette[] = [
     background: "#1A1310",
     surface: "#2A1E18",
     emoji: "☕",
-  },
-  {
-    id: "peach-fuzz",
-    name: "Peach Fuzz · Pantone 2024",
-    primary: "#FFBE98",
-    accent: "#FFD9C0",
-    background: "#2A1913",
-    surface: "#3D261D",
-    emoji: "🍑",
   },
   {
     id: "very-peri",
