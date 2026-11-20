@@ -115,13 +115,10 @@ html[data-theme="dark"] body {
 
 /* Oq rejim — yomg'ir tomchilari + xiralashgan oyna fon */
 html[data-theme="light"] body {
+  /* Rasmdagi yomg'irli oyna + ustidan jigarrang/pushti tus */
   background:
-    radial-gradient(circle at 12% 18%, rgba(255,255,255,.95) 0 2px, transparent 4px),
-    radial-gradient(circle at 72% 38%, rgba(255,255,255,.85) 0 3px, transparent 5px),
-    radial-gradient(circle at 38% 78%, rgba(255,255,255,.8) 0 2px, transparent 4px),
-    radial-gradient(circle at 88% 68%, rgba(255,255,255,.7) 0 2px, transparent 4px),
-    linear-gradient(135deg, #FFFFFF 0%, #F7EBE1 45%, #FDF6F0 100%);
-  background-size: 140px 140px, 210px 210px, 170px 170px, 260px 260px, 100% 100%;
+    linear-gradient(135deg, rgba(90, 58, 30, .58), rgba(139, 90, 60, .40), rgba(217, 108, 123, .24)),
+    url('/rainy-window.webp') center / cover no-repeat fixed;
   background-attachment: fixed;
 }
 
@@ -138,8 +135,13 @@ html[data-theme="light"] .shadow-item {
 
 /* Oq rejimda logo — jigarrang + pushti gradient */
 html[data-theme="light"] .logo {
-  background: linear-gradient(135deg, var(--logo-from), var(--logo-to));
-  box-shadow: 0 6px 20px rgba(217, 108, 123, 0.35);
+  /* Logo ham o'sha jigarrang ustida yomg'irli oyna */
+  background:
+    linear-gradient(135deg, rgba(139, 90, 60, .78), rgba(217, 108, 123, .62)),
+    url('/rainy-window.webp') center / cover no-repeat;
+  box-shadow: 0 6px 20px rgba(139, 90, 60, .4);
+  color: #FFFFFF;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .35);
 }
 
 html[data-theme="light"] .brand,
@@ -490,9 +492,9 @@ footer { margin-top: var(--sp-12); text-align: center; color: var(--muted); font
   </section>
 
   <div class="note">
-    💡 <strong>Ishlatish:</strong> <strong>Peach Fuzz</strong> tanlandi (🍑). "Oq rejim" tugmasini bosing —
-    fon yomg'irli oyna kabi shaffof va xiralashgan bo'ladi, logo hamda yozuv <strong>jigarrang + pushti</strong> rangga o'tadi.
-    "CSS tokenlarni nusxalash" barcha o'zgaruvchilarni kod shaklida beradi.
+    💡 <strong>Tanlangan:</strong> <strong>Peach Fuzz</strong> (🍑). "Oq rejim" tugmasini bosing —
+    orqa fon va logo <strong>yomg'irli oyna rasmi</strong> bilan to'ldirilib, ustidan <strong>jigarrang + pushti</strong> tus beriladi.
+    Kartalar esa oyna kabi shaffof (blur) ko'rinadi. "CSS tokenlarni nusxalash" barcha o'zgaruvchilarni beradi.
   </div>
 
   <footer>AppNest Design System · 2026 · o'zbek tilida</footer>
