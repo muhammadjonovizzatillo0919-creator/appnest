@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AppNest — Dizayn tizimi demo</title>
+<style>
+/* ============================================================
+   AppNest Design System — CSS o'zgaruvchilari
+   Barcha rang, shrift, spacing va shadow qiymatlari BU YERDA.
+   Palitra yoki rejim o'zgarganda faqat shu o'zgaruvchilar yangilanadi.
+   ============================================================ */
+:root {
+  /* --- Palitra (JS orqali o'zgaradi) --- */
+  --primary:   #0057FF;
+  --accent:    #00D287;
+  --bg-deep:   #0b1120;
+  --surface:   #111827;
+  --surface-2: #1e293b;
+
+  /* --- Rejim ranglari --- */
+  --page-bg: #f8fafc;
+  --page-fg: #0f172a;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --muted: #64748b;
+  --code-bg: #f1f5f9;
+  --code-fg: #0f172a;
+
+  /* --- Tipografiya --- */
+  --font-sans: "Inter", "Segoe UI", "Geist", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+  --fs-xs: 0.75rem;   /* 12px */
+  --fs-sm: 0.875rem;  /* 14px */
+  --fs-base: 1rem;    /* 16px */
+  --fs-lg: 1.25rem;   /* 20px */
+  --fs-xl: 1.5rem;    /* 24px */
+  --fs-2xl: 2rem;     /* 32px */
+  --fs-3xl: 3rem;     /* 48px */
+  --lh-tight: 1.15;
+  --lh-normal: 1.6;
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --tracking-tight: -0.02em;
+
+  /* --- Spacing (4px asos) --- */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px;
+  --sp-12: 48px; --sp-16: 64px;
+
+  /* --- Radius --- */
+  --r-sm: 8px; --r-md: 12px; --r-lg: 18px; --r-xl: 24px; --r-full: 999px;
+
+  /* --- Shadow --- */
+  --sh-sm: 0 1px 2px rgba(2, 6, 23, .08);
+  --sh-md: 0 4px 12px rgba(2, 6, 23, .10);
+  --sh-lg: 0 12px 28px rgba(2, 6, 23, .14);
+  --sh-xl: 0 24px 60px rgba(2, 6, 23, .22);
+  --sh-glow: 0 0 0 1px color-mix(in srgb, var(--primary) 35%, transparent),
+             0 12px 40px color-mix(in srgb, var(--primary) 28%, transparent);
+}
+
+/* --- Qora rejim --- */
+html[data-theme="dark"] {
+  --page-bg: #05070f;
+  --page-fg: #e8ecf6;
+  --card-bg: var(--surface);
+  --card-border: #ffffff18;
+  --muted: #94a3b8;
+  --code-bg: #0b1120;
+  --code-fg: #e8ecf6;
+  --sh-sm: 0 1px 2px rgba(0, 0, 0, .4);
+  --sh-md: 0 4px 14px rgba(0, 0, 0, .45);
+  --sh-lg: 0 14px 32px rgba(0, 0, 0, .55);
+  --sh-xl: 0 28px 70px rgba(0, 0, 0, .7);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--page-bg);
+  color: var(--page-fg);
+  line-height: var(--lh-normal);
+  transition: background .35s ease, color .35s ease;
+}
+/* Dark rejimda fon gradient */
+html[data-theme="dark"] body {
+  background:
+    radial-gradient(900px 500px at 10% -10%, color-mix(in srgb, var(--primary) 18%, transparent), transparent 60%),
+    radial-gradient(700px 400px at 100% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 55%),
+    var(--page-bg);
+  background-attachment: fixed;
+}
+
+.wrap { max-width: 1120px; margin: 0 auto; padding: var(--sp-8) var(--sp-6) var(--sp-16); }
+
+/* --- Yuqori panel --- */
+.topbar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-4); flex-wrap: wrap;
+  padding: var(--sp-4) var(--sp-6);
+  background: color-mix(in srgb, var(--page-bg) 82%, transparent);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--card-border);
+}
+.brand { display: flex; align-items: center; gap: var(--sp-3); font-weight: var(--fw-bold); font-size: var(--fs-lg); }
+.logo {
+  width: 38px; height: 38px; border-radius: var(--r-md);
+  display: grid; place-items: center; color: #fff; font-weight: var(--fw-bold);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  box-shadow: var(--sh-glow);
+}
+.badge-top {
+  font-size: var(--fs-xs); color: var(--muted); border: 1px solid var(--card-border);
+  padding: 4px 10px; border-radius: var(--r-full);
+}
+.controls { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+
+/* --- Tugmalar --- */
+button { font-family: inherit; cursor: pointer; }
+.btn {
+  border: 1px solid var(--card-border);
+  background: var(--card-bg); color: var(--page-fg);
+  padding: 9px 15px; border-radius: var(--r-sm);
+  font-size: var(--fs-sm); font-weight: var(--fw-medium);
+  transition: transform .15s, box-shadow .2s, border-color .2s, background .2s;
+}
+.btn:hover { transform: translateY(-1px); border-color: var(--primary); }
+.btn-primary { background: var(--primary); color: #fff; border-color: transparent; box-shadow: var(--sh-glow); }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-sm { padding: 6px 11px; font-size: var(--fs-xs); }
+
+/* --- Palitra tugmalari --- */
+.sw-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 2px solid transparent; padding: 0;
+  position: relative; transition: transform .2s, box-shadow .2s;
+}
+.sw-btn:hover { transform: scale(1.12); }
+.sw-btn.active { border-color: var(--page-fg); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 45%, transparent); }
+
+/* --- Bo'limlar --- */
+section { margin-top: var(--sp-12); }
+.sec-head { margin-bottom: var(--sp-6); }
+.sec-head h2 {
+  font-size: var(--fs-xl); font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tight); margin: 0 0 var(--sp-2);
+}
+.sec-head p { margin: 0; color: var(--muted); font-size: var(--fs-sm); }
+.kicker {
+  display: inline-block; font-family: var(--font-mono); font-size: var(--fs-xs);
+  color: var(--primary); letter-spacing: .14em; text-transform: uppercase;
+  margin-bottom: var(--sp-2);
+}
+
+/* --- Karta / grid --- */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-lg);
+  padding: var(--sp-6);
+  box-shadow: var(--sh-md);
+  transition: background .35s, border-color .35s, box-shadow .35s;
+}
+.grid { display: grid; gap: var(--sp-4); }
+.g2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.g3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.g4 { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+
+/* --- Rang swatch --- */
+.swatch {
+  border-radius: var(--r-md); overflow: hidden;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+}
+.swatch .color { height: 72px; }
+.swatch .meta { padding: var(--sp-3) var(--sp-4); }
+.swatch .name { font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+.swatch .hex { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); margin-top: 2px; }
+
+/* --- Tipografiya --- */
+.type-row {
+  display: flex; align-items: baseline; gap: var(--sp-5);
+  padding: var(--sp-3) 0; border-bottom: 1px dashed var(--card-border);
+}
+.type-row:last-child { border: 0; }
+.type-tag {
+  font-family: var(--font-mono); font-size: var(--fs-xs);
+  color: var(--primary); min-width: 130px;
+}
+.type-sample { flex: 1; }
+.sample-h1 { font-size: var(--fs-3xl); font-weight: var(--fw-bold); letter-spacing: var(--tracking-tight); line-height: var(--lh-tight); }
+.sample-h2 { font-size: var(--fs-2xl); font-weight: var(--fw-bold); letter-spacing: var(--tracking-tight); }
+.sample-h3 { font-size: var(--fs-xl); font-weight: var(--fw-semibold); }
+.sample-lead { font-size: var(--fs-lg); color: var(--muted); }
+.sample-body { font-size: var(--fs-base); }
+.sample-sm { font-size: var(--fs-sm); color: var(--muted); }
+.sample-xs { font-size: var(--fs-xs); color: var(--muted); }
+code, .mono { font-family: var(--font-mono); }
+.code-chip {
+  background: var(--code-bg); color: var(--code-fg);
+  padding: 2px 8px; border-radius: 6px; font-size: var(--fs-sm);
+}
+
+/* --- Shrift o'lchami shkalasi --- */
+.size-item { display: flex; align-items: center; gap: var(--sp-4); padding: var(--sp-2) 0; }
+.size-bar { height: 8px; border-radius: var(--r-full); background: linear-gradient(90deg, var(--primary), var(--accent)); }
+.size-num { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); width: 74px; }
+
+/* --- Spacing --- */
+.space-row { display: flex; align-items: center; gap: var(--sp-4); margin-bottom: var(--sp-3); }
+.space-label { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--muted); width: 96px; }
+.space-box { background: color-mix(in srgb, var(--primary) 65%, var(--accent)); border-radius: 6px; height: 22px; }
+.space-demo { border: 1px dashed color-mix(in srgb, var(--primary) 40%, transparent); border-radius: var(--r-sm); }
+
+/* --- Shadow --- */
+.shadow-item {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: var(--r-md); padding: var(--sp-5);
+  text-align: center; font-size: var(--fs-sm); font-weight: var(--fw-medium);
+}
+.shadow-item small { display: block; margin-top: var(--sp-2); color: var(--muted); font-family: var(--font-mono); font-size: 10px; }
+
+/* --- Komponent namunalari --- */
+.demo-card { position: relative; overflow: hidden; }
+.demo-card::before {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(60% 60% at 15% 0%, color-mix(in srgb, var(--primary) 14%, transparent), transparent);
+  pointer-events: none;
+}
+.demo-card > * { position: relative; }
+.pill {
+  display: inline-block; padding: 4px 11px; border-radius: var(--r-full);
+  font-size: var(--fs-xs); font-weight: var(--fw-semibold);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
+.field {
+  width: 100%; padding: 11px 14px; border-radius: var(--r-sm);
+  border: 1px solid var(--card-border); background: var(--page-bg);
+  color: var(--page-fg); font-size: var(--fs-sm); outline: none;
+}
+.field:focus { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent); }
+
+.note {
+  margin-top: var(--sp-8); padding: var(--sp-4) var(--sp-5);
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  font-size: var(--fs-sm); color: var(--muted);
+}
+footer { margin-top: var(--sp-12); text-align: center; color: var(--muted); font-size: var(--fs-xs); }
+
+@media (max-width: 600px) {
+  .type-row { flex-direction: column; gap: 2px; }
+  .sw-btn { width: 30px; height: 30px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="logo">A</div>
+    <div>AppNest <span class="badge-top">Design System v1</span></div>
+  </div>
+  <div class="controls">
+    <button class="btn btn-sm" id="themeBtn" onclick="toggleTheme()">🌙 Qora rejim</button>
+    <button class="btn btn-sm btn-primary" onclick="copyTokens()">CSS tokenlarni nusxalash</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- 1. Ranglar palitrasi -->
+  <section id="colors">
+    <div class="sec-head">
+      <span class="kicker">01 / Colors</span>
+      <h2>Ranglar palitrasi</h2>
+      <p>Palitra yoki rejim o'zgaranda barcha elementlar shu o'zgaruvchilardan rang oladi.</p>
+    </div>
+
+    <div class="card" style="margin-bottom:var(--sp-4)">
+      <div style="font-size:var(--fs-sm);font-weight:var(--fw-semibold);margin-bottom:var(--sp-3)">
+        Tayyor palitralar <span style="color:var(--muted);font-weight:400">— 2 variant: tayyor yoki o'zingiznikini qo'ying</span>
+      </div>
+      <div class="controls" id="paletteRow"></div>
+      <div class="controls" style="margin-top:var(--sp-4)">
+        <input type="color" id="customColor" value="#0057FF" oninput="applyCustom(this.value)"
+          style="width:44px;height:36px;border:1px solid var(--card-border);border-radius:8px;background:transparent;padding:2px;cursor:pointer" />
+        <input type="text" id="customHex" value="#0057FF" oninput="applyCustom(this.value)"
+          style="width:130px;padding:8px 11px;border-radius:8px;border:1px solid var(--card-border);background:var(--page-bg);color:var(--page-fg);font-family:var(--font-mono);font-size:13px" />
+        <span style="color:var(--muted);font-size:var(--fs-xs)">O'zingizning hex rangingiz</span>
+      </div>
+    </div>
+
+    <div class="grid g4" id="swatchGrid"></div>
+  </section>
+
+  <!-- 2. Tipografiya -->
+  <section id="typography">
+    <div class="sec-head">
+      <span class="kicker">02 / Typography</span>
+      <h2>Matn tipografikasi</h2>
+      <p>Sarlavha, asosiy matn, izoh va kod uslublari.</p>
+    </div>
+    <div class="card">
+      <div class="type-row"><span class="type-tag">h1 / 48px / 700</span><span class="type-sample sample-h1">Ilovangizni yarating</span></div>
+      <div class="type-row"><span class="type-tag">h2 / 32px / 700</span><span class="type-sample sample-h2">AI bilan dizayn</span></div>
+      <div class="type-row"><span class="type-tag">h3 / 24px / 600</span><span class="type-sample sample-h3">Loyihalar ro'yxati</span></div>
+      <div class="type-row"><span class="type-tag">lead / 20px / 400</span><span class="type-sample sample-lead">Kod bilmasdan, bir necha daqiqada tayyor ilova.</span></div>
+      <div class="type-row"><span class="type-tag">body / 16px / 400</span><span class="type-sample sample-body">Asosiy matn uslubi — o'qish uchun qulay, 1.6 liniya balandligi.</span></div>
+      <div class="type-row"><span class="type-tag">small / 14px / 400</span><span class="type-sample sample-sm">Qo'shimcha ma'lumot va izoh matnlari.</span></div>
+      <div class="type-row"><span class="type-tag">caption / 12px / 400</span><span class="type-sample sample-xs">Eng kichik yordamchi matn.</span></div>
+      <div class="type-row"><span class="type-tag">mono / 14px</span><span class="type-sample"><code class="code-chip">npm run dev</code> &nbsp; <code class="code-chip">--brand: #0057FF</code></span></div>
+      <div class="type-row"><span class="type-tag">bold / semibold</span><span class="type-sample" style="font-weight:var(--fw-bold)">Qalin</span> &nbsp; <span class="type-sample" style="font-weight:var(--fw-semibold)">Yarim qalin</span> &nbsp; <span class="type-sample" style="font-weight:var(--fw-normal)">Oddiy</span></div>
+    </div>
+  </section>
+
+  <!-- 3. Shrift o'lchami -->
+  <section id="sizes">
+    <div class="sec-head">
+      <span class="kicker">03 / Font size</span>
+      <h2>Shrift o'lchami shkalasi</h2>
+      <p>7 ta standart o'lcham — hamma joyda shu shkala ishlatiladi.</p>
+    </div>
+    <div class="grid g2">
+      <div class="card">
+        <div class="size-item"><span class="size-num">12px</span><span style="font-size:12px">Caption matn</span><div class="size-bar" style="width:12%"></div></div>
+        <div class="size-item"><span class="size-num">14px</span><span style="font-size:14px">Small matn</span><div class="size-bar" style="width:22%"></div></div>
+        <div class="size-item"><span class="size-num">16px</span><span style="font-size:16px">Body matn</span><div class="size-bar" style="width:32%"></div></div>
+        <div class="size-item"><span class="size-num">20px</span><span style="font-size:20px">Lead matn</span><div class="size-bar" style="width:42%"></div></div>
+        <div class="size-item"><span class="size-num">24px</span><span style="font-size:24px">Kichik sarlavha</span><div class="size-bar" style="width:54%"></div></div>
+        <div class="size-item"><span class="size-num">32px</span><span style="font-size:32px">Sarlavha</span><div class="size-bar" style="width:70%"></div></div>
+        <div class="size-item"><span class="size-num">48px</span><span style="font-size:48px">Katta sarlavha</span><div class="size-bar" style="width:100%"></div></div>
+      </div>
+      <div class="card demo-card">
+        <span class="pill">Amaliy namuna</span>
+        <h3 style="margin:var(--sp-4) 0 var(--sp-2);font-size:var(--fs-xl)">Karta sarlavhasi</h3>
+        <p style="color:var(--muted);font-size:var(--fs-sm);margin:0 0 var(--sp-5)">
+          Karta ichida turli o'lchamlar qanday ko'rinishini ko'ring. Sarlavha 24px, izoh 14px.
+        </p>
+        <button class="btn btn-primary">Asosiy harakat</button>
+        <button class="btn" style="margin-left:var(--sp-2)">Ikkilamchi</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Spacing -->
+  <section id="spacing">
+    <div class="sec-head">
+      <span class="kicker">04 / Spacing</span>
+      <h2>Margin va Padding</h2>
+      <p>4px asosidagi shkala — barcha bo'shliqlar shu qiymatlardan olinadi.</p>
+    </div>
+    <div class="grid g2">
+      <div class="card">
+        <div class="space-row"><span class="space-label">--sp-1 · 4px</span><div class="space-box" style="width:4px"></div><span style="font-size:var(--fs-xs);color:var(--muted)">4px</span></div>
+        <div class="space-row"><span class="space-label">--sp-2 · 8px</span><div class="space-box" style="width:8px"></div><span style="font-size:var(--fs-xs);color:var(--muted)">8px</span></div>
+        <div class="space-row"><span class="space-label">--sp-3 · 12px</span><div class="space-box" style="width:12px"></div><span style="font-size:var(--fs-xs);color:var(--muted)">12px</span></div>
+        <div class="space-row"><span class="space-label">--sp-4 · 16px</span><div class="space-box" style="width:16px"></div><span style="font-size:var(--fs-xs);color:var(--muted)">16px</span></div>
+        <div class="space-row"><span class="space-label">--sp-6 · 24px</span><div class="space-box" style="width:24px"></div><span style="font-size:var(--fs-xs);color:var(--muted)">24px</span></div>
+        <div class="space-row"><span class="space-label">--sp-8 · 32px</span><div class="space-box" style="width:32px"></div><span style="font-size:var(--fs-xs);color:var(--muted)">32px</span></div>
+        <div class="space-row"><span class="space-label">--sp-12 · 48px</span><div class="space-box" style="width:48px"></div><span style="font-size:var(--fs-xs);color:var(--muted)">48px</span></div>
+        <div class="space-row"><span class="space-label">--sp-16 · 64px</span><div class="space-box" style="width:64px"></div><span style="font-size:var(--fs-xs);color:var(--muted)">64px</span></div>
+      </div>
+      <div class="card">
+        <p style="color:var(--muted);font-size:var(--fs-xs);margin:0 0 var(--sp-4)">Padding 16px / 24px / 32px namunasi</p>
+        <div class="space-demo" style="padding:var(--sp-4)">padding: 16px</div>
+        <div class="space-demo" style="padding:var(--sp-6);margin-top:var(--sp-3)">padding: 24px</div>
+        <div class="space-demo" style="padding:var(--sp-8);margin-top:var(--sp-3)">padding: 32px</div>
+        <p style="color:var(--muted);font-size:var(--fs-xs);margin:var(--sp-5) 0 var(--sp-2)">Gap namunasi (flex/grid)</p>
+        <div style="display:flex;gap:var(--sp-2)"><span class="pill">8px</span><span class="pill">8px</span><span class="pill">8px</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Shadow -->
+  <section id="shadows">
+    <div class="sec-head">
+      <span class="kicker">05 / Shadows</span>
+      <h2>Soya va chuqurlik</h2>
+      <p>5 daraja soya + rangli glow effekti (glassmorphism).</p>
+    </div>
+    <div class="grid g3">
+      <div class="shadow-item" style="box-shadow:var(--sh-sm)">Small <small>--sh-sm</small></div>
+      <div class="shadow-item" style="box-shadow:var(--sh-md)">Medium <small>--sh-md</small></div>
+      <div class="shadow-item" style="box-shadow:var(--sh-lg)">Large <small>--sh-lg</small></div>
+      <div class="shadow-item" style="box-shadow:var(--sh-xl)">Extra large <small>--sh-xl</small></div>
+      <div class="shadow-item" style="box-shadow:var(--sh-glow)">Glow ✨ <small>--sh-glow</small></div>
+      <div class="shadow-item" style="backdrop-filter:blur(12px);background:color-mix(in srgb,var(--card-bg) 60%,transparent)">Glass <small>backdrop-filter: blur</small></div>
+    </div>
+  </section>
+
+  <!-- 6. Radius + input -->
+  <section id="extras">
+    <div class="sec-head">
+      <span class="kicker">06 / Radius & Components</span>
+      <h2>Burchak va komponentlar</h2>
+      <p>Radius shkalasi va shakllar kutubxonasi.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card">
+        <p style="color:var(--muted);font-size:var(--fs-xs);margin-top:0">Radius</p>
+        <div style="display:flex;gap:var(--sp-3);align-items:flex-end">
+          <div style="width:52px;height:52px;border-radius:var(--r-sm);background:var(--primary);display:grid;place-items:center;color:#fff;font-size:11px">8</div>
+          <div style="width:52px;height:52px;border-radius:var(--r-md);background:var(--primary);display:grid;place-items:center;color:#fff;font-size:11px">12</div>
+          <div style="width:52px;height:52px;border-radius:var(--r-lg);background:var(--primary);display:grid;place-items:center;color:#fff;font-size:11px">18</div>
+          <div style="width:52px;height:52px;border-radius:var(--r-full);background:var(--primary);display:grid;place-items:center;color:#fff;font-size:11px">∞</div>
+        </div>
+      </div>
+      <div class="card">
+        <p style="color:var(--muted);font-size:var(--fs-xs);margin-top:0">Input / Fields</p>
+        <input class="field" placeholder="Loyiha nomi..." />
+        <input class="field" placeholder="focus qiling..." style="margin-top:var(--sp-3)" />
+      </div>
+      <div class="card">
+        <p style="color:var(--muted);font-size:var(--fs-xs);margin-top:0">Badge / Status</p>
+        <span class="pill">Faol</span> <span class="pill" style="background:color-mix(in srgb,var(--primary) 18%,transparent);color:var(--primary)">Yangi</span>
+        <span class="pill" style="background:color-mix(in srgb,#F5C451 18%,transparent);color:#F5C451">PRO</span>
+        <div style="display:flex;gap:var(--sp-2);margin-top:var(--sp-4)">
+          <button class="btn btn-primary btn-sm">Saqlash</button>
+          <button class="btn btn-sm">Bekor</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="note">
+    💡 <strong>Ishlatish:</strong> yuqoridagi palitra yoki hex rangni tanlang — butun sahifa darhol o'zgaradi.
+    "Qora rejim" tugmasi oq/qora fonni almashtiradi. "CSS tokenlarni nusxalash" tugmasi
+    barcha o'zgaruvchilarni kod shaklida beradi.
+  </div>
+
+  <footer>AppNest Design System · 2026 · o'zbek tilida</footer>
+</div>
+
+<script>
+/* ============================================================
+   Palitralar — AppNest platformasidagi 6 ta tayyor palitra
+   ============================================================ */
+const PALETTES = [
+  { id:'appnest', name:'AppNest klassik', emoji:'🔵', primary:'#0057FF', accent:'#00D287', bg:'#0b1120', surface:'#111827', surface2:'#1e293b' },
+  { id:'gold',    name:'Oltin nurlar',    emoji:'✨', primary:'#F5C451', accent:'#FF8A3D', bg:'#1B1035', surface:'#251A47', surface2:'#33245C' },
+  { id:'violet',  name:'Binafsha tong',   emoji:'🟣', primary:'#A855F7', accent:'#EC4899', bg:'#140B2E', surface:'#211443', surface2:'#2E1C58' },
+  { id:'emerald', name:'Zumrad bog\'',    emoji:'🟢', primary:'#10B981', accent:'#84CC16', bg:'#052E26', surface:'#0A3D33', surface2:'#0F5144' },
+  { id:'coral',   name:'Marjon quyoshi',  emoji:'🔴', primary:'#FF6B6B', accent:'#FFD93D', bg:'#2B0F1A', surface:'#3D1626', surface2:'#511D34' },
+  { id:'ocean',   name:'Okean chuqurligi',emoji:'🌊', primary:'#0EA5E9', accent:'#22D3EE', bg:'#082032', surface:'#0D2E47', surface2:'#12405F' },
+];
+
+let currentPalette = PALETTES[0];
+let currentTheme = 'dark';
+
+/* Palitrani CSS o'zgaruvchilariga qo'llaydi */
+function applyPalette(p) {
+  currentPalette = p;
+  const r = document.documentElement;
+  r.style.setProperty('--primary', p.primary);
+  r.style.setProperty('--accent', p.accent);
+  r.style.setProperty('--bg-deep', p.bg);
+  r.style.setProperty('--surface', p.surface);
+  r.style.setProperty('--surface-2', p.surface2);
+  // Qora rejimda fon palitraning fon rangiga moslashadi
+  if (currentTheme === 'dark') r.style.setProperty('--page-bg', p.bg);
+
+  // tanlanganlik belgisi
+  document.querySelectorAll('.sw-btn').forEach((b, i) =>
+    b.classList.toggle('active', PALETTES[i].id === p.id));
+  document.getElementById('customHex').value = p.primary;
+  document.getElementById('customColor').value = p.primary;
+
+  drawSwatches();
+}
+
+/* O'z rangini qo'llaydi (2-variant) */
+function applyCustom(value) {
+  if (!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value)) return;
+  const hex = value.length === 4
+    ? '#' + value[1]+value[1]+value[2]+value[2]+value[3]+value[3]
+    : value;
+  document.getElementById('customHex').value = hex;
+  document.getElementById('customColor').value = hex;
+  document.querySelectorAll('.sw-btn').forEach(b => b.classList.remove('active'));
+  currentPalette = { ...currentPalette, id:'custom', primary:hex, accent:hex };
+  document.documentElement.style.setProperty('--primary', hex);
+  document.documentElement.style.setProperty('--accent', hex);
+  drawSwatches();
+}
+
+/* Oq / qora rejim (2-variant) */
+function toggleTheme() {
+  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  const r = document.documentElement;
+  r.setAttribute('data-theme', currentTheme);
+  if (currentTheme === 'dark') {
+    r.style.setProperty('--page-bg', currentPalette.bg);
+    document.getElementById('themeBtn').textContent = '☀️ Oq rejim';
+  } else {
+    r.style.setProperty('--page-bg', '#f8fafc');
+    document.getElementById('themeBtn').textContent = '🌙 Qora rejim';
+  }
+}
+
+/* Rang swatch'larini chizadi */
+function drawSwatches() {
+  const items = [
+    ['Primary',  currentPalette.primary],
+    ['Accent',   currentPalette.accent],
+    ['Background', getComputedStyle(document.documentElement).getPropertyValue('--page-bg').trim()],
+    ['Surface',  currentPalette.surface],
+    ['Surface 2',currentPalette.surface2],
+    ['Text',     getComputedStyle(document.documentElement).getPropertyValue('--page-fg').trim()],
+    ['Muted',    getComputedStyle(document.documentElement).getPropertyValue('--muted').trim()],
+    ['Border',   getComputedStyle(document.documentElement).getPropertyValue('--card-border').trim()],
+  ];
+  document.getElementById('swatchGrid').innerHTML = items.map(([name, hex]) => `
+    <div class="swatch">
+      <div class="color" style="background:${hex}"></div>
+      <div class="meta"><div class="name">${name}</div><div class="hex">${hex}</div></div>
+    </div>`).join('');
+}
+
+/* Palitra tugmalarini yaratadi */
+function drawPaletteButtons() {
+  document.getElementById('paletteRow').innerHTML = PALETTES.map((p, i) => `
+    <button class="sw-btn${i===0?' active':''}" title="${p.name}" onclick="applyPalette(PALETTES[${i}])"
+      style="background:linear-gradient(135deg,${p.primary} 0 50%,${p.accent} 50% 100%)"></button>`).join('');
+}
+
+/* CSS tokenlarni nusxalash */
+function copyTokens() {
+  const r = document.documentElement;
+  const names = ['--primary','--accent','--page-bg','--page-fg','--card-bg','--card-border','--muted',
+    '--font-sans','--font-mono','--fs-xs','--fs-sm','--fs-base','--fs-lg','--fs-xl','--fs-2xl','--fs-3xl',
+    '--sp-1','--sp-2','--sp-3','--sp-4','--sp-6','--sp-8','--sp-12','--sp-16',
+    '--r-sm','--r-md','--r-lg','--r-xl','--sh-sm','--sh-md','--sh-lg','--sh-xl','--sh-glow'];
+  const css = ':root {\n' + names.map(n => `  ${n}: ${r.style.getPropertyValue(n).trim() || getComputedStyle(r).getPropertyValue(n).trim()};`).join('\n') + '\n}';
+  navigator.clipboard?.writeText(css).then(() => {
+    const btn = document.querySelector('.btn-primary');
+    const old = btn.textContent;
+    btn.textContent = '✓ Nusxalandi';
+    setTimeout(() => btn.textContent = old, 1800);
+  }).catch(() => alert(css));
+}
+
+/* Ishga tushurish */
+drawPaletteButtons();
+applyPalette(PALETTES[0]);
+document.getElementById('themeBtn').textContent = '☀️ Oq rejim';
+</script>
+</body>
+</html>
