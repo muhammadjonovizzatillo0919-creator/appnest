@@ -38,11 +38,11 @@ const PLANS = [
 const FAQ = [
   {
     q: "Dasturlashni bilish kerakmi?",
-    a: "Yo'q. Siz faqat tavsif yozasiz — AI sahifalarni va bloklarni tayyorlaydi. Keyin vizual quruvchida sudrab joylashtirasiz.",
+    a: "Yo'q. Siz faqat tavsif yozasiz вЂ” AI sahifalarni va bloklarni tayyorlaydi. Keyin vizual quruvchida sudrab joylashtirasiz.",
   },
   {
     q: "Qanday ilovalar qurish mumkin?",
-    a: "Restoran menyusi, onlayn do'kon, maktab portali, universitet portali — va boshqa ko'plab sohalar. 'Boshqa' tanlaganda o'z sohangizni yozasiz.",
+    a: "Restoran menyusi, onlayn do'kon, maktab portali, universitet portali вЂ” va boshqa ko'plab sohalar. 'Boshqa' tanlaganda o'z sohangizni yozasiz.",
   },
   {
     q: "1+1 qoidasi nima?",
@@ -50,7 +50,7 @@ const FAQ = [
   },
   {
     q: "Tayyor loyiha qanday olinadi?",
-    a: "ZIP fayl — ichida package.json, tsconfig.json, app/ sahifasi va komponentlar bo'ladi. Uning ichiga kirib npm install && npm run dev desangiz — loyiha ishga tushadi.",
+    a: "ZIP fayl вЂ” ichida package.json, tsconfig.json, app/ sahifasi va komponentlar bo'ladi. Uning ichiga kirib npm install && npm run dev desangiz вЂ” loyiha ishga tushadi.",
   },
   {
     q: "Mobil ilova ham qurish mumkinmi?",
@@ -58,7 +58,7 @@ const FAQ = [
   },
   {
     q: "Ma'lumotlarim xavfsizmi?",
-    a: "Parollar scrypt hash bilan saqlanadi, sessiya httpOnly cookie orqali yuritiladi. Ma'lumotlar bazasi SQLite (lokal) yoki Turso (serverless) — ikkalasi ham shifrlangan ulanish bilan ishlaydi.",
+    a: "Parollar scrypt hash bilan saqlanadi, sessiya httpOnly cookie orqali yuritiladi. Ma'lumotlar bazasi SQLite (lokal) yoki Turso (serverless) вЂ” ikkalasi ham shifrlangan ulanish bilan ishlaydi.",
   },
 ];
 
@@ -184,7 +184,7 @@ export function Faq() {
 export function CtaBand() {
   return (
     <section className="border-t border-white/[0.07] px-6 py-20">
-      <div className="relative mx-auto max-w-4xl overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#0057FF]/20 via-[#0a0f1e] to-[#A855F7]/20 px-8 py-14 text-center">
+      <div className="relative mx-auto max-w-4xl overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-brand/20 via-[#0a0f1e] to-[#A855F7]/20 px-8 py-14 text-center">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_60%_at_50%_0%,rgba(0,87,255,0.35),transparent)]"
@@ -200,9 +200,9 @@ export function CtaBand() {
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               href="/register"
-              className="rounded-xl bg-gradient-to-r from-[#0057FF] to-[#0070FF] px-6 py-3.5 text-sm font-semibold text-white transition hover:brightness-110"
+              className="rounded-xl bg-gradient-to-r from-brand to-brand px-6 py-3.5 text-sm font-semibold text-white transition hover:brightness-110"
             >
-              Bepul boshlash →
+              Bepul boshlash в†’
             </Link>
             <Link
               href="/login"

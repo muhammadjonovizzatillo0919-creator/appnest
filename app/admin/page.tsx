@@ -119,7 +119,7 @@ export default function AdminPage() {
     }
   };
 
-  /* ── Loyihalar jadvali ── */
+  /* в”Ђв”Ђ Loyihalar jadvali в”Ђв”Ђ */
   const projectColumns: TableColumn<AdminProject>[] = [
     {
       key: "title",
@@ -128,12 +128,12 @@ export default function AdminPage() {
         <div className="min-w-0">
           <Link
             href={`/projects/${p.id}`}
-            className="block truncate font-medium text-slate-900 hover:text-[#0057FF] dark:text-white"
+            className="block truncate font-medium text-slate-900 hover:text-brand dark:text-white"
           >
             {p.title}
           </Link>
           <p className="truncate text-xs text-slate-400">
-            {p.owner?.name ?? "O&apos;chirilgan"} · {p.category}
+            {p.owner?.name ?? "O&apos;chirilgan"} В· {p.category}
           </p>
         </div>
       ),
@@ -164,7 +164,7 @@ export default function AdminPage() {
       label: "Vaqt",
       render: (p) => (
         <span className="font-mono text-xs text-slate-500">
-          {p.totalDurationMs ? `${(p.totalDurationMs / 1000).toFixed(1)}s` : "—"}
+          {p.totalDurationMs ? `${(p.totalDurationMs / 1000).toFixed(1)}s` : "вЂ”"}
         </span>
       ),
     },
@@ -179,7 +179,7 @@ export default function AdminPage() {
     },
   ];
 
-  /* ── Foydalanuvchilar jadvali ── */
+  /* в”Ђв”Ђ Foydalanuvchilar jadvali в”Ђв”Ђ */
   const userColumns: TableColumn<AdminUser>[] = [
     {
       key: "name",
@@ -251,7 +251,7 @@ export default function AdminPage() {
       {stats && stats.storage === "memory" && (
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
           <span>
-            ⚠️ Ma&apos;lumotlar saqlanmayapti — serverless muhitida bazasi vaqtinchalik.
+            вљ пёЏ Ma&apos;lumotlar saqlanmayapti вЂ” serverless muhitida bazasi vaqtinchalik.
             Doimiy saqlash uchun <b>Turso</b> yoki <b>GitHub ombori</b> kerak
             (<code className="font-mono text-xs">GITHUB_TOKEN</code> + <code className="font-mono text-xs">GITHUB_REPO</code>).
           </span>
@@ -261,14 +261,14 @@ export default function AdminPage() {
             rel="noreferrer"
             className="rounded-lg border border-amber-400/50 px-3 py-1.5 text-xs font-semibold transition hover:bg-amber-400/20"
           >
-            Turso&apos;ni ulash →
+            Turso&apos;ni ulash в†’
           </a>
         </div>
       )}
 
       {stats && (stats.storage === "github" || stats.storage === "file") && (
         <div className="mb-6 rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
-          ✅ Ma&apos;lumotlar doimiy saqlanmoqda
+          вњ… Ma&apos;lumotlar doimiy saqlanmoqda
           ({stats.storage === "github" ? "GitHub ombori" : "lokal fayl / Turso"}).
         </div>
       )}
@@ -283,14 +283,14 @@ export default function AdminPage() {
               title="Foydalanuvchilar"
               value={stats?.users.total ?? 0}
               trend={{
-                value: `${stats?.users.free ?? 0} free · ${stats?.users.pro ?? 0} pro`,
+                value: `${stats?.users.free ?? 0} free В· ${stats?.users.pro ?? 0} pro`,
               }}
             />
             <StatCard
               title="Loyihalar"
               value={stats?.projects.total ?? 0}
               trend={{
-                value: `${stats?.projects.active ?? 0} faol · ${stats?.projects.draft ?? 0} draft`,
+                value: `${stats?.projects.active ?? 0} faol В· ${stats?.projects.draft ?? 0} draft`,
               }}
             />
             <StatCard
@@ -331,7 +331,7 @@ export default function AdminPage() {
                       </div>
                       <div className="h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-[#0057FF] to-[#00D287]"
+                          className="h-full rounded-full bg-gradient-to-r from-brand to-[#00D287]"
                           style={{ width: `${percent}%` }}
                         />
                       </div>
@@ -359,7 +359,7 @@ export default function AdminPage() {
                   onClick={() => setTab(key)}
                   className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
                     tab === key
-                      ? "bg-[#0057FF] text-white"
+                      ? "bg-brand text-white"
                       : "text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
                   }`}
                 >

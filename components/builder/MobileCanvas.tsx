@@ -20,8 +20,8 @@ import {
  * Mobil Smart Grid canvas.
  *
  * Blokni sudrab joylashtirganda:
- * - mumkin joy → **yashil** chegara
- * - mumkin bo'lmagan joy → **qizil** chegara va blok joylashmaydi
+ * - mumkin joy в†’ **yashil** chegara
+ * - mumkin bo'lmagan joy в†’ **qizil** chegara va blok joylashmaydi
  */
 export function MobileCanvas({
   blocks,
@@ -58,7 +58,7 @@ export function MobileCanvas({
     if (!cell) return;
 
     if (component) {
-      // Yangi blok — joylashuvi addMobile() da qo'yiladi
+      // Yangi blok вЂ” joylashuvi addMobile() da qo'yiladi
       onAdd(component);
       return;
     }
@@ -79,7 +79,7 @@ export function MobileCanvas({
         }
       );
 
-      // Noto'g'ri joy — joylashmaydi
+      // Noto'g'ri joy вЂ” joylashmaydi
       if (!result.valid) return;
 
       onChange(placeBlock(blocks, existingId, target));
@@ -137,7 +137,7 @@ export function MobileCanvas({
       {/* Telefon ramkasi */}
       <div className="mx-auto max-w-[420px]">
         <div className="mb-3 flex items-center justify-between text-xs text-slate-400">
-          <span>Smart Grid · {GRID_COLUMNS} ustun</span>
+          <span>Smart Grid В· {GRID_COLUMNS} ustun</span>
           <span>{rows} qator</span>
         </div>
 
@@ -202,7 +202,7 @@ export function MobileCanvas({
                 style={cellStyle(block.grid)}
                 className={`relative z-10 cursor-grab rounded-xl border p-2 transition active:cursor-grabbing ${
                   selectedId === block.id
-                    ? "border-[#0057FF] bg-blue-50/60 ring-2 ring-[#0057FF]/30 dark:bg-blue-500/10"
+                    ? "border-brand bg-blue-50/60 ring-2 ring-brand/30 dark:bg-blue-500/10"
                     : dragging === block.id
                       ? "opacity-40"
                       : "border-slate-200 bg-white hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-slate-600"
@@ -225,7 +225,7 @@ export function MobileCanvas({
                       aria-label="Blokni o'chirish"
                       className="rounded px-1 text-[10px] text-red-500 transition hover:bg-red-50 dark:hover:bg-red-500/10"
                     >
-                      ✕
+                      вњ•
                     </button>
                   </div>
                 </div>
@@ -272,7 +272,7 @@ export function MobileCanvas({
                     type="button"
                     onClick={() => onAdd(name)}
                     title={rule?.note}
-                    className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-[11px] text-slate-600 transition hover:border-[#0057FF] hover:text-[#0057FF] dark:border-slate-700 dark:text-slate-300"
+                    className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-[11px] text-slate-600 transition hover:border-brand hover:text-brand dark:border-slate-700 dark:text-slate-300"
                   >
                     + {name}
                   </button>
@@ -282,7 +282,7 @@ export function MobileCanvas({
           </div>
           <p className="mt-2 text-[10px] leading-relaxed text-slate-400">
             Blokni yuqoridagi telefon maydoniga suring. Navbar faqat tepada, BottomNav va Footer
-            faqat pastda — qoidaga mos kelmasa joylashmaydi.
+            faqat pastda вЂ” qoidaga mos kelmasa joylashmaydi.
           </p>
         </div>
       </div>

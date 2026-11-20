@@ -25,19 +25,26 @@ const ADMIN_ITEM = {
   icon: "M12 2l3 6 6 1-4 4 1 6-6-3-6 3 1-6-4-6 6 1z",
 };
 
+/** Platforma dizayni va palitrasi вЂ” faqat super admin */
+const DESIGN_ITEM = {
+  href: "/admin/appearance",
+  label: "Dizayn va palitra",
+  icon: "M12 3a9 9 0 1 0 0 18h1.5a2.5 2.5 0 0 0 0-5H12a3 3 0 0 1 0-6h6a3 3 0 0 0 3-3 4 4 0 0 0-4-4zM7.5 10.5h.01M10.5 7.5h.01M15 7.5h.01",
+};
+
 export const Sidebar = ({ open = false, onClose, className = "" }: SidebarProps) => {
   const pathname = usePathname();
   const { user } = useUser();
 
-  const isActive = (href: string) =>
-    href === "/dashboard"
-      ? pathname === "/dashboard"
-      : pathname.startsWith(href);
+  const isActive = (href: string) => {
+    if (href === "/dashboard" || href === "/admin") return pathname === href;
+    return pathname.startsWith(href);
+  };
 
-  // Admin bo'limi faqat super admin uchun
+  // Admin bo'limlari faqat super admin uchun
   const items =
     user?.role === "superadmin"
-      ? [...NAV_ITEMS, ADMIN_ITEM]
+      ? [...NAV_ITEMS, ADMIN_ITEM, DESIGN_ITEM]
       : NAV_ITEMS;
 
   return (
@@ -78,7 +85,7 @@ export const Sidebar = ({ open = false, onClose, className = "" }: SidebarProps)
               onClick={onClose}
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                 isActive(item.href)
-                  ? "bg-[#0057FF] text-white"
+                  ? "bg-brand text-white"
                   : "text-slate-300 hover:bg-slate-800 hover:text-white"
               }`}
             >

@@ -4,7 +4,7 @@ import { Button } from "@/components/core";
 export default function NotFound() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-slate-50 px-4 text-center dark:bg-[#0b1120]">
-      <p className="text-6xl font-bold text-[#0057FF]">404</p>
+      <p className="text-6xl font-bold text-brand">404</p>
       <div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
           Sahifa topilmadi

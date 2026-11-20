@@ -7,7 +7,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   variant?: ButtonVariant;
   size?: ButtonSize;
-  /** Yuklanish holati — matn o'rniga spinner ko'rsatiladi */
+  /** Yuklanish holati вЂ” matn o'rniga spinner ko'rsatiladi */
   loading?: boolean;
   /** Butun kenglikda cho'zilish */
   fullWidth?: boolean;
@@ -15,13 +15,13 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const VARIANTS: Record<ButtonVariant, string> = {
   primary:
-    "bg-[#0057FF] text-white hover:bg-blue-700 focus-visible:outline-[#0057FF] shadow-sm",
+    "bg-brand text-white hover:bg-blue-700 focus-visible:outline-brand shadow-sm",
   secondary:
     "bg-[#00D287] text-white hover:bg-emerald-600 focus-visible:outline-[#00D287] shadow-sm",
   danger:
     "bg-red-500 text-white hover:bg-red-600 focus-visible:outline-red-500 shadow-sm",
   outline:
-    "border border-[#0057FF] text-[#0057FF] hover:bg-blue-50 dark:hover:bg-blue-500/10 bg-transparent",
+    "border border-brand text-brand hover:bg-blue-50 dark:hover:bg-blue-500/10 bg-transparent",
   ghost:
     "bg-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800",
 };

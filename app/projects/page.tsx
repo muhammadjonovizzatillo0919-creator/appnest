@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -210,7 +210,7 @@ export default function ProjectsPage() {
                 key={step.n}
                 className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/40"
               >
-                <span className="font-mono text-xs font-bold text-[#0057FF]">
+                <span className="font-mono text-xs font-bold text-brand">
                   {step.n}
                 </span>
                 <p className="mt-1.5 text-sm font-semibold text-slate-900 dark:text-white">
@@ -261,7 +261,7 @@ export default function ProjectsPage() {
                   <p className="mt-1 text-xs leading-relaxed text-slate-500">
                     {tpl.brief}
                   </p>
-                  <span className="mt-4 inline-block text-xs font-semibold text-[#0057FF]">
+                  <span className="mt-4 inline-block text-xs font-semibold text-brand">
                     Boshlang →
                   </span>
                 </button>
@@ -308,7 +308,7 @@ export default function ProjectsPage() {
                     <div className="min-w-0">
                       <Link
                         href={`/projects/${project.id}`}
-                        className="block truncate font-semibold text-slate-900 hover:text-[#0057FF] dark:text-white"
+                        className="block truncate font-semibold text-slate-900 hover:text-brand dark:text-white"
                       >
                         {project.title}
                       </Link>
@@ -426,7 +426,7 @@ export default function ProjectsPage() {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm outline-none transition focus:border-[#0057FF] dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm outline-none transition focus:border-brand dark:border-slate-700 dark:bg-slate-900"
             >
               {CATEGORIES.map((c) => (
                 <option key={c.key} value={c.key}>
@@ -445,7 +445,7 @@ export default function ProjectsPage() {
               placeholder="Qanday ilova kerakligini yozing..."
               value={brief}
               onChange={(e) => setBrief(e.target.value)}
-              className="w-full resize-none rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm outline-none transition focus:border-[#0057FF] dark:border-slate-700 dark:bg-slate-900"
+              className="w-full resize-none rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm outline-none transition focus:border-brand dark:border-slate-700 dark:bg-slate-900"
             />
           </label>
 

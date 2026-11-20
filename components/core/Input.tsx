@@ -4,7 +4,7 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "
   label?: string;
   placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  /** Xato matni — ko'rsatilganda maydon qizil chegaraga olib o'tadi */
+  /** Xato matni вЂ” ko'rsatilganda maydon qizil chegaraga olib o'tadi */
   error?: string;
   /** Yordamchi matn (label ostida) */
   hint?: string;
@@ -57,7 +57,7 @@ export const Input = ({
           ${
             error
               ? "border-red-400 focus:border-red-500 focus:ring-red-500/30"
-              : "border-slate-200 focus:border-[#0057FF] focus:ring-[#0057FF]/30 dark:border-slate-700"
+              : "border-slate-200 focus:border-brand focus:ring-brand/30 dark:border-slate-700"
           }`}
         {...rest}
       />

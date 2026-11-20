@@ -22,6 +22,8 @@ export interface JsonShape {
   clients: Record<string, unknown>[];
   projects: Record<string, unknown>[];
   activity: Record<string, unknown>[];
+  /** Butun platforma dizayn sozlamalari (global palitra) */
+  appSettings: Record<string, unknown>;
 }
 
 const EMPTY: JsonShape = {
@@ -29,6 +31,7 @@ const EMPTY: JsonShape = {
   clients: [],
   projects: [],
   activity: [],
+  appSettings: {},
 };
 
 export class GitHubJsonDb {
@@ -86,6 +89,7 @@ export class GitHubJsonDb {
         clients: parsed.clients ?? [],
         projects: parsed.projects ?? [],
         activity: parsed.activity ?? [],
+        appSettings: parsed.appSettings ?? {},
       };
       this.cacheAt = now;
       return this.cache;

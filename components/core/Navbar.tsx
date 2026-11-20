@@ -67,7 +67,7 @@ export const Navbar = ({ title, onMenuClick, links, action }: NavbarProps) => {
             <Dropdown
               label={
                 <span className="flex items-center gap-2">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0057FF] text-xs font-bold text-white">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand text-xs font-bold text-white">
                     {initial}
                   </span>
                   <span className="hidden sm:inline">{user?.name ?? "Admin"}</span>

@@ -12,7 +12,7 @@ import {
 } from "@/components/core";
 
 export const metadata: Metadata = {
-  title: "AppNest — React Admin Panel va UI Kit",
+  title: "AppNest вЂ” React Admin Panel va UI Kit",
   description:
     "Next.js va React uchun tayyor admin panel shabloni: 18 ta komponent, tungi rejim, responsive dizayn.",
 };
@@ -60,7 +60,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="/register"
-              className="rounded-lg bg-[#0057FF] px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+              className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
             >
               Boshlash
             </Link>
@@ -76,25 +76,25 @@ export default function HomePage() {
         />
         <Container className="relative py-20 text-center sm:py-28">
           <Badge color="blue" className="mb-6">
-            Next.js 16 · React 19 · Tailwind v4
+            Next.js 16 В· React 19 В· Tailwind v4
           </Badge>
 
           <h1 className="mx-auto max-w-3xl text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl dark:text-white">
             Admin panel uchun{" "}
-            <span className="bg-gradient-to-r from-[#0057FF] to-[#00D287] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-brand to-[#00D287] bg-clip-text text-transparent">
               tayyor komponentlar
             </span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
-            AppNest — admin panel, dashboard va autentifikatsiya sahifalari uchun
-            to&apos;liq tayyor shablon. Hech qanday konfiguratsiya yo&apos;q — nusxalang va
+            AppNest вЂ” admin panel, dashboard va autentifikatsiya sahifalari uchun
+            to&apos;liq tayyor shablon. Hech qanday konfiguratsiya yo&apos;q вЂ” nusxalang va
             ishlating.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <Link href="/dashboard">
-              <Button size="lg">Demo panelni ko&apos;rish →</Button>
+              <Button size="lg">Demo panelni ko&apos;rish в†’</Button>
             </Link>
             <Link href="/register">
               <Button size="lg" variant="outline">
@@ -143,7 +143,7 @@ export default function HomePage() {
               }
             />
             <StatCard title="Sahifalar" value="5" trend={{ value: "Dashboard, clients, settings, login, register" }} />
-            <StatCard title="Dark mode" value="✅" trend={{ value: "localStorage + tizim afzalligi" }} />
+            <StatCard title="Dark mode" value="вњ…" trend={{ value: "localStorage + tizim afzalligi" }} />
             <StatCard title="TypeScript" value="100%" trend={{ value: "any yo'q, to'liq tip" }} />
           </Grid>
         </Container>
@@ -176,7 +176,7 @@ export default function HomePage() {
       <section className="pb-20">
         <Container className="max-w-2xl">
           <Alert type="info" title="Namuna: Alert komponenti">
-            Alert komponenti turga qarab avtomatik rang oladi — success, error, info yoki warning.
+            Alert komponenti turga qarab avtomatik rang oladi вЂ” success, error, info yoki warning.
           </Alert>
         </Container>
       </section>
@@ -188,15 +188,15 @@ export default function HomePage() {
             <AppLogo />
           </div>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            &copy; {new Date().getFullYear()} AppNest — MIT litsenziyasi.
+            &copy; {new Date().getFullYear()} AppNest вЂ” MIT litsenziyasi.
           </p>
           <div className="flex gap-4 text-sm">
-            <Link href="/login" className="text-[#0057FF] hover:underline dark:text-blue-400">
+            <Link href="/login" className="text-brand hover:underline dark:text-blue-400">
               Kirish
             </Link>
             <a
               href="https://github.com/muhammadjonovizzatillo0919-creator/appnest"
-              className="text-[#0057FF] hover:underline dark:text-blue-400"
+              className="text-brand hover:underline dark:text-blue-400"
               target="_blank"
               rel="noreferrer"
             >

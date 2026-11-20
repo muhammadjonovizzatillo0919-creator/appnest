@@ -75,7 +75,7 @@ export default function LoginPage() {
           <Input
             label="Parol"
             type="password"
-            placeholder="••••••••"
+            placeholder="вЂўвЂўвЂўвЂўвЂўвЂўвЂўвЂў"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && void handleLogin()}
@@ -87,7 +87,7 @@ export default function LoginPage() {
 
         <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
           Hisobingiz yo&apos;qmi?{" "}
-          <Link href="/register" className="font-semibold text-[#0057FF] hover:underline dark:text-blue-400">
+          <Link href="/register" className="font-semibold text-brand hover:underline dark:text-blue-400">
             Ro&apos;yxatdan o&apos;ting
           </Link>
         </p>

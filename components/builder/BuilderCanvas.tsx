@@ -11,11 +11,11 @@ import {
 } from "@/lib/builder";
 
 /**
- * Canvas — qatorlar (rows) ustma-ust, har bir qator ichida bloklar.
+ * Canvas вЂ” qatorlar (rows) ustma-ust, har bir qator ichida bloklar.
  *
  * Drag & drop:
- * - Palitradan → canvas'ga (blok qo'shish)
- * - Blokni → boshqa qatorga (ko'chirish)
+ * - Palitradan в†’ canvas'ga (blok qo'shish)
+ * - Blokni в†’ boshqa qatorga (ko'chirish)
  */
 export function BuilderCanvas({
   layout,
@@ -138,7 +138,7 @@ export function BuilderCanvas({
             ],
           });
         }}
-        className="w-full rounded-xl border-2 border-dashed border-slate-200 py-4 text-xs text-slate-400 transition hover:border-[#0057FF] hover:text-[#0057FF] dark:border-slate-700"
+        className="w-full rounded-xl border-2 border-dashed border-slate-200 py-4 text-xs text-slate-400 transition hover:border-brand hover:text-brand dark:border-slate-700"
       >
         + Yangi qator qo&apos;shish
       </button>
@@ -187,7 +187,7 @@ function RowView({
     <div
       className={`group rounded-2xl border bg-white p-3 transition dark:bg-slate-900 ${
         dragOverRow === row.id
-          ? "border-[#0057FF] ring-2 ring-[#0057FF]/30"
+          ? "border-brand ring-2 ring-brand/30"
           : "border-slate-200 dark:border-slate-800"
       }`}
       onDragOver={(e) => {
@@ -270,7 +270,7 @@ function RowView({
             }}
             className={`relative cursor-grab rounded-xl border p-2 transition active:cursor-grabbing ${
               selectedId === block.id
-                ? "border-[#0057FF] ring-2 ring-[#0057FF]/25"
+                ? "border-brand ring-2 ring-brand/25"
                 : dragOverBlock === block.id
                   ? "border-[#00D287]"
                   : "border-slate-150 hover:border-slate-300 dark:border-slate-800"
@@ -288,7 +288,7 @@ function RowView({
                 }}
                 className="rounded px-1.5 py-0.5 text-[11px] text-red-500 opacity-0 transition hover:bg-red-50 group-hover:opacity-100 dark:hover:bg-red-500/10"
               >
-                ✕
+                вњ•
               </button>
             </div>
             <BlockRenderer block={block} />

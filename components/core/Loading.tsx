@@ -19,7 +19,7 @@ export const Loading = ({ label = "Ma'lumotlar yuklanmoqda...", size = "md" }: L
     <div className="flex w-full flex-col items-center justify-center gap-4 py-10">
       <div
         aria-hidden="true"
-        className={`animate-spin rounded-full border-t-transparent border-[#0057FF] ${SIZES[size]}`}
+        className={`animate-spin rounded-full border-t-transparent border-brand ${SIZES[size]}`}
       />
       <span className="animate-pulse text-sm font-medium text-slate-500 dark:text-slate-400">
         {label}

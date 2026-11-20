@@ -4,7 +4,7 @@ import { useState } from "react";
 import { BLOCK_GROUPS, BLOCK_REGISTRY, type BlockMeta } from "@/lib/builder";
 
 /**
- * Blok palitrasi — foydalanuvchi shu yerda blokni topadi va
+ * Blok palitrasi вЂ” foydalanuvchi shu yerda blokni topadi va
  * canvas'ga surib (drag) tashlaydi.
  */
 export function BlockPalette() {
@@ -32,7 +32,7 @@ export function BlockPalette() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Blok qidirish..."
-          className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-[#0057FF] dark:border-slate-700 dark:bg-slate-900"
+          className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-brand dark:border-slate-700 dark:bg-slate-900"
         />
         <div className="mt-2 flex flex-wrap gap-1">
           {groups.map((g) => (
@@ -42,7 +42,7 @@ export function BlockPalette() {
               onClick={() => setGroup(g)}
               className={`rounded-md px-2 py-1 text-[11px] transition ${
                 group === g
-                  ? "bg-[#0057FF] text-white"
+                  ? "bg-brand text-white"
                   : "text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
               }`}
             >
@@ -82,7 +82,7 @@ function PaletteItem({ meta }: { meta: BlockMeta }) {
       title={meta.description}
       className={`flex cursor-grab items-start gap-2.5 rounded-lg border border-transparent px-2.5 py-2 transition active:cursor-grabbing ${
         dragging
-          ? "border-[#0057FF] bg-blue-50 dark:bg-blue-500/10"
+          ? "border-brand bg-blue-50 dark:bg-blue-500/10"
           : "hover:border-slate-200 hover:bg-slate-50 dark:hover:border-slate-700 dark:hover:bg-slate-800/60"
       }`}
     >

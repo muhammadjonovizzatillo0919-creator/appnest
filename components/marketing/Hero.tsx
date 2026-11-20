@@ -32,16 +32,16 @@ export function Hero() {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-400">
-          Tavsifingizni yozing — AI siz uchun sahifalarni, bloklarni va funksiyalarni tayyorlaydi.
+          Tavsifingizni yozing вЂ” AI siz uchun sahifalarni, bloklarni va funksiyalarni tayyorlaydi.
           Keyin surib tahrirlang va yuklab oling. Dasturlashni bilish shart emas.
         </p>
 
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/register"
-            className="rounded-xl bg-gradient-to-r from-[#0057FF] to-[#0070FF] px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/30 transition hover:brightness-110"
+            className="rounded-xl bg-gradient-to-r from-brand to-brand px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/30 transition hover:brightness-110"
           >
-            Bepul loyiha yaratish →
+            Bepul loyiha yaratish в†’
           </Link>
           <a
             href="#samples"
@@ -52,7 +52,7 @@ export function Hero() {
         </div>
 
         <p className="mt-5 text-xs text-slate-500">
-          Kredit kartasi kerak emas · Kiritish 30 sekund · O&apos;chirish mumkin
+          Kredit kartasi kerak emas В· Kiritish 30 sekund В· O&apos;chirish mumkin
         </p>
 
         {/* Ishonch qatorlari */}

@@ -32,7 +32,7 @@ export default function RegisterPage() {
         return;
       }
 
-      // Ro'yxatdan o'tgach — avtomatik kirish
+      // Ro'yxatdan o'tgach вЂ” avtomatik kirish
       const loginRes = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -98,7 +98,7 @@ export default function RegisterPage() {
 
         <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
           Hisobingiz bormi?{" "}
-          <Link href="/login" className="font-semibold text-[#0057FF] hover:underline dark:text-blue-400">
+          <Link href="/login" className="font-semibold text-brand hover:underline dark:text-blue-400">
             Kirish
           </Link>
         </p>

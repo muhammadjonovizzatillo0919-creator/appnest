@@ -20,7 +20,7 @@ const SOFT: Record<BadgeColor, string> = {
 };
 
 const SOLID: Record<BadgeColor, string> = {
-  blue: "bg-[#0057FF] text-white",
+  blue: "bg-brand text-white",
   green: "bg-[#00D287] text-white",
   gray: "bg-slate-600 text-white",
   red: "bg-red-500 text-white",

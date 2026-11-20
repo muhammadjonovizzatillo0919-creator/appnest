@@ -3,7 +3,7 @@ import React from "react";
 interface StatCardProps {
   title: string;
   value: string | number;
-  /** O'zgarish — masalan "+12%" */
+  /** O'zgarish вЂ” masalan "+12%" */
   trend?: { value: string; positive?: boolean };
   icon?: React.ReactNode;
 }
@@ -17,7 +17,7 @@ export const StatCard = ({ title, value, trend, icon }: StatCardProps) => {
           <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">{value}</p>
         </div>
         {icon && (
-          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-[#0057FF] dark:bg-blue-500/15 dark:text-blue-300">
+          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-brand dark:bg-blue-500/15 dark:text-blue-300">
             {icon}
           </span>
         )}

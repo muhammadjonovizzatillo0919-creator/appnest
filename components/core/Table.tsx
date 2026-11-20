@@ -14,7 +14,7 @@ export interface TableColumn<T> {
 }
 
 interface TableProps<T> {
-  /** Ustunlar ro'yxati (yoki oddiy header satrlari — eski API bilan moslik uchun) */
+  /** Ustunlar ro'yxati (yoki oddiy header satrlari вЂ” eski API bilan moslik uchun) */
   columns?: TableColumn<T>[];
   headers?: string[];
   /** Qatorlar */
@@ -75,7 +75,7 @@ export function Table<T>({
             <tr>
               <td colSpan={colCount} className="px-6 py-10 text-center text-slate-500">
                 <span className="inline-flex items-center gap-3">
-                  <span className="h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-[#0057FF]" />
+                  <span className="h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-brand" />
                   Yuklanmoqda...
                 </span>
               </td>
