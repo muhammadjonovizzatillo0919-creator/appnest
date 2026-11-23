@@ -4,7 +4,7 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "
   label?: string;
   placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  /** Xato matni вЂ” ko'rsatilganda maydon qizil chegaraga olib o'tadi */
+  /** Xato matni — ko'rsatilganda maydon qizil chegaraga olib o'tadi */
   error?: string;
   /** Yordamchi matn (label ostida) */
   hint?: string;

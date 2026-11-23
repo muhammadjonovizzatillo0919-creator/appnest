@@ -4,7 +4,7 @@ const STEPS = [
   {
     n: "01",
     title: "Yo'nalishni tanlang",
-    text: "Restoran, do'kon, maktab, universitet вЂ” yoki 'Boshqa' orqali o'z sohangizni yozing.",
+    text: "Restoran, do'kon, maktab, universitet — yoki 'Boshqa' orqali o'z sohangizni yozing.",
   },
   {
     n: "02",
@@ -19,7 +19,7 @@ const STEPS = [
   {
     n: "04",
     title: "Yuklab oling",
-    text: "Tayyor Next.js loyihasi ZIP sifatida вЂ” o'z kompyuteringizda bir zumda ishga tushadi.",
+    text: "Tayyor Next.js loyihasi ZIP sifatida — o'z kompyuteringizda bir zumda ishga tushadi.",
   },
 ];
 
@@ -32,7 +32,7 @@ export function HowItWorks() {
             Qanday ishlaydi
           </span>
           <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            To&apos;rtta qadam вЂ” bir necha daqiqa
+            To&apos;rtta qadam — bir necha daqiqa
           </h2>
         </div>
 
@@ -57,7 +57,7 @@ export function HowItWorks() {
                   aria-hidden="true"
                   className="absolute -right-2 top-1/2 hidden -translate-y-1/2 text-slate-700 lg:block"
                 >
-                  в†’
+                  →
                 </span>
               )}
             </div>
@@ -71,7 +71,7 @@ export function HowItWorks() {
 const FEATURES = [
   {
     title: "AI ilova arxitekturasi",
-    text: "Sahifalar, bloklar va ma'lumot modellari вЂ” hammasi sizning tavsifingizdan.",
+    text: "Sahifalar, bloklar va ma'lumot modellari — hammasi sizning tavsifingizdan.",
     icon: "M12 2l3 6 6 1-4 4 1 6-6-3-6 3 1-3-5z",
   },
   {
@@ -81,12 +81,12 @@ const FEATURES = [
   },
   {
     title: "Mobil Smart Grid",
-    text: "Yashil zona вЂ” mumkin, qizil zona вЂ” xato. Noto'g'ri joylashishga yo'l qo'yilmaydi.",
+    text: "Yashil zona — mumkin, qizil zona — xato. Noto'g'ri joylashishga yo'l qo'yilmaydi.",
     icon: "M4 4h16v16H4zM4 12h16M12 4v16",
   },
   {
     title: "Tayyor komponentlar",
-    text: "18 ta komponent вЂ” Navbar, Hero, Card, Table, Form, Toast va boshqalar.",
+    text: "18 ta komponent — Navbar, Hero, Card, Table, Form, Toast va boshqalar.",
     icon: "M20 7l-8-4-8 4m16 17l-8 4-8-4",
   },
   {
@@ -96,7 +96,7 @@ const FEATURES = [
   },
   {
     title: "Real Next.js eksporti",
-    text: "ZIP ichida tayyor loyiha вЂ” package.json, tsconfig, komponentlar va sahifa.",
+    text: "ZIP ichida tayyor loyiha — package.json, tsconfig, komponentlar va sahifa.",
     icon: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3",
   },
 ];
@@ -164,7 +164,7 @@ export function Samples() {
             Bir bosishda tayyor loyihalar
           </h2>
           <p className="mt-4 text-slate-400">
-            Ro&apos;yxatdan o&apos;ting, namuna tanlang вЂ” AI bilan ishlashni ko&apos;rasiz ham
+            Ro&apos;yxatdan o&apos;ting, namuna tanlang — AI bilan ishlashni ko&apos;rasiz ham
             tugallangan ilova oladi.
           </p>
         </div>

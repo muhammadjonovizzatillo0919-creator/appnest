@@ -1,7 +1,7 @@
-﻿import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 
 /**
- * Gemini klienti вЂ” ilova spetsifikatsiyasini generatsiya qilish uchun.
+ * Gemini klienti — ilova spetsifikatsiyasini generatsiya qilish uchun.
  *
  * Model tanlash: murakkab so'rovlar uchun `gemini-2.5-pro`, qolgani uchun `flash`.
  * Kontekst cache: system prompt + JSON sxema 1 soatga keshlanadi (bepul kvotada tejamkorlik).
@@ -15,7 +15,7 @@ export const MODELS = {
 export type ModelName = (typeof MODELS)[keyof typeof MODELS];
 
 /**
- * Model zanjiri вЂ” birinchi ishlamagan modelni keyingisiga o'tamiz.
+ * Model zanjiri — birinchi ishlamagan modelni keyingisiga o'tamiz.
  *
  * Sabablar:
  * - Ba'zi model yangi foydalanuvchilarga berilmaydi (404)

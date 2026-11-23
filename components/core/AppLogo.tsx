@@ -3,7 +3,7 @@ interface AppLogoProps {
   className?: string;
   /** Logo matnini ko'rsatish */
   showText?: boolean;
-  /** Matn rangi вЂ” odatda `text-current` bilan merosxo'rlik oladi */
+  /** Matn rangi — odatda `text-current` bilan merosxo'rlik oladi */
   textClassName?: string;
 }
 
@@ -14,7 +14,7 @@ export const AppLogo = ({
 }: AppLogoProps) => {
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      {/* Logotipning blokli shakli (CSS orqali chizilgan вЂ” fayl kerak emas) */}
+      {/* Logotipning blokli shakli (CSS orqali chizilgan — fayl kerak emas) */}
       <span className="relative block h-8 w-8 shrink-0" aria-hidden="true">
         <span className="absolute left-2 top-0 h-4 w-4 rounded-sm bg-[#8B5A3C]" />
         <span className="absolute left-0 top-3 h-4 w-4 rounded-sm bg-[#E8B84B]" />

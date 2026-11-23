@@ -32,7 +32,7 @@ export default function RegisterPage() {
         return;
       }
 
-      // Ro'yxatdan o'tgach вЂ” avtomatik kirish
+      // Ro'yxatdan o'tgach — avtomatik kirish
       const loginRes = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

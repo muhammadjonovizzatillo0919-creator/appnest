@@ -125,7 +125,7 @@ export default function ProjectsPage() {
       setModalOpen(false);
       setToast(
         payload.template
-          ? "Namuna loyiha yaratildi — endi tahrirlang"
+          ? "Namuna yaratildi — endi o‘zingizga moslang"
           : "Loyiha yaratildi — endi AI bilan generatsiya qiling"
       );
     } catch {
@@ -169,7 +169,7 @@ export default function ProjectsPage() {
           <div className="flex flex-wrap items-start justify-between gap-6">
             <div className="max-w-xl">
               <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
-                Mening ilovamim
+                Mening ilovalarim
               </span>
               <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
                 {firstName ? `Salom, ${firstName}!` : "Salom!"} Nimadan boshlaymiz?
@@ -192,7 +192,7 @@ export default function ProjectsPage() {
                 onClick={() => setModalOpen(true)}
                 disabled={!entitlements?.canCreateProject}
               >
-                + Yangi loyiha
+                + Yaratish
               </Button>
             </div>
           </div>
@@ -238,7 +238,7 @@ export default function ProjectsPage() {
           /* ── Bo'sh holat: namuna loyihalar ── */
           <section>
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-              Namuna loyihalardan boshlang
+              Tayyor namunadan boshlang
             </h2>
             <p className="mt-1 text-sm text-slate-500">
               Bir bosishda tayyor loyiha yaratiladi — keyin o&apos;zgartirasiz.
@@ -395,8 +395,8 @@ export default function ProjectsPage() {
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        title="Yangi loyiha"
-        description="Nima qurmoqchisiz? AI qolganini o'zi qiladi."
+        title="Yaratishni boshlaymiz"
+        description="G‘oyangizni ayting — AI uni sahifa va bloklarga aylantiradi."
         footer={
           <>
             <Button variant="ghost" onClick={() => setModalOpen(false)}>
@@ -413,7 +413,7 @@ export default function ProjectsPage() {
       >
         <div className="flex flex-col gap-4">
           <Input
-            label="Loyiha nomi"
+            label="Ilovangiz nomi"
             placeholder="Masalan: Restoran menyusi"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -438,11 +438,11 @@ export default function ProjectsPage() {
 
           <label className="block">
             <span className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">
-              Erkin matn (ixtiyoriy)
+              G‘oyangizni tasvirlang (ixtiyoriy)
             </span>
             <textarea
               rows={3}
-              placeholder="Qanday ilova kerakligini yozing..."
+              placeholder="Qanday ilova yaratmoqchisiz? Batafsil yozing..."
               value={brief}
               onChange={(e) => setBrief(e.target.value)}
               className="w-full resize-none rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm outline-none transition focus:border-brand dark:border-slate-700 dark:bg-slate-900"

@@ -1,15 +1,15 @@
-﻿import type { BuilderBlock, GridCell, MobileBlock } from "./builder";
+import type { BuilderBlock, GridCell, MobileBlock } from "./builder";
 
 export type { GridCell, MobileBlock };
 
 /**
- * Mobil Smart Grid вЂ” blok joylashuvi qoidalari.
+ * Mobil Smart Grid — blok joylashuvi qoidalari.
  *
  * Foydalanuvchi mobil ilovani quradi. Aks holda tartibsiz tugmalar
  * paydo bo'ladi. Shu sababli har bir blok turi uchun **qoidalar** bor:
  *
- * - mumkin joylar  в†’ **yashil**
- * - mumkin bo'lmagan joylar в†’ **qizil**
+ * - mumkin joylar  → **yashil**
+ * - mumkin bo'lmagan joylar → **qizil**
  *
  * Tizim foydalanuvchiga xato qilishga yo'l qo'ymaydi.
  */
@@ -47,7 +47,7 @@ export interface BlockRule {
 }
 
 /**
- * Blok qoidalari вЂ” mobil quruvchi uchun.
+ * Blok qoidalari — mobil quruvchi uchun.
  * `h=1` bitta qator (72px).
  */
 export const MOBILE_BLOCK_RULES: BlockRule[] = [
@@ -76,7 +76,7 @@ export const MOBILE_BLOCK_RULES: BlockRule[] = [
     component: "Hero",
     label: "Hero",
     size: { h: 3 },
-    note: "Faqat yuqori qatorlarda (1вЂ“3-qator)",
+    note: "Faqat yuqori qatorlarda (1—3-qator)",
     defaultSize: { w: 12, h: 3 },
   },
   {
@@ -237,7 +237,7 @@ export function canPlace(
         return {
           valid: false,
           rule: "HERO_TOP",
-          reason: "Hero faqat yuqori qatorlarda bo'lishi mumkin (1вЂ“3)",
+          reason: "Hero faqat yuqori qatorlarda bo'lishi mumkin (1—3)",
         };
       }
       break;
@@ -302,7 +302,7 @@ export function findFreeSlot(
     }
   }
 
-  // Oxirgi chora вЂ” eng pastga qo'yish
+  // Oxirgi chora — eng pastga qo'yish
   const fallback = { x: 0, y: rows, w: size.w, h: size.h };
   return fallback;
 }
@@ -337,7 +337,7 @@ export function normalizeMobileLayout(blocks: MobileBlock[]): MobileBlock[] {
 
   let result = [...blocks];
 
-  // Navbar вЂ” tepaga
+  // Navbar — tepaga
   const navbar = result.find((b) => b.component === "Navbar");
   if (navbar && navbar.grid.y !== 0) {
     result = result.map((b) =>
@@ -345,7 +345,7 @@ export function normalizeMobileLayout(blocks: MobileBlock[]): MobileBlock[] {
     );
   }
 
-  // BottomNav va Footer вЂ” pastga
+  // BottomNav va Footer — pastga
   const rows = totalRows(result);
   for (const name of ["BottomNav", "Footer"]) {
     const block = result.find((b) => b.component === name);

@@ -7,7 +7,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   variant?: ButtonVariant;
   size?: ButtonSize;
-  /** Yuklanish holati вЂ” matn o'rniga spinner ko'rsatiladi */
+  /** Yuklanish holati — matn o'rniga spinner ko'rsatiladi */
   loading?: boolean;
   /** Butun kenglikda cho'zilish */
   fullWidth?: boolean;

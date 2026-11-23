@@ -38,11 +38,11 @@ const PLANS = [
 const FAQ = [
   {
     q: "Dasturlashni bilish kerakmi?",
-    a: "Yo'q. Siz faqat tavsif yozasiz вЂ” AI sahifalarni va bloklarni tayyorlaydi. Keyin vizual quruvchida sudrab joylashtirasiz.",
+    a: "Yo'q. Siz faqat tavsif yozasiz — AI sahifalarni va bloklarni tayyorlaydi. Keyin vizual quruvchida sudrab joylashtirasiz.",
   },
   {
     q: "Qanday ilovalar qurish mumkin?",
-    a: "Restoran menyusi, onlayn do'kon, maktab portali, universitet portali вЂ” va boshqa ko'plab sohalar. 'Boshqa' tanlaganda o'z sohangizni yozasiz.",
+    a: "Restoran menyusi, onlayn do'kon, maktab portali, universitet portali — va boshqa ko'plab sohalar. 'Boshqa' tanlaganda o'z sohangizni yozasiz.",
   },
   {
     q: "1+1 qoidasi nima?",
@@ -50,7 +50,7 @@ const FAQ = [
   },
   {
     q: "Tayyor loyiha qanday olinadi?",
-    a: "ZIP fayl вЂ” ichida package.json, tsconfig.json, app/ sahifasi va komponentlar bo'ladi. Uning ichiga kirib npm install && npm run dev desangiz вЂ” loyiha ishga tushadi.",
+    a: "ZIP fayl — ichida package.json, tsconfig.json, app/ sahifasi va komponentlar bo'ladi. Uning ichiga kirib npm install && npm run dev desangiz — loyiha ishga tushadi.",
   },
   {
     q: "Mobil ilova ham qurish mumkinmi?",
@@ -58,7 +58,7 @@ const FAQ = [
   },
   {
     q: "Ma'lumotlarim xavfsizmi?",
-    a: "Parollar scrypt hash bilan saqlanadi, sessiya httpOnly cookie orqali yuritiladi. Ma'lumotlar bazasi SQLite (lokal) yoki Turso (serverless) вЂ” ikkalasi ham shifrlangan ulanish bilan ishlaydi.",
+    a: "Parollar scrypt hash bilan saqlanadi, sessiya httpOnly cookie orqali yuritiladi. Ma'lumotlar bazasi SQLite (lokal) yoki Turso (serverless) — ikkalasi ham shifrlangan ulanish bilan ishlaydi.",
   },
 ];
 
@@ -202,7 +202,7 @@ export function CtaBand() {
               href="/register"
               className="rounded-xl bg-gradient-to-r from-brand to-brand px-6 py-3.5 text-sm font-semibold text-white transition hover:brightness-110"
             >
-              Bepul boshlash в†’
+              Bepul boshlash →
             </Link>
             <Link
               href="/login"

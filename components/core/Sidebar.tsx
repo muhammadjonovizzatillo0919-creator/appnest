@@ -25,7 +25,7 @@ const ADMIN_ITEM = {
   icon: "M12 2l3 6 6 1-4 4 1 6-6-3-6 3 1-6-4-6 6 1z",
 };
 
-/** Platforma dizayni va palitrasi вЂ” faqat super admin */
+/** Platforma dizayni va palitrasi — faqat super admin */
 const DESIGN_ITEM = {
   href: "/admin/appearance",
   label: "Dizayn va palitra",

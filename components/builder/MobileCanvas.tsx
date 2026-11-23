@@ -20,8 +20,8 @@ import {
  * Mobil Smart Grid canvas.
  *
  * Blokni sudrab joylashtirganda:
- * - mumkin joy в†’ **yashil** chegara
- * - mumkin bo'lmagan joy в†’ **qizil** chegara va blok joylashmaydi
+ * - mumkin joy → **yashil** chegara
+ * - mumkin bo'lmagan joy → **qizil** chegara va blok joylashmaydi
  */
 export function MobileCanvas({
   blocks,
@@ -58,7 +58,7 @@ export function MobileCanvas({
     if (!cell) return;
 
     if (component) {
-      // Yangi blok вЂ” joylashuvi addMobile() da qo'yiladi
+      // Yangi blok — joylashuvi addMobile() da qo'yiladi
       onAdd(component);
       return;
     }
@@ -79,7 +79,7 @@ export function MobileCanvas({
         }
       );
 
-      // Noto'g'ri joy вЂ” joylashmaydi
+      // Noto'g'ri joy — joylashmaydi
       if (!result.valid) return;
 
       onChange(placeBlock(blocks, existingId, target));
@@ -137,7 +137,7 @@ export function MobileCanvas({
       {/* Telefon ramkasi */}
       <div className="mx-auto max-w-[420px]">
         <div className="mb-3 flex items-center justify-between text-xs text-slate-400">
-          <span>Smart Grid В· {GRID_COLUMNS} ustun</span>
+          <span>Smart Grid · {GRID_COLUMNS} ustun</span>
           <span>{rows} qator</span>
         </div>
 
@@ -282,7 +282,7 @@ export function MobileCanvas({
           </div>
           <p className="mt-2 text-[10px] leading-relaxed text-slate-400">
             Blokni yuqoridagi telefon maydoniga suring. Navbar faqat tepada, BottomNav va Footer
-            faqat pastda вЂ” qoidaga mos kelmasa joylashmaydi.
+            faqat pastda — qoidaga mos kelmasa joylashmaydi.
           </p>
         </div>
       </div>

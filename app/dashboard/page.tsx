@@ -101,10 +101,10 @@ export default function DashboardPage() {
     <DashboardShell title="Dashboard">
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
-          Xush kelibsiz{user?.name ? `, ${user.name.split(" ")[0]}` : ""}!
+          Bugun nima yaratamiz{user?.name ? `, ${user.name.split(" ")[0]}` : ""}?
         </h2>
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          Ma&apos;lumotlar SQLite bazasidan olinadi.
+          Yaratgan ilovalaringiz va ularning holati — bir joyda.
         </p>
       </div>
 

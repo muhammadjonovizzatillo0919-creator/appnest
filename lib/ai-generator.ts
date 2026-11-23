@@ -1,13 +1,13 @@
-﻿/**
- * AI ilova spetsifikatsiyasi (App Spec) вЂ” generator.
+/**
+ * AI ilova spetsifikatsiyasi (App Spec) — generator.
  *
  * Ikki rejim:
- * 1. **Gemini** (asosiy) вЂ” kategoriya + erkin matnni tahlil qilib to'liq
+ * 1. **Gemini** (asosiy) — kategoriya + erkin matnni tahlil qilib to'liq
  *    sahifalar va bloklar ro'yxatini chiqaradi.
- * 2. **Fallback** (shablon) вЂ” API kaliti yo'q bo'lsa yoki AI xato bersa.
+ * 2. **Fallback** (shablon) — API kaliti yo'q bo'lsa yoki AI xato bersa.
  *    Kategoriya shablonidan barqaror spec yasaydi.
  *
- * Chiqish formati вЂ” vizual quruvchiga to'g'ridan-to'g'ri beriladigan JSON.
+ * Chiqish formati — vizual quruvchiga to'g'ridan-to'g'ri beriladigan JSON.
  */
 
 /* в”Ђв”Ђ Turlar в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */

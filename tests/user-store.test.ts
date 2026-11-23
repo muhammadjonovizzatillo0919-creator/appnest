@@ -1,10 +1,10 @@
-﻿// @vitest-environment node
+// @vitest-environment node
 import { describe, expect, it } from "vitest";
 import { createMemoryDb } from "@/lib/db";
 import { createUserStore } from "@/lib/user-store";
 
 /**
- * Foydalanuvchilar ombori вЂ” xotiradagi bazada.
+ * Foydalanuvchilar ombori — xotiradagi bazada.
  */
 function setup() {
   const db = createMemoryDb();

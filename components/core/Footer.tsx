@@ -1,7 +1,7 @@
 import React from "react";
 
 interface FooterProps {
-  /** Vizual quruvchi uchun вЂ” ko'rsatiladigan matn */
+  /** Vizual quruvchi uchun — ko'rsatiladigan matn */
   text?: string;
 }
 

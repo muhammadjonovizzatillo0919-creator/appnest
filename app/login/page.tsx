@@ -75,7 +75,7 @@ export default function LoginPage() {
           <Input
             label="Parol"
             type="password"
-            placeholder="вЂўвЂўвЂўвЂўвЂўвЂўвЂўвЂў"
+            placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && void handleLogin()}

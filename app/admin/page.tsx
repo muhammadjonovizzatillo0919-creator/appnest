@@ -133,7 +133,7 @@ export default function AdminPage() {
             {p.title}
           </Link>
           <p className="truncate text-xs text-slate-400">
-            {p.owner?.name ?? "O&apos;chirilgan"} В· {p.category}
+            {p.owner?.name ?? "O&apos;chirilgan"} · {p.category}
           </p>
         </div>
       ),
@@ -164,7 +164,7 @@ export default function AdminPage() {
       label: "Vaqt",
       render: (p) => (
         <span className="font-mono text-xs text-slate-500">
-          {p.totalDurationMs ? `${(p.totalDurationMs / 1000).toFixed(1)}s` : "вЂ”"}
+          {p.totalDurationMs ? `${(p.totalDurationMs / 1000).toFixed(1)}s` : "—"}
         </span>
       ),
     },
@@ -251,7 +251,7 @@ export default function AdminPage() {
       {stats && stats.storage === "memory" && (
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
           <span>
-            вљ пёЏ Ma&apos;lumotlar saqlanmayapti вЂ” serverless muhitida bazasi vaqtinchalik.
+            вљ пёЏ Ma&apos;lumotlar saqlanmayapti — serverless muhitida bazasi vaqtinchalik.
             Doimiy saqlash uchun <b>Turso</b> yoki <b>GitHub ombori</b> kerak
             (<code className="font-mono text-xs">GITHUB_TOKEN</code> + <code className="font-mono text-xs">GITHUB_REPO</code>).
           </span>
@@ -261,7 +261,7 @@ export default function AdminPage() {
             rel="noreferrer"
             className="rounded-lg border border-amber-400/50 px-3 py-1.5 text-xs font-semibold transition hover:bg-amber-400/20"
           >
-            Turso&apos;ni ulash в†’
+            Turso&apos;ni ulash →
           </a>
         </div>
       )}
@@ -283,14 +283,14 @@ export default function AdminPage() {
               title="Foydalanuvchilar"
               value={stats?.users.total ?? 0}
               trend={{
-                value: `${stats?.users.free ?? 0} free В· ${stats?.users.pro ?? 0} pro`,
+                value: `${stats?.users.free ?? 0} free · ${stats?.users.pro ?? 0} pro`,
               }}
             />
             <StatCard
               title="Loyihalar"
               value={stats?.projects.total ?? 0}
               trend={{
-                value: `${stats?.projects.active ?? 0} faol В· ${stats?.projects.draft ?? 0} draft`,
+                value: `${stats?.projects.active ?? 0} faol · ${stats?.projects.draft ?? 0} draft`,
               }}
             />
             <StatCard

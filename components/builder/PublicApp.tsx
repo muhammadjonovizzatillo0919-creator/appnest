@@ -5,7 +5,7 @@ import { BlockRenderer } from "@/components/builder/BlockRenderer";
 import { resolvePalette, paletteToCss } from "@/lib/palettes";
 
 /**
- * Ommaviy sahifa вЂ” foydalanuvchi qurgan ilova.
+ * Ommaviy sahifa — foydalanuvchi qurgan ilova.
  *
  * Bloklar haqiqiy AppNest komponentlarida render qilinadi, shuning uchun
  * ko'rinishi xuddi shunday bo'ladi, keyinchalik eksport qilingan saytda.
@@ -27,7 +27,7 @@ export function PublicApp({
     ...(layout.blocks ?? []),
   ];
 
-  // Loyiha palitrasi вЂ” barcha komponentlarga CSS o'zgaruvchilari orqali ta'sir qiladi
+  // Loyiha palitrasi — barcha komponentlarga CSS o'zgaruvchilari orqali ta'sir qiladi
   const cssVars = paletteToCss(resolvePalette(palette));
 
   return (
@@ -37,7 +37,7 @@ export function PublicApp({
     >
       {isDraft && (
         <div className="border-b border-amber-300 bg-amber-50 px-4 py-2 text-center text-xs font-medium text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300">
-          Qoralama вЂ” faqat siz ko&apos;rasiz. Ommaga chiqarish uchun PRO tarifda
+          Qoralama — faqat siz ko&apos;rasiz. Ommaga chiqarish uchun PRO tarifda
           &quot;Yayqlash&quot; tugmasini bosing.
         </div>
       )}
@@ -64,7 +64,7 @@ export function PublicApp({
             >
               AppNest
             </Link>{" "}
-            bilan yaratilgan В· {category}
+            bilan yaratilgan · {category}
           </p>
         </footer>
       </div>

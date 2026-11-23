@@ -1,5 +1,5 @@
-﻿/**
- * "1+1" qoidasi вЂ” tariflar va cheklovlar.
+/**
+ * "1+1" qoidasi — tariflar va cheklovlar.
  *
  * вљ пёЏ Bu tekshiruv **faqat UI da emas, serverda** ham bajariladi.
  * Foydalanuvchi API'ni to'g'ridan-to'g'ri chaqirib cheklovni ayla o'tkaza olmaydi.
@@ -93,7 +93,7 @@ export function canActivateProject(
       allowed: false,
       reason:
         "Bepul tarifda loyihani faollashtirish (production) mumkin emas. " +
-        "PRO tarifga o'ting вЂ” faqat shunda loyihangiz ishlaydi.",
+        "PRO tarifga o'ting — faqat shunda loyihangiz ishlaydi.",
     };
   }
 

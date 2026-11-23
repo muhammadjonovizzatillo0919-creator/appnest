@@ -3,7 +3,7 @@ import React from "react";
 interface StatCardProps {
   title: string;
   value: string | number;
-  /** O'zgarish вЂ” masalan "+12%" */
+  /** O'zgarish — masalan "+12%" */
   trend?: { value: string; positive?: boolean };
   icon?: React.ReactNode;
 }

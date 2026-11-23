@@ -11,11 +11,11 @@ import {
 } from "@/lib/builder";
 
 /**
- * Canvas вЂ” qatorlar (rows) ustma-ust, har bir qator ichida bloklar.
+ * Canvas — qatorlar (rows) ustma-ust, har bir qator ichida bloklar.
  *
  * Drag & drop:
- * - Palitradan в†’ canvas'ga (blok qo'shish)
- * - Blokni в†’ boshqa qatorga (ko'chirish)
+ * - Palitradan → canvas'ga (blok qo'shish)
+ * - Blokni → boshqa qatorga (ko'chirish)
  */
 export function BuilderCanvas({
   layout,

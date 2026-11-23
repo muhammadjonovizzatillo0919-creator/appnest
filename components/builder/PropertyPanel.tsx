@@ -3,7 +3,7 @@
 import { findBlockMeta, type BuilderBlock } from "@/lib/builder";
 
 /**
- * Property panel вЂ” tanlangan blokning xususiyatlarini tahrirlash.
+ * Property panel — tanlangan blokning xususiyatlarini tahrirlash.
  */
 export function PropertyPanel({
   block,
@@ -22,7 +22,7 @@ export function PropertyPanel({
         </svg>
         <p className="text-sm font-medium text-slate-500">Blok tanlanmagan</p>
         <p className="text-xs text-slate-400">
-          Canvas&apos;dagi biror blokni bosing вЂ” uning xususiyatlari shu yerda ochiladi
+          Canvas&apos;dagi biror blokni bosing — uning xususiyatlari shu yerda ochiladi
         </p>
       </div>
     );

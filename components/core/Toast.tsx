@@ -7,7 +7,7 @@ export type ToastType = "success" | "error" | "info";
 interface ToastProps {
   message: React.ReactNode;
   type?: ToastType;
-  /** Avtomatik yopilish (ms). 0 вЂ” o'zi yopilmaydi */
+  /** Avtomatik yopilish (ms). 0 — o'zi yopilmaydi */
   duration?: number;
   onClose?: () => void;
   className?: string;

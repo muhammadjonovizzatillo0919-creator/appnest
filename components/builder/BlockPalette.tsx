@@ -4,7 +4,7 @@ import { useState } from "react";
 import { BLOCK_GROUPS, BLOCK_REGISTRY, type BlockMeta } from "@/lib/builder";
 
 /**
- * Blok palitrasi вЂ” foydalanuvchi shu yerda blokni topadi va
+ * Blok palitrasi — foydalanuvchi shu yerda blokni topadi va
  * canvas'ga surib (drag) tashlaydi.
  */
 export function BlockPalette() {

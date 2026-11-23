@@ -14,7 +14,7 @@ export interface TableColumn<T> {
 }
 
 interface TableProps<T> {
-  /** Ustunlar ro'yxati (yoki oddiy header satrlari вЂ” eski API bilan moslik uchun) */
+  /** Ustunlar ro'yxati (yoki oddiy header satrlari — eski API bilan moslik uchun) */
   columns?: TableColumn<T>[];
   headers?: string[];
   /** Qatorlar */

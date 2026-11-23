@@ -1,11 +1,11 @@
-﻿// @vitest-environment node
+// @vitest-environment node
 import { describe, expect, it } from "vitest";
 import { createMemoryDb } from "@/lib/db";
 import { createClientStore } from "@/lib/client-store";
 
 /**
  * Mijozlar ombori testlari.
- * Xotiradagi (`:memory:`) baza ishlatiladi вЂ” faylga tegilmaydi.
+ * Xotiradagi (`:memory:`) baza ishlatiladi — faylga tegilmaydi.
  */
 
 function setup() {
